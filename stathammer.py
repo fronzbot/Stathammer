@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = "2.0a"
+version = "3.0a"
 
 from tkinter import *
 from tkinter import ttk
@@ -222,39 +222,64 @@ def shooting(*args):
     MeanKill   = 0
     kill_list  = []
     loop_count = 0
+
+    bs  = int(BS_box.get())
+    ws  = int(WS_box.get())
+    wso = int(WSO_box.get())
+    s   = int(S_box.get())
+    t   = int(T_box.get())
+    sv  = int(S_box.get())
+    attacks = int(Shotval.get())
+
+
+    # Retrieve score needed to hit
+    if attackType.get() == 'shoot':
+        if bs > 5:
+            bs = 5
+        scoreToHit = 7-bs
+    else:
+        if wso > 2*ws:
+            scoreToHit = 5
+        elif wso < ws:
+            scoreToHit = 3
+        else:
+            scoreToHit = 4
+
+    # Retrieve score needed to wound
+    if s == t:
+        scoreToWound = 4
+    elif s < t:
+        scoreToWound = 4 + (t-s)
+        if scoreToWound > 6:
+            scoreToWound = 7
+    elif s > t:
+        scoreToWound = 4 - (s-t)
+        if scoreToWound < 2:
+            scoreToWound = 2
+
+    if s > 2*t:
+        sv = 0
+        
     while(loop_count < iterations):
         PBAR.step(1.0)
         root.update()
-        bs = int(BS_box.get())
-        s  = int(S_box.get())
-        t  = int(T_box.get())
-        sv = int(S_box.get())
-        if bs > 5:
-            bs = 5
         
-        scoreToHit = 7-bs
+        
         try:
-            dice = monte_carlo(int(Shotval.get()))
+            dice = monte_carlo(attacks)
         except ValueError:
             Shotval.set(1)
             dice = monte_carlo(1)
             
         hit_prob = 0
+        
         for i in range(scoreToHit-1,6):
             hit_prob += dice[i]
 
-        hits = round_int(hit_prob*int(Shotval.get()))
+                
+        hits = round_int(hit_prob*attacks)
         
-        if s == t:
-            scoreToWound = 4
-        elif s < t:
-            scoreToWound = 4 + (t-s)
-            if scoreToWound > 6:
-                scoreToWound = 7
-        elif s > t:
-            scoreToWound = 4 - (s-t)
-            if scoreToWound < 2:
-                scoreToWound = 2
+        
 
         dice = monte_carlo(hits)
         wound_prob = 0
@@ -263,15 +288,15 @@ def shooting(*args):
         
         wounds = round_int(wound_prob*hits)
 
-        if s >= 2*t:    # Instant Kill?
-            kills = wounds
-        else: 
+        if sv: 
             dice = monte_carlo(wounds)
             save_prob = 0
             for i in range(sv-1, 6):
                 save_prob += dice[i]
-
             kills = round_int((1-save_prob)*wounds)
+
+        else:
+            kills = wounds
 
         kill_list.append(kills)
         
@@ -377,7 +402,12 @@ saveEnemy.grid(column=1, row=0, sticky=(W, E, N, S))
 loadEnemy = ttk.Button(opsvldframe, text = 'Load', command=load_enemy)
 loadEnemy.grid(column=0, row=0, sticky=(W, E, N, S))
 
-
+attackType = StringVar()
+shooting = ttk.Radiobutton(attackframe, text='Shooting', variable=attackType, value='shoot')
+shooting.grid(column=0, row=0, sticky=(W,E,N,S))
+assault  = ttk.Radiobutton(attackframe, text='Assault', variable=attackType, value='assault')
+assault.grid(column=1, row=0, sticky=(W,E,N,S))
+attackType.set('shoot')
 #=============#
 #   Labels    #  
 #=============#
