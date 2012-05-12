@@ -8,6 +8,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 import random
 import os
+import GUI
 
 # Method to properly round float to int
 def round_int(num):
@@ -123,9 +124,14 @@ def monte_carlo(iters):
 def create_distribution(data):
     try:
         attacks = int(Shotval.get())
+        enemies = int(Enemyval.get())
+        if attacks > enemies:
+            attacks = enemies
+        if attacks < 5:
+            attacks = 5
     except ValueError:
         Shotval.set(1)
-        attacks = 1
+        attacks = 5
 
     # Sort Data from 0 -> inf
     data.sort()
@@ -257,12 +263,15 @@ def shooting(*args):
         
         wounds = round_int(wound_prob*hits)
 
-        dice = monte_carlo(wounds)
-        save_prob = 0
-        for i in range(sv-1, 6):
-            save_prob += dice[i]
+        if s >= 2*t:    # Instant Kill?
+            kills = wounds
+        else: 
+            dice = monte_carlo(wounds)
+            save_prob = 0
+            for i in range(sv-1, 6):
+                save_prob += dice[i]
 
-        kills = round_int((1-save_prob)*wounds)
+            kills = round_int((1-save_prob)*wounds)
 
         kill_list.append(kills)
         
@@ -298,111 +307,57 @@ root.protocol('WM_DELETE_WINDOW', save_init)
 #=============#
 #   Frames    #  
 #=============#
+mainframe = GUI.frame_create(root, 0, 0)
+statframe = GUI.frame_create(mainframe, 0, 0)
+sideframe = GUI.frame_create(mainframe, 0, 1)
 
-mainframe = ttk.Frame(root, padding="3 3 12 12")
-mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-mainframe.columnconfigure(0, weight=1)
-mainframe.rowconfigure(0, weight=1)
+atstatframe = GUI.label_frame_create(statframe, 'Attacker', 1, 0)
+atsvldframe = GUI.frame_create(atstatframe, 1, 0)
+attackframe = GUI.frame_create(atstatframe, 0, 0)
 
-statframe = ttk.Frame(mainframe, padding="3 3 12 12")
-statframe.grid(column=0, row=0, stick=(N, W, E, S))
-statframe.columnconfigure(0, weight=1)
-statframe.rowconfigure(0, weight=1)
+opstatframe = GUI.label_frame_create(statframe, 'Enemy', 2, 0)
+enemyframe = GUI.frame_create(opstatframe, 0, 0)
+opsvldframe = GUI.frame_create(opstatframe, 1, 0)
 
-atstatframe = ttk.Labelframe(statframe, padding="3 3 3 3", text='Attacker')
-atstatframe.grid(column=0, row=1, sticky=(N, W, E, S))
-atstatframe.columnconfigure(0, weight=1)
-atstatframe.rowconfigure(1, weight=1)
+probframe = GUI.label_frame_create(sideframe, 'Results', 2, 1)
 
+barframe = GUI.label_frame_create(statframe, 'Simulation Control', 3, 0)
 
-atsvldframe = ttk.Frame(atstatframe, padding="3 3 3 3")
-atsvldframe.grid(column=0, row=1, sticky=(N,W,E,S))
-atsvldframe.columnconfigure(0, weight=1)
-atsvldframe.rowconfigure(1, weight=1)
+graphframe = GUI.canvas_create(sideframe, 1, 1, [500, 350])
 
-attackframe = ttk.Frame(atstatframe, padding="3 3 3 3")
-attackframe.grid(column=0, row=0, sticky=(N,W,E,S))
-attackframe.columnconfigure(0, weight=1)
-attackframe.rowconfigure(0, weight=1)
-
-opstatframe = ttk.Labelframe(statframe, padding="3 3 3 3", text='Enemy')
-opstatframe.grid(column=0, row=2, sticky=(N, W, E, S))
-opstatframe.columnconfigure(0, weight=1)
-opstatframe.rowconfigure(2, weight=1)
-
-enemyframe = ttk.Frame(opstatframe, padding="3 3 3 3")
-enemyframe.grid(column=0, row=0, sticky=(N,W,E,S))
-enemyframe.columnconfigure(0, weight=1)
-enemyframe.rowconfigure(0, weight=1)
-
-opsvldframe = ttk.Frame(opstatframe, padding="3 3 3 3")
-opsvldframe.grid(column=0, row=1, sticky=(N,W,E,S))
-opsvldframe.columnconfigure(0, weight=1)
-opsvldframe.rowconfigure(1, weight=1)
-
-sideframe = ttk.Frame(mainframe, padding="3 3 12 12")
-sideframe.grid(column=1, row=0, sticky=(N, W, E, S))
-sideframe.columnconfigure(1, weight=1)
-sideframe.rowconfigure(0, weight=1)
-
-probframe = ttk.Labelframe(sideframe, padding="3 3 12 12", text='Results')
-probframe.grid(column=1, row=2, sticky=(N, W, E, S))
-probframe.columnconfigure(2, weight=1)
-probframe.rowconfigure(1, weight=1)
-
-barframe = ttk.Labelframe(statframe, padding="3 3 12 12", text='Simulation Control')
-barframe.grid(column=0, row=3, sticky=(N,W,E,S))
-barframe.columnconfigure(0, weight=1)
-barframe.rowconfigure(3, weight=1)
-
-graphframe = Canvas(sideframe, width=500, height=350, bg='white')
-graphframe.grid(column=1, row=1, sticky=(N, W, E, S))
-graphframe.columnconfigure(1, weight=1)
-graphframe.rowconfigure(1, weight=1)
-graphframe['borderwidth'] = 5
-graphframe['relief'] = 'ridge'
 
 #=============#
 #   Entries   #  
 #=============#
 Shotval = StringVar()
-Shot_box = ttk.Entry(attackframe, textvariable=Shotval, width=4)
-Shot_box.grid(column=1, row=1, sticky=(W))
+Shot_box = GUI.input_create(attackframe, 'entry', Shotval, 4, [1, 1, (W)], [0])
 Shotval.set(1)
 
 BSval = StringVar()
-BS_box = Spinbox(attackframe, from_=1, to=12, textvariable=BSval, width=4)
-BS_box.grid(column=1, row=2, sticky=(W))
+BS_box = GUI.input_create(attackframe, 'spinbox', BSval, 4, [2, 1, (W)], [1, 12])
 
 WSval = StringVar()
-WS_box = Spinbox(attackframe, from_=1, to=10, textvariable=WSval, width=4)
-WS_box.grid(column=1, row=3, sticky=(W))
+WS_box = GUI.input_create(attackframe, 'spinbox', WSval, 4, [3, 1, (W)], [1, 10])
 
 Sval = StringVar()
-S_box = Spinbox(attackframe, from_=1, to=10, textvariable=Sval, width=4)
-S_box.grid(column=1, row=4, sticky=(W))
+S_box = GUI.input_create(attackframe, 'spinbox', Sval, 4, [4, 1, (W)], [1, 10])
 
 Enemyval = StringVar()
-Enemy_box = ttk.Entry(enemyframe, textvariable=Enemyval, width=4)
-Enemy_box.grid(column=1, row=0, sticky=(W))
+Enemy_box = GUI.input_create(enemyframe, 'entry', Enemyval, 4, [0, 1, (W)], [0])
 Enemyval.set(1)
 
 WSOval = StringVar()
-WSO_box = Spinbox(enemyframe, from_=1, to=12, textvariable=WSOval, width=4)
-WSO_box.grid(column=1, row=1, sticky=(W))
+WSO_box = GUI.input_create(enemyframe, 'spinbox', WSOval, 4, [1, 1, (W)], [1, 12])
 
 Tval = StringVar()
-T_box = Spinbox(enemyframe, from_=1, to=10, textvariable=Tval, width=4)
-T_box.grid(column=1, row=2, sticky=(W))
+T_box = GUI.input_create(enemyframe, 'spinbox', Tval, 4, [2, 1, (W)], [1, 10])
 
 SVval = StringVar()
-SV_box = Spinbox(enemyframe, from_=2, to=6, textvariable=SVval, width=4)
-SV_box.grid(column=1, row=3, sticky=(W))
+SV_box = GUI.input_create(enemyframe, 'spinbox', SVval, 4, [3, 1, (W)], [2, 6])
 
 IterVal = StringVar()
-IterSlide = ttk.Scale(barframe, orient=HORIZONTAL, length=120, from_=10.0, to=50000.0, variable=IterVal)
-IterSlide.grid(column=0, row=0, sticky=(W,E))
-IterSlide.set(4000.0)
+IterSlide = GUI.input_create(barframe, 'slider', IterVal, 120, [0, 0, (W, E)], [10.0, 50000.0])
+IterSlide.set(2500.0)
 
 #=============#
 #   Buttons   #  
