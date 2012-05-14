@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = "4.0a"
+version = 0.04
 
 from tkinter import *
 from tkinter import ttk
@@ -465,7 +465,7 @@ def calculate(*args):
 '''
 root = Tk()
 
-root.title("Stathammer "+version)
+root.title("Stathammer "+str(version))
 if os.name == "posix":
     root.wm_iconbitmap('@staticon.xbm')
 else:

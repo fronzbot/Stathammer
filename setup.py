@@ -6,6 +6,9 @@ from cx_Freeze import setup, Executable
 
 # GUI applications require a different base on Windows (the default is for a
 # console application).
+
+ver = 0.04 
+
 base = None
 if sys.platform == "win32":
     base = "Win32GUI"
@@ -28,9 +31,10 @@ GUI2Exe_Target_1 = Executable(
 
 setup(
         name = "Stathammer",
-        version = "0.03",
+        version = str(ver),
         description = "Statistics Simulator for Warhammer 40k",
         author = 'Kevin Fronczak',
         author_email = 'kfronczak@gmail.com',
         options = {'build_exe': {'include_files':includefiles}},
         executables = [Executable("stathammer.pyw", base = base)])
+
