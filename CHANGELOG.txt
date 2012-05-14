@@ -1,2 +1,6 @@
+= v0.04 =
+- Reformatted layout
+- Added in simultaneous Shooting and Assault calculations
+
 = v0.03 =
 - Alpha release

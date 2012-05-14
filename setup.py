@@ -26,7 +26,9 @@ GUI2Exe_Target_1 = Executable(
 	copyDependentFiles = True,
 	appendScriptToExe = False,
 	appendScriptToLibrary = False,
-	icon = "staticon.ico"
+	icon = "staticon.ico",
+        shortcutName = "Stathammer Shortcut",
+        shortcutDir = "ProgramMenuFolder"
 	)
 
 setup(
