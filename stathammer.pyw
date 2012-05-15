@@ -169,16 +169,117 @@ def load_enemy():
         AOval.set(data[8])
         SVval.set(data[9])
         root.update()
+        
+def addAttacker(*args):
+    numberToAdd = int(ExAtVal.get())
+    if (numberToAdd > 3):
+        ExAtVal.set(3)
+        numberToAdd = 3
+    
+    if numberToAdd == 0:
+        attackex_one.grid_forget()
+        attackex_two.grid_forget()
+        attackex_three.grid_forget()
+        mainframe.pack(fill=BOTH, expand=True)
+        root.update()
 
 
+    elif numberToAdd == 1:
 
+        attackex_two.grid_forget()
+        attackex_three.grid_forget()
+        mainframe.pack(fill=BOTH, expand=True)
+        root.update()
+        
+        attackex_one.grid()
+        
+        
+        numa1_box = GUI.input_create(attackex_one, 'entry', numAOne, 4, [0, 1, (W)], [0])
+        numAOne.set(1)
+    
+        wsa1_box = GUI.input_create(attackex_one, 'spinbox', WS_A1val, 2, [0, 2, (W)], [1, 10])
+
+        bsa1_box = GUI.input_create(attackex_one, 'spinbox', BS_A1val, 2,[0, 3, (W)], [1, 10])
+
+        sa1_box = GUI.input_create(attackex_one, 'spinbox', S_A1val, 2, [0, 4, (W)], [1, 10])
+
+        ta1_box = GUI.input_create(attackex_one, 'spinbox', T_A1val, 2, [0, 5, (W)], [1, 10])
+
+        wa1_box = GUI.input_create(attackex_one, 'spinbox', W_A1val, 2, [0, 6, (W)], [1, 10])
+
+        ia1_box = GUI.input_create(attackex_one, 'spinbox', I_A1val, 2, [0, 7, (W)], [1, 10])
+
+        aa1_box = GUI.input_create(attackex_one, 'spinbox', A_A1val, 2, [0, 8, (W)], [1, 10])
+
+        sva1_box = GUI.input_create(attackex_one, 'spinbox', SV_A1val, 2, [0, 9, (W)], [2, 6])
+        
+        nameA1_box = GUI.input_create(attackex_one, 'entry', nameAOne, 15, [0, 0, (W,E)], [0])
+        nameAOne.set('UNIT NAME')
+           
+    elif numberToAdd == 2:
+        attackex_three.grid_forget()
+        mainframe.pack(fill=BOTH, expand=True)
+        root.update()
+        
+        attackex_two.grid()
+
+        numa2_box = GUI.input_create(attackex_two, 'entry', numATwo, 4, [0, 1, (W)], [0])
+        numATwo.set(1)
+
+        wsa2_box = GUI.input_create(attackex_two, 'spinbox', WS_A2val, 2, [0, 2, (W)], [1, 10])
+
+        bsa2_box = GUI.input_create(attackex_two, 'spinbox', BS_A2val, 2, [0, 3, (W)], [1, 10])
+
+        sa2_box = GUI.input_create(attackex_two, 'spinbox', S_A2val, 2, [0, 4, (W)], [1, 10])
+
+        ta2_box = GUI.input_create(attackex_two, 'spinbox', T_A2val, 2, [0, 5, (W)], [1, 10])
+
+        wa2_box = GUI.input_create(attackex_two, 'spinbox', W_A2val, 2, [0, 6, (W)], [1, 10])
+
+        ia2_box = GUI.input_create(attackex_two, 'spinbox', I_A2val, 2, [0, 7, (W)], [1, 10])
+
+        aa2_box = GUI.input_create(attackex_two, 'spinbox', A_A2val, 2, [0, 8, (W)], [1, 10])
+
+        sva2_box = GUI.input_create(attackex_two, 'spinbox', SV_A2val, 2, [0, 9, (W)], [2, 6])
+
+        nameA2_box = GUI.input_create(attackex_two, 'entry', nameATwo, 15, [0, 0, (W)], [0])
+        nameATwo.set('UNIT NAME')
+        
+    elif numberToAdd == 3:
+        attackex_three.grid()
+
+        numa3_box = GUI.input_create(attackex_three, 'entry', numAThree, 4, [0, 1, (W)], [0])
+        numAThree.set(1)
+        
+        wsa3_box = GUI.input_create(attackex_three, 'spinbox', WS_A3val, 2, [0, 2, (W)], [1, 10])
+
+        bsa3_box = GUI.input_create(attackex_three, 'spinbox', BS_A3val, 2, [0, 3, (W)], [1, 10])
+
+        sa3_box = GUI.input_create(attackex_three, 'spinbox', S_A3val, 2, [0, 4, (W)], [1, 10])
+
+        ta3_box = GUI.input_create(attackex_three, 'spinbox', T_A3val, 2, [0, 5, (W)], [1, 10])
+
+        wa3_box = GUI.input_create(attackex_three, 'spinbox', W_A3val, 2, [0, 6, (W)], [1, 10])
+
+        ia3_box = GUI.input_create(attackex_three, 'spinbox', I_A3val, 2, [0, 7, (W)], [1, 10])
+
+        aa3_box = GUI.input_create(attackex_three, 'spinbox', A_A3val, 2, [0, 8, (W)], [1, 10])
+
+        sva3_box = GUI.input_create(attackex_three, 'spinbox', SV_A3val, 2, [0, 9, (W)], [2, 6])
+
+        nameA3_box = GUI.input_create(attackex_three, 'entry', nameAThree, 15, [0, 0, (W)], [0])
+        nameAThree.set('UNIT NAME')
+    
+    prevAttackNum = numberToAdd
 # Method to create probability distribution
 def create_distribution(sh_data, at_data, en_data):
     try:
-        attacks = int(Shotval.get())*int(Aval.get())
-        enemies = int(Enemyval.get())*int(AOval.get())
-        if attacks > enemies:
-            attacks = enemies
+        attacks  = int(Shotval.get())*int(Aval.get())
+        attack_w = int(Shotval.get())*int(Wval.get())
+        enemies  = int(Enemyval.get())*int(AOval.get())
+        enemy_w  = int(Enemyval.get())*int(WOval.get())
+        attacks  = min([attacks, enemies])
+            
         if attacks < 5:
             attacks = 5
     except ValueError:
@@ -328,6 +429,8 @@ def calculate(*args):
     shots     = numAttack
     A_attacks = numAttack*aa
     O_attacks = numEnemy*ao
+    A_wounds  = numAttack*wa
+    O_wounds  = numEnemy*wo
 
     # Retrieve score needed to hit
     if bsa > 5:
@@ -478,7 +581,10 @@ root.protocol('WM_DELETE_WINDOW', save_init)
 #=============#
 #   Frames    #  
 #=============#
-mainframe = GUI.frame_create(root, 0, 0)
+#mainframe = GUI.frame_create(root, 0, 0)
+mainframe = ttk.Frame(root, padding="3 3 12 12")
+mainframe.pack()
+
 statframe = GUI.frame_create(mainframe, 0, 0)
 sideframe = GUI.frame_create(mainframe, 0, 1)
 
@@ -499,6 +605,22 @@ barframe = GUI.label_frame_create(statframe, 'Simulation Control', 3, 0)
 graphframe = GUI.canvas_create(sideframe, 1, 1, [500, 350])
 
 
+attackex_one = ttk.Frame(atstatframe, padding="3 3 12 12")
+attackex_one.grid(column=0, row=2, sticky=(N, E, W, S))
+attackex_one.columnconfigure(0, weight=1)
+attackex_one.rowconfigure(2, weight=1)
+
+attackex_two = ttk.Frame(atstatframe, padding="3 3 12 12")
+attackex_two.grid(column=0, row=3, sticky=(N, E, W, S))
+attackex_two.columnconfigure(0, weight=1)
+attackex_two.rowconfigure(3, weight=1)
+
+attackex_three = ttk.Frame(atstatframe, padding="3 3 12 12")
+attackex_three.grid(column=0, row=4, sticky=(N, E, W, S))
+attackex_three.columnconfigure(0, weight=1)
+attackex_three.rowconfigure(4, weight=1)
+
+
 #=============#
 #   Entries   #  
 #=============#
@@ -507,32 +629,36 @@ Unit_name = GUI.input_create(atstatframe, 'entry', Unitvar, 40, [0, 0, (W, E)], 
 Unitvar.set('=I= TYPE UNIT NAME =I=')
 
 Shotval = StringVar()
-Shot_box = GUI.input_create(attackstat, 'entry', Shotval, 4, [3, 0, (W)], [0])
+Shot_box = GUI.input_create(attackstat, 'entry', Shotval, 4, [3, 1, (W)], [0])
 Shotval.set(1)
 
 WSval = StringVar()
-WS_box = GUI.input_create(attackstat, 'spinbox', WSval, 2, [3, 1, (W)], [1, 10])
+WS_box = GUI.input_create(attackstat, 'spinbox', WSval, 2, [3, 2, (W)], [1, 10])
 
 BSval = StringVar()
-BS_box = GUI.input_create(attackstat, 'spinbox', BSval, 2, [3, 2, (W)], [1, 10])
+BS_box = GUI.input_create(attackstat, 'spinbox', BSval, 2, [3, 3, (W)], [1, 10])
 
 Sval = StringVar()
-S_box = GUI.input_create(attackstat, 'spinbox', Sval, 2, [3, 3, (W)], [1, 10])
+S_box = GUI.input_create(attackstat, 'spinbox', Sval, 2, [3, 4, (W)], [1, 10])
 
 TAval = StringVar()
-TA_box = GUI.input_create(attackstat, 'spinbox', TAval, 2, [3, 4, (W)], [1, 10])
+TA_box = GUI.input_create(attackstat, 'spinbox', TAval, 2, [3, 5, (W)], [1, 10])
 
 Wval = StringVar()
-W_box = GUI.input_create(attackstat, 'spinbox', Wval, 2, [3, 5, (W)], [1, 10])
+W_box = GUI.input_create(attackstat, 'spinbox', Wval, 2, [3, 6, (W)], [1, 10])
 
 Ival = StringVar()
-I_box = GUI.input_create(attackstat, 'spinbox', Ival, 2, [3, 6, (W)], [1, 10])
+I_box = GUI.input_create(attackstat, 'spinbox', Ival, 2, [3, 7, (W)], [1, 10])
 
 Aval = StringVar()
-A_box = GUI.input_create(attackstat, 'spinbox', Aval, 2, [3, 7, (W)], [1, 10])
+A_box = GUI.input_create(attackstat, 'spinbox', Aval, 2, [3, 8, (W)], [1, 10])
 
 SVAval = StringVar()
-SVA_box = GUI.input_create(attackstat, 'spinbox', SVAval, 2, [3, 8, (W)], [2, 6])
+SVA_box = GUI.input_create(attackstat, 'spinbox', SVAval, 2, [3, 9, (W)], [2, 6])
+
+UnitAvar = StringVar()
+UnitA_name = GUI.input_create(attackstat, 'entry', UnitAvar, 15, [3, 0, (W, E)], [0])
+UnitAvar.set('UNIT NAME')
 
 # Enemy setup
 UnitvarO = StringVar()
@@ -571,6 +697,11 @@ IterVal = StringVar()
 IterSlide = GUI.input_create(barframe, 'slider', IterVal, 120, [0, 0, (W, E)], [10.0, 50000.0])
 IterSlide.set(2500.0)
 
+# Extra units
+ExAtVal = StringVar()
+ExAt_box = Spinbox(attackstat, from_=0, to=3, textvariable=ExAtVal, width=2, command=addAttacker)
+ExAt_box.grid(column=1, row=1, sticky=(W, E))
+
 #=============#
 #   Buttons   #  
 #=============#
@@ -594,31 +725,31 @@ loadEnemy.grid(column=0, row=0, sticky=(W, E, N, S))
 #   Labels    #  
 #=============#
 SHOT_label = ttk.Label(attackstat, text='#')
-SHOT_label.grid(column=0, row=2, sticky=(W, E))
+SHOT_label.grid(column=1, row=2, sticky=(W, E))
 
 WS_label = ttk.Label(attackstat, text='WS')
-WS_label.grid(column=1, row=2, sticky=(W, E))
+WS_label.grid(column=2, row=2, sticky=(W, E))
 
 BS_label = ttk.Label(attackstat, text='BS')
-BS_label.grid(column=2, row=2, sticky=(W, E))
+BS_label.grid(column=3, row=2, sticky=(W, E))
 
 S_label = ttk.Label(attackstat, text='S')
-S_label.grid(column=3, row=2, sticky=(W, E))
+S_label.grid(column=4, row=2, sticky=(W, E))
 
 TA_label = ttk.Label(attackstat, text='T')
-TA_label.grid(column=4, row=2, sticky=(W, E))
+TA_label.grid(column=5, row=2, sticky=(W, E))
 
 W_label = ttk.Label(attackstat, text='W')
-W_label.grid(column=5, row=2, sticky=(W, E))
+W_label.grid(column=6, row=2, sticky=(W, E))
 
 I_label = ttk.Label(attackstat, text='I')
-I_label.grid(column=6, row=2, sticky=(W, E))
+I_label.grid(column=7, row=2, sticky=(W, E))
 
 A_label = ttk.Label(attackstat, text='A')
-A_label.grid(column=7, row=2, sticky=(W, E))
+A_label.grid(column=8, row=2, sticky=(W, E))
 
 SVA_label = ttk.Label(attackstat, text='SV')
-SVA_label.grid(column=8, row=2, sticky=(W, E))
+SVA_label.grid(column=9, row=2, sticky=(W, E))
 
 # Enemy labels
 ENEMY_label = ttk.Label(enemystat, text="#")
@@ -674,15 +805,57 @@ KILLNUM_label = ttk.Label(probframe, textvariable=KillVal)
 KILLNUM_label.grid(column=1, row=3, sticky=(N, W, E))
 KillVal.set('0')
 
+# Progress Bar
 PBAR = ttk.Progressbar(barframe, orient=HORIZONTAL, length=120, mode='determinate')
 PBAR.grid(column=0, row=1, sticky=(W,E,N))
 PBAR['value']=0
+
+# Extra units
+Ex_Attacker_label = ttk.Label(attackstat, text='Addl:')
+Ex_Attacker_label.grid(column=0, row=1, sticky=(E))
 
 #=============#
 #   Graph     #  
 #=============#
 graphframe.create_line(50,300,450,300, width=2)  # X-axis
 graphframe.create_line(50,300,50,50, width=2)    # Y-axis
+
+
+#=============#
+#  Variables  #
+#=============#
+numAOne   = StringVar()
+WS_A1val  = StringVar()
+BS_A1val  = StringVar()
+S_A1val   = StringVar()
+T_A1val   = StringVar()
+W_A1val   = StringVar()
+I_A1val   = StringVar()
+A_A1val   = StringVar()
+SV_A1val  = StringVar()
+nameAOne  = StringVar()
+
+numATwo   = StringVar()
+WS_A2val  = StringVar()
+BS_A2val  = StringVar()
+S_A2val   = StringVar()
+T_A2val   = StringVar()
+W_A2val   = StringVar()
+I_A2val   = StringVar()
+A_A2val   = StringVar()
+SV_A2val  = StringVar()
+nameATwo  = StringVar()
+
+numAThree   = StringVar()
+WS_A3val    = StringVar()
+BS_A3val    = StringVar()
+S_A3val     = StringVar()
+T_A3val     = StringVar()
+W_A3val     = StringVar()
+I_A3val     = StringVar()
+A_A3val     = StringVar()
+SV_A3val    = StringVar()
+nameAThree  = StringVar()
 
 root.bind('<Return>', calculate)
 
