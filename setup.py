@@ -7,13 +7,14 @@ from cx_Freeze import setup, Executable
 # GUI applications require a different base on Windows (the default is for a
 # console application).
 
-ver = 0.04 
+ver = 0.041 
 
 base = None
 if sys.platform == "win32":
     base = "Win32GUI"
 
-includefiles = ['README.txt', 'CHANGELOG.txt', 'staticon.ico']
+includefiles = ['README.txt', 'CHANGELOG.txt', 'staticon.ico',
+                'msvcm90.dll', 'msvcp90.dll', 'msvcr90.dll']
 
 GUI2Exe_Target_1 = Executable(
 	# what to build
@@ -27,8 +28,6 @@ GUI2Exe_Target_1 = Executable(
 	appendScriptToExe = False,
 	appendScriptToLibrary = False,
 	icon = "staticon.ico",
-        shortcutName = "Stathammer Shortcut",
-        shortcutDir = "ProgramMenuFolder"
 	)
 
 setup(
