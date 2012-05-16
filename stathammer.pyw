@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = 0.04
+version = 0.041
 
 from tkinter import *
 from tkinter import ttk
@@ -177,100 +177,133 @@ def addAttacker(*args):
         numberToAdd = 3
     
     if numberToAdd == 0:
-        attackex_one.grid_forget()
-        attackex_two.grid_forget()
-        attackex_three.grid_forget()
-        mainframe.pack(fill=BOTH, expand=True)
-        root.update()
-
+        nameA1_box.config(state=DISABLED)
+        nameA2_box.config(state=DISABLED)
+        nameA3_box.config(state=DISABLED)
+        numa1_box.config(state=DISABLED)
+        numa2_box.config(state=DISABLED)
+        numa3_box.config(state=DISABLED)
+        wsa1_box.config(state=DISABLED)
+        wsa2_box.config(state=DISABLED)
+        wsa3_box.config(state=DISABLED)
+        bsa1_box.config(state=DISABLED)
+        bsa2_box.config(state=DISABLED)
+        bsa3_box.config(state=DISABLED)
+        sa1_box.config(state=DISABLED)
+        sa2_box.config(state=DISABLED)
+        sa3_box.config(state=DISABLED)
+        ta1_box.config(state=DISABLED)
+        ta2_box.config(state=DISABLED)
+        ta3_box.config(state=DISABLED)
+        wa1_box.config(state=DISABLED)
+        wa2_box.config(state=DISABLED)
+        wa3_box.config(state=DISABLED)
+        ia1_box.config(state=DISABLED)
+        ia2_box.config(state=DISABLED)
+        ia3_box.config(state=DISABLED)
+        aa1_box.config(state=DISABLED)
+        aa2_box.config(state=DISABLED)
+        aa3_box.config(state=DISABLED)
+        sva1_box.config(state=DISABLED)
+        sva2_box.config(state=DISABLED)
+        sva3_box.config(state=DISABLED)
 
     elif numberToAdd == 1:
-
-        attackex_two.grid_forget()
-        attackex_three.grid_forget()
-        mainframe.pack(fill=BOTH, expand=True)
-        root.update()
-        
-        attackex_one.grid()
-        
-        
-        numa1_box = GUI.input_create(attackex_one, 'entry', numAOne, 4, [0, 1, (W)], [0])
-        numAOne.set(1)
-    
-        wsa1_box = GUI.input_create(attackex_one, 'spinbox', WS_A1val, 2, [0, 2, (W)], [1, 10])
-
-        bsa1_box = GUI.input_create(attackex_one, 'spinbox', BS_A1val, 2,[0, 3, (W)], [1, 10])
-
-        sa1_box = GUI.input_create(attackex_one, 'spinbox', S_A1val, 2, [0, 4, (W)], [1, 10])
-
-        ta1_box = GUI.input_create(attackex_one, 'spinbox', T_A1val, 2, [0, 5, (W)], [1, 10])
-
-        wa1_box = GUI.input_create(attackex_one, 'spinbox', W_A1val, 2, [0, 6, (W)], [1, 10])
-
-        ia1_box = GUI.input_create(attackex_one, 'spinbox', I_A1val, 2, [0, 7, (W)], [1, 10])
-
-        aa1_box = GUI.input_create(attackex_one, 'spinbox', A_A1val, 2, [0, 8, (W)], [1, 10])
-
-        sva1_box = GUI.input_create(attackex_one, 'spinbox', SV_A1val, 2, [0, 9, (W)], [2, 6])
-        
-        nameA1_box = GUI.input_create(attackex_one, 'entry', nameAOne, 15, [0, 0, (W,E)], [0])
-        nameAOne.set('UNIT NAME')
+        nameA1_box.config(state=NORMAL)
+        nameA2_box.config(state=DISABLED)
+        nameA3_box.config(state=DISABLED)
+        numa1_box.config(state=NORMAL)
+        numa2_box.config(state=DISABLED)
+        numa3_box.config(state=DISABLED)
+        wsa1_box.config(state=NORMAL)
+        wsa2_box.config(state=DISABLED)
+        wsa3_box.config(state=DISABLED)
+        bsa1_box.config(state=NORMAL)
+        bsa2_box.config(state=DISABLED)
+        bsa3_box.config(state=DISABLED)
+        sa1_box.config(state=NORMAL)
+        sa2_box.config(state=DISABLED)
+        sa3_box.config(state=DISABLED)
+        ta1_box.config(state=NORMAL)
+        ta2_box.config(state=DISABLED)
+        ta3_box.config(state=DISABLED)
+        wa1_box.config(state=NORMAL)
+        wa2_box.config(state=DISABLED)
+        wa3_box.config(state=DISABLED)
+        ia1_box.config(state=NORMAL)
+        ia2_box.config(state=DISABLED)
+        ia3_box.config(state=DISABLED)
+        aa1_box.config(state=NORMAL)
+        aa2_box.config(state=DISABLED)
+        aa3_box.config(state=DISABLED)
+        sva1_box.config(state=NORMAL)
+        sva2_box.config(state=DISABLED)
+        sva3_box.config(state=DISABLED)
            
     elif numberToAdd == 2:
-        attackex_three.grid_forget()
-        mainframe.pack(fill=BOTH, expand=True)
-        root.update()
-        
-        attackex_two.grid()
-
-        numa2_box = GUI.input_create(attackex_two, 'entry', numATwo, 4, [0, 1, (W)], [0])
-        numATwo.set(1)
-
-        wsa2_box = GUI.input_create(attackex_two, 'spinbox', WS_A2val, 2, [0, 2, (W)], [1, 10])
-
-        bsa2_box = GUI.input_create(attackex_two, 'spinbox', BS_A2val, 2, [0, 3, (W)], [1, 10])
-
-        sa2_box = GUI.input_create(attackex_two, 'spinbox', S_A2val, 2, [0, 4, (W)], [1, 10])
-
-        ta2_box = GUI.input_create(attackex_two, 'spinbox', T_A2val, 2, [0, 5, (W)], [1, 10])
-
-        wa2_box = GUI.input_create(attackex_two, 'spinbox', W_A2val, 2, [0, 6, (W)], [1, 10])
-
-        ia2_box = GUI.input_create(attackex_two, 'spinbox', I_A2val, 2, [0, 7, (W)], [1, 10])
-
-        aa2_box = GUI.input_create(attackex_two, 'spinbox', A_A2val, 2, [0, 8, (W)], [1, 10])
-
-        sva2_box = GUI.input_create(attackex_two, 'spinbox', SV_A2val, 2, [0, 9, (W)], [2, 6])
-
-        nameA2_box = GUI.input_create(attackex_two, 'entry', nameATwo, 15, [0, 0, (W)], [0])
-        nameATwo.set('UNIT NAME')
+        nameA1_box.config(state=NORMAL)
+        nameA2_box.config(state=NORMAL)
+        nameA3_box.config(state=DISABLED)
+        numa1_box.config(state=NORMAL)
+        numa2_box.config(state=NORMAL)
+        numa3_box.config(state=DISABLED)
+        wsa1_box.config(state=NORMAL)
+        wsa2_box.config(state=NORMAL)
+        wsa3_box.config(state=DISABLED)
+        bsa1_box.config(state=NORMAL)
+        bsa2_box.config(state=NORMAL)
+        bsa3_box.config(state=DISABLED)
+        sa1_box.config(state=NORMAL)
+        sa2_box.config(state=NORMAL)
+        sa3_box.config(state=DISABLED)
+        ta1_box.config(state=NORMAL)
+        ta2_box.config(state=NORMAL)
+        ta3_box.config(state=DISABLED)
+        wa1_box.config(state=NORMAL)
+        wa2_box.config(state=NORMAL)
+        wa3_box.config(state=DISABLED)
+        ia1_box.config(state=NORMAL)
+        ia2_box.config(state=NORMAL)
+        ia3_box.config(state=DISABLED)
+        aa1_box.config(state=NORMAL)
+        aa2_box.config(state=NORMAL)
+        aa3_box.config(state=DISABLED)
+        sva1_box.config(state=NORMAL)
+        sva2_box.config(state=NORMAL)
+        sva3_box.config(state=DISABLED)
         
     elif numberToAdd == 3:
-        attackex_three.grid()
-
-        numa3_box = GUI.input_create(attackex_three, 'entry', numAThree, 4, [0, 1, (W)], [0])
-        numAThree.set(1)
-        
-        wsa3_box = GUI.input_create(attackex_three, 'spinbox', WS_A3val, 2, [0, 2, (W)], [1, 10])
-
-        bsa3_box = GUI.input_create(attackex_three, 'spinbox', BS_A3val, 2, [0, 3, (W)], [1, 10])
-
-        sa3_box = GUI.input_create(attackex_three, 'spinbox', S_A3val, 2, [0, 4, (W)], [1, 10])
-
-        ta3_box = GUI.input_create(attackex_three, 'spinbox', T_A3val, 2, [0, 5, (W)], [1, 10])
-
-        wa3_box = GUI.input_create(attackex_three, 'spinbox', W_A3val, 2, [0, 6, (W)], [1, 10])
-
-        ia3_box = GUI.input_create(attackex_three, 'spinbox', I_A3val, 2, [0, 7, (W)], [1, 10])
-
-        aa3_box = GUI.input_create(attackex_three, 'spinbox', A_A3val, 2, [0, 8, (W)], [1, 10])
-
-        sva3_box = GUI.input_create(attackex_three, 'spinbox', SV_A3val, 2, [0, 9, (W)], [2, 6])
-
-        nameA3_box = GUI.input_create(attackex_three, 'entry', nameAThree, 15, [0, 0, (W)], [0])
-        nameAThree.set('UNIT NAME')
+        nameA1_box.config(state=NORMAL)
+        nameA2_box.config(state=NORMAL)
+        nameA3_box.config(state=NORMAL)
+        numa1_box.config(state=NORMAL)
+        numa2_box.config(state=NORMAL)
+        numa3_box.config(state=NORMAL)
+        wsa1_box.config(state=NORMAL)
+        wsa2_box.config(state=NORMAL)
+        wsa3_box.config(state=NORMAL)
+        bsa1_box.config(state=NORMAL)
+        bsa2_box.config(state=NORMAL)
+        bsa3_box.config(state=NORMAL)
+        sa1_box.config(state=NORMAL)
+        sa2_box.config(state=NORMAL)
+        sa3_box.config(state=NORMAL)
+        ta1_box.config(state=NORMAL)
+        ta2_box.config(state=NORMAL)
+        ta3_box.config(state=NORMAL)
+        wa1_box.config(state=NORMAL)
+        wa2_box.config(state=NORMAL)
+        wa3_box.config(state=NORMAL)
+        ia1_box.config(state=NORMAL)
+        ia2_box.config(state=NORMAL)
+        ia3_box.config(state=NORMAL)
+        aa1_box.config(state=NORMAL)
+        aa2_box.config(state=NORMAL)
+        aa3_box.config(state=NORMAL)
+        sva1_box.config(state=NORMAL)
+        sva2_box.config(state=NORMAL)
+        sva3_box.config(state=NORMAL)
     
-    prevAttackNum = numberToAdd
 # Method to create probability distribution
 def create_distribution(sh_data, at_data, en_data):
     try:
@@ -387,7 +420,7 @@ def create_marks(attacks, max_prob, probdict, color, width):
     
         
 def calculate(*args):
-    iterations = int(IterSlide.get())
+    iterations = 3000
     if iterations == 0:
         iterations = 1
     PBAR['maximum'] = iterations
@@ -587,22 +620,29 @@ mainframe.pack()
 
 statframe = GUI.frame_create(mainframe, 0, 0)
 sideframe = GUI.frame_create(mainframe, 0, 1)
+noteframe = ttk.Notebook(sideframe)
+noteframe.grid(column=0, row=0)
+graphpage = ttk.Frame(noteframe)
+resultspage = ttk.Frame(noteframe)
+noteframe.add(graphpage, text='Graph')
+noteframe.add(resultspage, text='Data')
+simframe  = GUI.frame_create(resultspage, 0, 0)
 
-atstatframe = GUI.label_frame_create(statframe, 'Attacker', 1, 0)
+atstatframe = GUI.label_frame_create(statframe, 'Attacker', 0, 0)
 atsvldframe = GUI.frame_create(atstatframe, 0, 1)
 attackframe = GUI.frame_create(atstatframe, 1, 1)
 attackstat  = GUI.frame_create(atstatframe, 1, 0)
 
-opstatframe = GUI.label_frame_create(statframe, 'Enemy', 2, 0)
+opstatframe = GUI.label_frame_create(statframe, 'Enemy', 1, 0)
 enemyframe  = GUI.frame_create(opstatframe, 1, 1)
 opsvldframe = GUI.frame_create(opstatframe, 0, 1)
 enemystat   = GUI.frame_create(opstatframe, 1, 0)
 
-probframe = GUI.label_frame_create(sideframe, 'Results', 2, 1)
+probframe = GUI.label_frame_create(simframe, 'Results', 0, 0)
 
-barframe = GUI.label_frame_create(statframe, 'Simulation Control', 3, 0)
+barframe = GUI.label_frame_create(simframe, 'Simulation Control', 0, 1)
 
-graphframe = GUI.canvas_create(sideframe, 1, 1, [500, 350])
+graphframe = GUI.canvas_create(graphpage, 0, 0, [500, 350])
 
 
 attackex_one = ttk.Frame(atstatframe, padding="3 3 12 12")
@@ -693,10 +733,6 @@ AO_box = GUI.input_create(enemystat, 'spinbox', AOval, 2, [3, 7, (W)], [1, 10])
 SVval = StringVar()
 SV_box = GUI.input_create(enemystat, 'spinbox', SVval, 2, [3, 8, (W)], [2, 6])
 
-IterVal = StringVar()
-IterSlide = GUI.input_create(barframe, 'slider', IterVal, 120, [0, 0, (W, E)], [10.0, 50000.0])
-IterSlide.set(2500.0)
-
 # Extra units
 ExAtVal = StringVar()
 ExAt_box = Spinbox(attackstat, from_=0, to=3, textvariable=ExAtVal, width=2, command=addAttacker)
@@ -705,20 +741,20 @@ ExAt_box.grid(column=1, row=1, sticky=(W, E))
 #=============#
 #   Buttons   #  
 #=============#
-calc = ttk.Button(probframe, text='Calculate', command=calculate)
-calc.grid(column=0, row=0, sticky=(W, E))
+calc = ttk.Button(statframe, text='Calculate', command=calculate, width=20)
+calc.grid(column=0, row=3, columnspan=2, ipady=5, pady=10)
 
 saveAttack = ttk.Button(atsvldframe, text = 'Save', command=save_attacker)
-saveAttack.grid(column=1, row=0, sticky=(W, E, N, S))
+saveAttack.grid(column=1, row=0, sticky=(W, E))
 
 loadAttack = ttk.Button(atsvldframe, text = 'Load', command=load_attacker)
-loadAttack.grid(column=0, row=0, sticky=(W, E, N, S))
+loadAttack.grid(column=0, row=0, sticky=(W, E))
 
 saveEnemy = ttk.Button(opsvldframe, text = 'Save', command=save_enemy)
-saveEnemy.grid(column=1, row=0, sticky=(W, E, N, S))
+saveEnemy.grid(column=1, row=0, sticky=(W, E))
 
 loadEnemy = ttk.Button(opsvldframe, text = 'Load', command=load_enemy)
-loadEnemy.grid(column=0, row=0, sticky=(W, E, N, S))
+loadEnemy.grid(column=0, row=0, sticky=(W, E))
 
 
 #=============#
@@ -782,32 +818,32 @@ SV_label.grid(column=8, row=2, sticky=(W, E))
 
 # Probability Labels
 HIT_label = ttk.Label(probframe, text='Average Hits')
-HIT_label.grid(column=0, row=1, sticky=(N, W, E), ipadx=10)
+HIT_label.grid(column=0, row=0, sticky=(N, W), ipadx=10)
 
 WOUND_label = ttk.Label(probframe, text='Average Wounded')
-WOUND_label.grid(column=0, row=2, sticky=(N, W, E), ipadx=10)
+WOUND_label.grid(column=0, row=1, sticky=(N, W), ipadx=10)
 
 KILL_label = ttk.Label(probframe, text='Average Killed')
-KILL_label.grid(column=0, row=3, sticky=(N, W, E), ipadx=10)
+KILL_label.grid(column=0, row=2, sticky=(N, W), ipadx=10)
 
 HitVal = StringVar()
 HITNUM_label = ttk.Label(probframe, textvariable=HitVal)
-HITNUM_label.grid(column=1, row=1, sticky=(N, W, E))
+HITNUM_label.grid(column=1, row=0, sticky=(N, E))
 HitVal.set('0')
 
 WoundVal = StringVar()
 WOUNDNUM_label = ttk.Label(probframe, textvariable=WoundVal)
-WOUNDNUM_label.grid(column=1, row=2, sticky=(N, W, E))
+WOUNDNUM_label.grid(column=1, row=1, sticky=(N, E))
 WoundVal.set('0')
 
 KillVal = StringVar()
 KILLNUM_label = ttk.Label(probframe, textvariable=KillVal)
-KILLNUM_label.grid(column=1, row=3, sticky=(N, W, E))
+KILLNUM_label.grid(column=1, row=2, sticky=(N, E))
 KillVal.set('0')
 
 # Progress Bar
-PBAR = ttk.Progressbar(barframe, orient=HORIZONTAL, length=120, mode='determinate')
-PBAR.grid(column=0, row=1, sticky=(W,E,N))
+PBAR = ttk.Progressbar(sideframe, orient=HORIZONTAL, length=120, mode='determinate')
+PBAR.grid(column=0, row=1, sticky=(E))
 PBAR['value']=0
 
 # Extra units
@@ -822,7 +858,7 @@ graphframe.create_line(50,300,50,50, width=2)    # Y-axis
 
 
 #=============#
-#  Variables  #
+# EXTRA UNITS #
 #=============#
 numAOne   = StringVar()
 WS_A1val  = StringVar()
@@ -856,6 +892,88 @@ I_A3val     = StringVar()
 A_A3val     = StringVar()
 SV_A3val    = StringVar()
 nameAThree  = StringVar()
+
+# ATTACKERS
+numa1_box = GUI.input_create(attackex_one, 'entry', numAOne, 4, [0, 1, (W)], [0])
+numa1_box.config(state=DISABLED)
+numAOne.set(1)
+wsa1_box = GUI.input_create(attackex_one, 'spinbox', WS_A1val, 2, [0, 2, (W)], [1, 10])
+wsa1_box.config(state=DISABLED)
+bsa1_box = GUI.input_create(attackex_one, 'spinbox', BS_A1val, 2,[0, 3, (W)], [1, 10])
+bsa1_box.config(state=DISABLED)
+sa1_box = GUI.input_create(attackex_one, 'spinbox', S_A1val, 2, [0, 4, (W)], [1, 10])
+sa1_box.config(state=DISABLED)
+ta1_box = GUI.input_create(attackex_one, 'spinbox', T_A1val, 2, [0, 5, (W)], [1, 10])
+ta1_box.config(state=DISABLED)
+wa1_box = GUI.input_create(attackex_one, 'spinbox', W_A1val, 2, [0, 6, (W)], [1, 10])
+wa1_box.config(state=DISABLED)
+ia1_box = GUI.input_create(attackex_one, 'spinbox', I_A1val, 2, [0, 7, (W)], [1, 10])
+ia1_box.config(state=DISABLED)
+aa1_box = GUI.input_create(attackex_one, 'spinbox', A_A1val, 2, [0, 8, (W)], [1, 10])
+aa1_box.config(state=DISABLED)
+sva1_box = GUI.input_create(attackex_one, 'spinbox', SV_A1val, 2, [0, 9, (W)], [2, 6])
+sva1_box.config(state=DISABLED)       
+nameA1_box = GUI.input_create(attackex_one, 'entry', nameAOne, 15, [0, 0, (W,E)], [0])
+nameAOne.set('UNIT NAME')
+nameA1_box.config(state=DISABLED)           
+
+numa2_box = GUI.input_create(attackex_two, 'entry', numATwo, 4, [0, 1, (W)], [0])
+numATwo.set(1)
+numa2_box.config(state=DISABLED)
+wsa2_box = GUI.input_create(attackex_two, 'spinbox', WS_A2val, 2, [0, 2, (W)], [1, 10])
+wsa2_box.config(state=DISABLED)
+bsa2_box = GUI.input_create(attackex_two, 'spinbox', BS_A2val, 2, [0, 3, (W)], [1, 10])
+bsa2_box.config(state=DISABLED)
+sa2_box = GUI.input_create(attackex_two, 'spinbox', S_A2val, 2, [0, 4, (W)], [1, 10])
+sa2_box.config(state=DISABLED)
+ta2_box = GUI.input_create(attackex_two, 'spinbox', T_A2val, 2, [0, 5, (W)], [1, 10])
+ta2_box.config(state=DISABLED)
+wa2_box = GUI.input_create(attackex_two, 'spinbox', W_A2val, 2, [0, 6, (W)], [1, 10])
+wa2_box.config(state=DISABLED)
+ia2_box = GUI.input_create(attackex_two, 'spinbox', I_A2val, 2, [0, 7, (W)], [1, 10])
+ia2_box.config(state=DISABLED)
+aa2_box = GUI.input_create(attackex_two, 'spinbox', A_A2val, 2, [0, 8, (W)], [1, 10])
+aa2_box.config(state=DISABLED)
+sva2_box = GUI.input_create(attackex_two, 'spinbox', SV_A2val, 2, [0, 9, (W)], [2, 6])
+sva2_box.config(state=DISABLED)
+nameA2_box = GUI.input_create(attackex_two, 'entry', nameATwo, 15, [0, 0, (W)], [0])
+nameATwo.set('UNIT NAME')
+nameA2_box.config(state=DISABLED)        
+
+numa3_box = GUI.input_create(attackex_three, 'entry', numAThree, 4, [0, 1, (W)], [0])
+numAThree.set(1)
+numa3_box.config(state=DISABLED)        
+wsa3_box = GUI.input_create(attackex_three, 'spinbox', WS_A3val, 2, [0, 2, (W)], [1, 10])
+wsa3_box.config(state=DISABLED)
+bsa3_box = GUI.input_create(attackex_three, 'spinbox', BS_A3val, 2, [0, 3, (W)], [1, 10])
+bsa3_box.config(state=DISABLED)
+sa3_box = GUI.input_create(attackex_three, 'spinbox', S_A3val, 2, [0, 4, (W)], [1, 10])
+sa3_box.config(state=DISABLED)
+ta3_box = GUI.input_create(attackex_three, 'spinbox', T_A3val, 2, [0, 5, (W)], [1, 10])
+ta3_box.config(state=DISABLED)
+wa3_box = GUI.input_create(attackex_three, 'spinbox', W_A3val, 2, [0, 6, (W)], [1, 10])
+wa3_box.config(state=DISABLED)
+ia3_box = GUI.input_create(attackex_three, 'spinbox', I_A3val, 2, [0, 7, (W)], [1, 10])
+ia3_box.config(state=DISABLED)
+aa3_box = GUI.input_create(attackex_three, 'spinbox', A_A3val, 2, [0, 8, (W)], [1, 10])
+aa3_box.config(state=DISABLED)
+sva3_box = GUI.input_create(attackex_three, 'spinbox', SV_A3val, 2, [0, 9, (W)], [2, 6])
+sva3_box.config(state=DISABLED)
+nameA3_box = GUI.input_create(attackex_three, 'entry', nameAThree, 15, [0, 0, (W)], [0])
+nameAThree.set('UNIT NAME')
+nameA3_box.config(state=DISABLED)
+
+
+
+
+
+
+
+
+
+
+
+
 
 root.bind('<Return>', calculate)
 
