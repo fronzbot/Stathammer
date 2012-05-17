@@ -28,7 +28,11 @@ GUI2Exe_Target_1 = Executable(
 	appendScriptToExe = False,
 	appendScriptToLibrary = False,
 	icon = "staticon.ico",
+        iconResources = [(1, "staticon.ico")],
+        shortcutName = "Stathammer",
+        shortcutDir = "ProgramMenuFolder"
 	)
+
 
 setup(
         name = "Stathammer",
@@ -37,5 +41,5 @@ setup(
         author = 'Kevin Fronczak',
         author_email = 'kfronczak@gmail.com',
         options = {'build_exe': {'include_files':includefiles}},
-        executables = [Executable("stathammer.pyw", base = base)])
+        executables = [GUI2Exe_Target_1])
 
