@@ -1,6 +1,8 @@
-= v0.04 =
-- Reformatted layout
-- Added in simultaneous Shooting and Assault calculations
+v0.05a
+* Added load/save support for multiple units (attackers and enemies). 
+* Next need to add in special weapon support and invulnerable saves and such
+ 
 
-= v0.03 =
-- Alpha release
+v0.04a
+* Initial alpha release
+ 

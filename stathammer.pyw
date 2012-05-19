@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = 0.05
+version = 0.051
 
 from tkinter import *
 from tkinter import ttk
@@ -56,7 +56,7 @@ def load_init():
     WSOval.set(data[4][2])
     BSOval.set(data[4][3])
     SOval.set(data[4][4])
-    TAval.set(data[4][5])
+    Tval.set(data[4][5])
     WOval.set(data[4][6])
     IOval.set(data[4][7])
     AOval.set(data[4][8])
@@ -453,7 +453,7 @@ def create_marks(attacks, max_prob, probdict, color, width):
     
         
 def calculate(*args):
-    iterations = 3000
+    iterations = int(IterVar.get())
     if iterations == 0:
         iterations = 1
     PBAR['maximum'] = iterations
@@ -648,7 +648,7 @@ root.protocol('WM_DELETE_WINDOW', save_init)
 #=============#
 #   Frames    #  
 #=============#
-#mainframe = GUI.frame_create(root, 0, 0)
+
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.pack()
 
@@ -688,6 +688,38 @@ enemyex_one = ttk.Frame(opstatframe, padding="3 3 12 12")
 enemyex_one.grid(column=0, row=2, sticky=(N, E, W, S))
 enemyex_one.columnconfigure(0, weight=1)
 enemyex_one.rowconfigure(2, weight=1)
+
+
+#=============#
+#     Menu    #  
+#=============#
+root.option_add('*tearOff', FALSE)
+menubar = Menu(root)
+#Top Menus
+filemenu = Menu(menubar, tearoff=0)
+optmenu  = Menu(menubar, tearoff=0)
+helpmenu = Menu(menubar, tearoff=0)
+#Sub Menus
+itermenu = Menu(optmenu, tearoff=0)
+menubar.add_cascade(label="File", menu=filemenu)
+menubar.add_cascade(label="Options", menu=optmenu)
+menubar.add_cascade(label="Help", menu=helpmenu)
+
+# File ->
+filemenu.add_command(label="Exit", command=save_init)
+
+# Options ->
+IterVar = StringVar()
+optmenu.add_cascade(label="Iterations", menu=itermenu)
+itermenu.add_radiobutton(label="100", variable=IterVar, value="100")
+itermenu.add_radiobutton(label="1000", variable=IterVar, value="1000")
+itermenu.add_radiobutton(label="2500", variable=IterVar, value="2500")
+itermenu.add_radiobutton(label="5000", variable=IterVar, value="5000")
+itermenu.add_radiobutton(label="10000", variable=IterVar, value="10000")
+IterVar.set("2500")
+root.config(menu=menubar)
+
+
 
 #=============#
 #   Entries   #  
