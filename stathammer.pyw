@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = 0.041
+version = 0.05
 
 from tkinter import *
 from tkinter import ttk
@@ -15,35 +15,67 @@ import simulation
 def load_init():
     f = open('.init', 'r')
     data = f.readlines()
-    data[0] = data[0].split(" ")
-    data[1] = data[1].split(" ")
     f.close()
 
-    Unitvar.set(" ".join(data[0][0].split("_")))
-    Shotval.set(data[0][1])
-    WSval.set(data[0][2])
-    BSval.set(data[0][3])
-    Sval.set(data[0][4])
-    TAval.set(data[0][5])
-    Wval.set(data[0][6])
-    Ival.set(data[0][7])
-    Aval.set(data[0][8])
-    SVAval.set(data[0][9])
+    #Attackers
+    data[0] = data[0].split(" ")
+    data[1] = data[1].split(" ")
+    data[2] = data[2].split(" ")
 
-    UnitvarO.set(" ".join(data[1][0].split("_")))
-    Enemyval.set(data[1][1])
-    WSOval.set(data[1][2])
-    BSOval.set(data[1][3])
-    SOval.set(data[1][4])
-    Tval.set(data[1][5])
-    WOval.set(data[1][6])
-    IOval.set(data[1][7])
-    AOval.set(data[1][8])
-    SVval.set(data[1][9])
+    #Enemies
+    data[3] = data[3].split(" ")
+    data[4] = data[4].split(" ")
+    data[5] = data[5].split(" ")
+
+    #Set variables
+    Unitvar.set(" ".join(data[0][0].split("_")))
+    UnitAvar.set(data[1][0])
+    Shotval.set(data[1][1])
+    WSval.set(data[1][2])
+    BSval.set(data[1][3])
+    Sval.set(data[1][4])
+    TAval.set(data[1][5])
+    Wval.set(data[1][6])
+    Ival.set(data[1][7])
+    Aval.set(data[1][8])
+    SVAval.set(data[1][9])
+    nameAOne.set(data[2][0])
+    numAOne.set(data[2][1])
+    WS_A1val.set(data[2][2])
+    BS_A1val.set(data[2][3])
+    S_A1val.set(data[2][4])
+    T_A1val.set(data[2][5])
+    W_A1val.set(data[2][6])
+    I_A1val.set(data[2][7])
+    A_A1val.set(data[2][8])
+    SV_A1val.set(data[2][9])
+
+    UnitvarO.set(" ".join(data[3][0].split("_")))
+    UnitOvar.set(data[4][0])
+    Enemyval.set(data[4][1])
+    WSOval.set(data[4][2])
+    BSOval.set(data[4][3])
+    SOval.set(data[4][4])
+    TAval.set(data[4][5])
+    WOval.set(data[4][6])
+    IOval.set(data[4][7])
+    AOval.set(data[4][8])
+    SVval.set(data[4][9])
+    nameOOne.set(data[5][0])
+    numOOne.set(data[5][1])
+    WS_O1val.set(data[5][2])
+    BS_O1val.set(data[5][3])
+    S_O1val.set(data[5][4])
+    T_O1val.set(data[5][5])
+    W_O1val.set(data[5][6])
+    I_O1val.set(data[5][7])
+    A_O1val.set(data[5][8])
+    SV_O1val.set(data[5][9])
    
 # Saves window state for re-initialization
 def save_init():
-    na   = "_".join(Unitvar.get().split(" "))
+    ua   = "_".join(Unitvar.get().split(" "))
+    na   = "_".join(UnitAvar.get().split(" "))
     shot = Shotval.get()
     wsa  = WS_box.get()
     bsa  = BS_box.get()
@@ -53,8 +85,19 @@ def save_init():
     ia   = I_box.get()
     aa   = A_box.get()
     sva  = SVA_box.get()
-
-    ne   = "_".join(UnitvarO.get().split(" "))
+    nexa   = "_".join(nameAOne.get().split(" "))
+    shotex = numAOne.get()
+    wsaex  = wsa1_box.get()
+    bsaex  = bsa1_box.get()
+    saex   = sa1_box.get()
+    taex   = ta1_box.get()
+    waex   = wa1_box.get()
+    iaex   = ia1_box.get()
+    aaex   = aa1_box.get()
+    svaex  = sva1_box.get()
+    
+    ue   = "_".join(UnitvarO.get().split(" "))
+    ne   = "_".join(UnitOvar.get().split(" "))
     enem = Enemyval.get()
     wso  = WSO_box.get()
     bso  = BSO_box.get()
@@ -64,12 +107,26 @@ def save_init():
     io   = IO_box.get()
     ao   = AO_box.get()
     svo  = SV_box.get()
+    nexo   = "_".join(nameAOne.get().split(" "))
+    enemex = numOOne.get()
+    wsoex  = wso1_box.get()
+    bsoex  = bso1_box.get()
+    soex   = so1_box.get()
+    toex   = to1_box.get()
+    woex   = wo1_box.get()
+    ioex   = io1_box.get()
+    aoex   = ao1_box.get()
+    svoex  = svo1_box.get()
     
-    attacker = (str(na)+" "+str(shot)+" "+str(wsa)+" "+str(bsa)+" "+str(sa)
-                +" "+str(ta)+" "+str(wa)+" "+str(ia)+" "+str(aa)+" "+str(sva))
+    attacker = (str(ua)+" \n"+str(na)+" "+str(shot)+" "+str(wsa)+" "+str(bsa)+" "+str(sa)
+                +" "+str(ta)+" "+str(wa)+" "+str(ia)+" "+str(aa)+" "+str(sva)+" \n"
+                +str(nexa)+" "+str(shotex)+" "+str(wsaex)+" "+str(bsaex)+" "+str(saex)
+                +" "+str(taex)+" "+str(waex)+" "+str(iaex)+" "+str(aaex)+" "+str(svaex))
     
-    enemy = (str(ne)+" "+str(enem)+" "+str(wso)+" "+str(bso)+" "+str(so)
-             +" "+str(to)+" "+str(wo)+" "+str(io)+" "+str(ao)+" "+str(svo))
+    enemy = (str(ue)+" \n"+str(ne)+" "+str(enem)+" "+str(wso)+" "+str(bso)+" "+str(so)
+             +" "+str(to)+" "+str(wo)+" "+str(io)+" "+str(ao)+" "+str(svo)+" \n"
+             +str(nexo)+" "+str(enemex)+" "+str(wsoex)+" "+str(bsoex)+" "+str(soex)
+             +" "+str(toex)+" "+str(woex)+" "+str(ioex)+" "+str(aoex)+" "+str(svoex))
     f = open('.init', 'w')
     f.write(attacker+" \n"+enemy)
     f.close
@@ -83,7 +140,8 @@ def save_attacker():
     saveFile = filedialog.asksaveasfilename(defaultextension='.at', initialdir='profiles',
                                             filetypes=types)
     if saveFile != '':
-        na   = "_".join(Unitvar.get().split(" "))
+        ua   = "_".join(Unitvar.get().split(" "))
+        na   = "_".join(UnitAvar.get().split(" "))
         shot = Shotval.get()
         wsa  = WS_box.get()
         bsa  = BS_box.get()
@@ -93,8 +151,20 @@ def save_attacker():
         ia   = I_box.get()
         aa   = A_box.get()
         sva  = SVA_box.get()
-        attacker = (str(na)+" "+str(shot)+" "+str(wsa)+" "+str(bsa)+" "+str(sa)
-                    +" "+str(ta)+" "+str(wa)+" "+str(ia)+" "+str(aa)+" "+str(sva))
+        nexa   = "_".join(nameAOne.get().split(" "))
+        shotex = numAOne.get()
+        wsaex  = wsa1_box.get()
+        bsaex  = bsa1_box.get()
+        saex   = sa1_box.get()
+        taex   = ta1_box.get()
+        waex   = wa1_box.get()
+        iaex   = ia1_box.get()
+        aaex   = aa1_box.get()
+        svaex  = sva1_box.get()
+        attacker = (str(ua)+" \n"+str(na)+" "+str(shot)+" "+str(wsa)+" "+str(bsa)+" "+str(sa)
+                    +" "+str(ta)+" "+str(wa)+" "+str(ia)+" "+str(aa)+" "+str(sva)+" \n"
+                    +str(nexa)+" "+str(shotex)+" "+str(wsaex)+" "+str(bsaex)+" "+str(saex)
+                    +" "+str(taex)+" "+str(waex)+" "+str(iaex)+" "+str(aaex)+" "+str(svaex))
         save = open(saveFile, 'w')
         save.write(attacker)
         save.close()
@@ -107,7 +177,8 @@ def save_enemy():
     saveFile = filedialog.asksaveasfilename(defaultextension='.op', initialdir='profiles',
                                             filetypes=types)
     if saveFile != '':
-        ne   = "_".join(UnitvarO.get().split(" "))
+        ue   = "_".join(UnitvarO.get().split(" "))
+        ne   = "_".join(UnitOvar.get().split(" "))
         enem = Enemyval.get()
         wso  = WSO_box.get()
         bso  = BSO_box.get()
@@ -117,8 +188,20 @@ def save_enemy():
         io   = IO_box.get()
         ao   = AO_box.get()
         svo  = SV_box.get()
-        enemy = (str(ne)+" "+str(enem)+" "+str(wso)+" "+str(bso)+" "+str(so)
-                 +" "+str(to)+" "+str(wo)+" "+str(io)+" "+str(ao)+" "+str(svo))
+        nexo   = "_".join(nameAOne.get().split(" "))
+        enemex = numOOne.get()
+        wsoex  = wso1_box.get()
+        bsoex  = bso1_box.get()
+        soex   = so1_box.get()
+        toex   = to1_box.get()
+        woex   = wo1_box.get()
+        ioex   = io1_box.get()
+        aoex   = ao1_box.get()
+        svoex  = svo1_box.get()
+        enemy = (str(ue)+" \n"+str(ne)+" "+str(enem)+" "+str(wso)+" "+str(bso)+" "+str(so)
+                 +" "+str(to)+" "+str(wo)+" "+str(io)+" "+str(ao)+" "+str(svo)+" \n"
+                 +str(nexo)+" "+str(enemex)+" "+str(wsoex)+" "+str(bsoex)+" "+str(soex)
+                 +" "+str(toex)+" "+str(woex)+" "+str(ioex)+" "+str(aoex)+" "+str(svoex))
         save = open(saveFile, 'w')
         save.write(enemy)
         save.close()
@@ -132,19 +215,33 @@ def load_attacker():
         messagebox.showinfo(message='ERROR', detail='Invalid File Type!', icon='error', default='ok',parent=root)
     else:
         load = open(loadFile, 'r')
-        data = load.readline().split(" ")
+        data = load.readlines()
         load.close()
+        data[0] = data[0].split()
+        data[1] = data[1].split()
+        data[2] = data[2].split()
         
-        Unitvar.set(" ".join(data[0].split("_")))
-        Shotval.set(data[1])
-        WSval.set(data[2])
-        BSval.set(data[3])
-        Sval.set(data[4])
-        TAval.set(data[5])
-        Wval.set(data[6])
-        Ival.set(data[7])
-        Aval.set(data[8])
-        SVAval.set(data[9])
+        Unitvar.set(" ".join(data[0][0].split("_")))
+        UnitAvar.set(data[1][0])
+        Shotval.set(data[1][1])
+        WSval.set(data[1][2])
+        BSval.set(data[1][3])
+        Sval.set(data[1][4])
+        TAval.set(data[1][5])
+        Wval.set(data[1][6])
+        Ival.set(data[1][7])
+        Aval.set(data[1][8])
+        SVAval.set(data[1][9])
+        nameAOne.set(data[2][0])
+        numAOne.set(data[2][1])
+        WS_A1val.set(data[2][2])
+        BS_A1val.set(data[2][3])
+        S_A1val.set(data[2][4])
+        T_A1val.set(data[2][5])
+        W_A1val.set(data[2][6])
+        I_A1val.set(data[2][7])
+        A_A1val.set(data[2][8])
+        SV_A1val.set(data[2][9])
         root.update()
 
 def load_enemy():
@@ -155,19 +252,33 @@ def load_enemy():
         messagebox.showinfo(message='ERROR', detail='Invalid File Type!', icon='error', default='ok',parent=root)
     else:
         load = open(loadFile, 'r')
-        data = load.readline().split(" ")
+        data = load.readlines()
         load.close()
+        data[0] = data[0].split()
+        data[1] = data[1].split()
+        data[2] = data[2].split()
         
-        UnitvarO.set(" ".join(data[0].split("_")))
-        Enemyval.set(data[1])
-        WSOval.set(data[2])
-        BSOval.set(data[3])
-        SOval.set(data[4])
-        TAval.set(data[5])
-        WOval.set(data[6])
-        IOval.set(data[7])
-        AOval.set(data[8])
-        SVval.set(data[9])
+        UnitvarO.set(" ".join(data[0][0].split("_")))
+        UnitOvar.set(data[1][0])
+        Enemyval.set(data[1][1])
+        WSOval.set(data[1][2])
+        BSOval.set(data[1][3])
+        SOval.set(data[1][4])
+        TAval.set(data[1][5])
+        WOval.set(data[1][6])
+        IOval.set(data[1][7])
+        AOval.set(data[1][8])
+        SVval.set(data[1][9])
+        nameOOne.set(data[2][0])
+        numOOne.set(data[2][1])
+        WS_O1val.set(data[2][2])
+        BS_O1val.set(data[2][3])
+        S_O1val.set(data[2][4])
+        T_O1val.set(data[2][5])
+        W_O1val.set(data[2][6])
+        I_O1val.set(data[2][7])
+        A_O1val.set(data[2][8])
+        SV_O1val.set(data[2][9])
         root.update()
         
 def addAttacker(*args):
@@ -196,7 +307,34 @@ def addAttacker(*args):
         ia1_box.config(state=NORMAL)
         aa1_box.config(state=NORMAL)
         sva1_box.config(state=NORMAL)
-           
+
+
+def addEnemy(*args):
+    numberToAdd = int(ExOpVal.get())
+    
+    if numberToAdd == 0:
+        nameO1_box.config(state=DISABLED)
+        numo1_box.config(state=DISABLED)
+        wso1_box.config(state=DISABLED)
+        bso1_box.config(state=DISABLED)
+        so1_box.config(state=DISABLED)
+        to1_box.config(state=DISABLED)
+        wo1_box.config(state=DISABLED)
+        io1_box.config(state=DISABLED)
+        ao1_box.config(state=DISABLED)
+        svo1_box.config(state=DISABLED)
+
+    elif numberToAdd == 1:
+        nameO1_box.config(state=NORMAL)
+        numo1_box.config(state=NORMAL)
+        wso1_box.config(state=NORMAL)
+        bso1_box.config(state=NORMAL)
+        so1_box.config(state=NORMAL)
+        to1_box.config(state=NORMAL)
+        wo1_box.config(state=NORMAL)
+        io1_box.config(state=NORMAL)
+        ao1_box.config(state=NORMAL)
+        svo1_box.config(state=NORMAL)           
     
     
 # Method to create probability distribution
@@ -206,7 +344,7 @@ def create_distribution(sh_data, at_data, en_data):
         attack_w = int(Shotval.get())*int(Wval.get())
         enemies  = int(Enemyval.get())*int(AOval.get())
         enemy_w  = int(Enemyval.get())*int(WOval.get())
-        attacks  = min([attacks, enemies])
+        attacks  = min([attacks, enemies, attack_w, enemy_w])
             
         if attacks < 5:
             attacks = 5
@@ -494,6 +632,7 @@ def calculate(*args):
 '''
     GUI Setup
 '''
+
 root = Tk()
 
 root.title("Stathammer "+str(version))
@@ -545,16 +684,10 @@ attackex_one.grid(column=0, row=2, sticky=(N, E, W, S))
 attackex_one.columnconfigure(0, weight=1)
 attackex_one.rowconfigure(2, weight=1)
 
-attackex_two = ttk.Frame(atstatframe, padding="3 3 12 12")
-attackex_two.grid(column=0, row=3, sticky=(N, E, W, S))
-attackex_two.columnconfigure(0, weight=1)
-attackex_two.rowconfigure(3, weight=1)
-
-attackex_three = ttk.Frame(atstatframe, padding="3 3 12 12")
-attackex_three.grid(column=0, row=4, sticky=(N, E, W, S))
-attackex_three.columnconfigure(0, weight=1)
-attackex_three.rowconfigure(4, weight=1)
-
+enemyex_one = ttk.Frame(opstatframe, padding="3 3 12 12")
+enemyex_one.grid(column=0, row=2, sticky=(N, E, W, S))
+enemyex_one.columnconfigure(0, weight=1)
+enemyex_one.rowconfigure(2, weight=1)
 
 #=============#
 #   Entries   #  
@@ -601,38 +734,45 @@ Unit_nameO = GUI.input_create(opstatframe, 'entry', UnitvarO, 40, [0, 0, (W,E)],
 UnitvarO.set('=I= TYPE UNIT NAME =I=')
 
 Enemyval = StringVar()
-Enemy_box = GUI.input_create(enemystat, 'entry', Enemyval, 4, [3, 0, (W)], [0])
+Enemy_box = GUI.input_create(enemystat, 'entry', Enemyval, 4, [3, 1, (W)], [0])
 Enemyval.set(1)
 
 WSOval = StringVar()
-WSO_box = GUI.input_create(enemystat, 'spinbox', WSOval, 2, [3, 1, (W)], [1, 10])
+WSO_box = GUI.input_create(enemystat, 'spinbox', WSOval, 2, [3, 2, (W)], [1, 10])
 
 BSOval = StringVar()
-BSO_box = GUI.input_create(enemystat, 'spinbox', BSOval, 2, [3, 2, (W)], [1, 10])
+BSO_box = GUI.input_create(enemystat, 'spinbox', BSOval, 2, [3, 3, (W)], [1, 10])
 
 SOval = StringVar()
-SO_box = GUI.input_create(enemystat, 'spinbox', SOval, 2, [3, 3, (W)], [1, 10])
+SO_box = GUI.input_create(enemystat, 'spinbox', SOval, 2, [3, 4, (W)], [1, 10])
 
 Tval = StringVar()
-T_box = GUI.input_create(enemystat, 'spinbox', Tval, 2, [3, 4, (W)], [1, 10])
+T_box = GUI.input_create(enemystat, 'spinbox', Tval, 2, [3, 5, (W)], [1, 10])
 
 WOval = StringVar()
-WO_box = GUI.input_create(enemystat, 'spinbox', WOval, 2, [3, 5, (W)], [1, 10])
+WO_box = GUI.input_create(enemystat, 'spinbox', WOval, 2, [3, 6, (W)], [1, 10])
 
 IOval = StringVar()
-IO_box = GUI.input_create(enemystat, 'spinbox', IOval, 2, [3, 6, (W)], [1, 10])
+IO_box = GUI.input_create(enemystat, 'spinbox', IOval, 2, [3, 7, (W)], [1, 10])
 
 AOval = StringVar()
-AO_box = GUI.input_create(enemystat, 'spinbox', AOval, 2, [3, 7, (W)], [1, 10])
+AO_box = GUI.input_create(enemystat, 'spinbox', AOval, 2, [3, 8, (W)], [1, 10])
 
 SVval = StringVar()
-SV_box = GUI.input_create(enemystat, 'spinbox', SVval, 2, [3, 8, (W)], [2, 6])
+SV_box = GUI.input_create(enemystat, 'spinbox', SVval, 2, [3, 9, (W)], [2, 6])
+
+UnitOvar = StringVar()
+UnitO_name = GUI.input_create(enemystat, 'entry', UnitOvar, 15, [3, 0, (W, E)], [0])
+UnitOvar.set('UNIT NAME')
 
 # Extra units
 ExAtVal = StringVar()
 ExAt_box = ttk.Checkbutton(attackstat, text='Extra Unit', variable=ExAtVal, command=addAttacker, onvalue='1', offvalue='0')
 ExAt_box.grid(column=0, row=1, sticky=(W, E))
 
+ExOpVal = StringVar()
+ExOp_box = ttk.Checkbutton(enemystat, text='Extra Unit', variable=ExOpVal, command=addEnemy, onvalue='1', offvalue='0')
+ExOp_box.grid(column=0, row=1, sticky=(W, E))
 #=============#
 #   Buttons   #  
 #=============#
@@ -684,31 +824,31 @@ SVA_label.grid(column=9, row=2, sticky=(W, E))
 
 # Enemy labels
 ENEMY_label = ttk.Label(enemystat, text="#")
-ENEMY_label.grid(column=0, row=2, sticky=(W, E))
+ENEMY_label.grid(column=1, row=2, sticky=(W, E))
 
 WSO_label = ttk.Label(enemystat, text='WS')
-WSO_label.grid(column=1, row=2, sticky=(W, E))
+WSO_label.grid(column=2, row=2, sticky=(W, E))
 
 BSO_label = ttk.Label(enemystat, text='BS')
-BSO_label.grid(column=2, row=2, sticky=(W, E))
+BSO_label.grid(column=3, row=2, sticky=(W, E))
 
 SO_label = ttk.Label(enemystat, text='S')
-SO_label.grid(column=3, row=2, sticky=(W, E))
+SO_label.grid(column=4, row=2, sticky=(W, E))
 
 T_label = ttk.Label(enemystat, text='T')
-T_label.grid(column=4, row=2, sticky=(W, E))
+T_label.grid(column=5, row=2, sticky=(W, E))
 
 WO_label = ttk.Label(enemystat, text='W')
-WO_label.grid(column=5, row=2, sticky=(W, E))
+WO_label.grid(column=6, row=2, sticky=(W, E))
 
 IO_label = ttk.Label(enemystat, text='I')
-IO_label.grid(column=6, row=2, sticky=(W, E))
+IO_label.grid(column=7, row=2, sticky=(W, E))
 
 AO_label = ttk.Label(enemystat, text='A')
-AO_label.grid(column=7, row=2, sticky=(W, E))
+AO_label.grid(column=8, row=2, sticky=(W, E))
 
 SV_label = ttk.Label(enemystat, text='SV')
-SV_label.grid(column=8, row=2, sticky=(W, E))
+SV_label.grid(column=9, row=2, sticky=(W, E))
 
 
 # Probability Labels
@@ -763,6 +903,17 @@ A_A1val   = StringVar()
 SV_A1val  = StringVar()
 nameAOne  = StringVar()
 
+numOOne   = StringVar()
+WS_O1val  = StringVar()
+BS_O1val  = StringVar()
+S_O1val   = StringVar()
+T_O1val   = StringVar()
+W_O1val   = StringVar()
+I_O1val   = StringVar()
+A_O1val   = StringVar()
+SV_O1val  = StringVar()
+nameOOne  = StringVar()
+
 
 # ATTACKERS
 numa1_box = GUI.input_create(attackex_one, 'entry', numAOne, 4, [0, 1, (W)], [0])
@@ -789,17 +940,29 @@ nameAOne.set('UNIT NAME')
 nameA1_box.config(state=DISABLED)           
 
 
-
-
-
-
-
-
-
-
-
-
-
+# ENEMIES
+numo1_box = GUI.input_create(enemyex_one, 'entry', numOOne, 4, [0, 1, (W)], [0])
+numo1_box.config(state=DISABLED)
+numOOne.set(1)
+wso1_box = GUI.input_create(enemyex_one, 'spinbox', WS_O1val, 2, [0, 2, (W)], [1, 10])
+wso1_box.config(state=DISABLED)
+bso1_box = GUI.input_create(enemyex_one, 'spinbox', BS_O1val, 2,[0, 3, (W)], [1, 10])
+bso1_box.config(state=DISABLED)
+so1_box = GUI.input_create(enemyex_one, 'spinbox', S_O1val, 2, [0, 4, (W)], [1, 10])
+so1_box.config(state=DISABLED)
+to1_box = GUI.input_create(enemyex_one, 'spinbox', T_O1val, 2, [0, 5, (W)], [1, 10])
+to1_box.config(state=DISABLED)
+wo1_box = GUI.input_create(enemyex_one, 'spinbox', W_O1val, 2, [0, 6, (W)], [1, 10])
+wo1_box.config(state=DISABLED)
+io1_box = GUI.input_create(enemyex_one, 'spinbox', I_O1val, 2, [0, 7, (W)], [1, 10])
+io1_box.config(state=DISABLED)
+ao1_box = GUI.input_create(enemyex_one, 'spinbox', A_O1val, 2, [0, 8, (W)], [1, 10])
+ao1_box.config(state=DISABLED)
+svo1_box = GUI.input_create(enemyex_one, 'spinbox', SV_O1val, 2, [0, 9, (W)], [2, 6])
+svo1_box.config(state=DISABLED)       
+nameO1_box = GUI.input_create(enemyex_one, 'entry', nameOOne, 15, [0, 0, (W,E)], [0])
+nameOOne.set('UNIT NAME')
+nameO1_box.config(state=DISABLED)
 
 
 root.bind('<Return>', calculate)
@@ -813,3 +976,6 @@ except:
     pass
 
 root.mainloop()
+
+
+    
