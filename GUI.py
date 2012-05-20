@@ -49,3 +49,22 @@ def input_create(root_window, type_name, var, width, pos, total_range):
         raise ValueError(type_name+' is not a valid input type')
 
     return box
+
+def weapon_boxes(root_window, variables, start_row, start_col, width):
+    boxList = []
+    row = start_row
+    col = start_col
+    for variable in variables:
+        box = ttk.Combobox(root_window, textvariable=variable, width=width)
+        box.grid(column=col, row=row, sticky=(W), padx = 2, pady=3)
+        boxList.append(box)
+        row = row + 1
+        col = col
+
+    return boxList
+
+
+
+
+
+    

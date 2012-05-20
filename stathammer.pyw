@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = 0.06
+version = 0.07
 
 from tkinter import *
 from tkinter import ttk
@@ -24,6 +24,7 @@ class Unit(object):
         self.I       = StringVar()
         self.A       = StringVar()
         self.SV      = StringVar()
+        self.INV     = StringVar()
         
     def set_values(self, unitStats):
         self.name.set(unitStats[0])
@@ -36,6 +37,7 @@ class Unit(object):
         self.I.set(unitStats[7])
         self.A.set(unitStats[8])
         self.SV.set(unitStats[9])
+        self.INV.set("0")
 
     def get_values(self):
         return [self.name.get(), self.attacks.get(), self.WS.get(),
@@ -203,6 +205,7 @@ def addAttacker(*args):
         ia1_box.config(state=DISABLED)
         aa1_box.config(state=DISABLED)
         sva1_box.config(state=DISABLED)
+        inv1_box.config(state=DISABLED)
 
     elif numberToAdd == 1:
         nameA1_box.config(state=NORMAL)
@@ -215,6 +218,7 @@ def addAttacker(*args):
         ia1_box.config(state=NORMAL)
         aa1_box.config(state=NORMAL)
         sva1_box.config(state=NORMAL)
+        inv1_box.config(state=NORMAL)
 
 # Disable/Enable extra enemy 
 def addEnemy(*args):
@@ -231,6 +235,7 @@ def addEnemy(*args):
         io1_box.config(state=DISABLED)
         ao1_box.config(state=DISABLED)
         svo1_box.config(state=DISABLED)
+        invo1_box.config(state=DISABLED)
 
     elif numberToAdd == 1:
         nameO1_box.config(state=NORMAL)
@@ -242,7 +247,8 @@ def addEnemy(*args):
         wo1_box.config(state=NORMAL)
         io1_box.config(state=NORMAL)
         ao1_box.config(state=NORMAL)
-        svo1_box.config(state=NORMAL)           
+        svo1_box.config(state=NORMAL)
+        invo1_box.config(state=NORMAL)
 
 
 
@@ -562,8 +568,8 @@ else:
     root.wm_iconbitmap('staticon.ico')
 
 root.protocol('WM_DELETE_WINDOW', save_init)
-
-
+#root.minsize(480, 640)
+#root.maxsize(1024, 768)
 
 #=============#
 #   Frames    #  
@@ -572,22 +578,28 @@ root.protocol('WM_DELETE_WINDOW', save_init)
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.pack()
 
-statframe = GUI.frame_create(mainframe, 0, 0)
-sideframe = GUI.frame_create(mainframe, 0, 1)
-noteframe = ttk.Notebook(sideframe)
-noteframe.grid(column=0, row=0)
-graphpage = ttk.Frame(noteframe)
-resultspage = ttk.Frame(noteframe)
-noteframe.add(graphpage, text='Graph')
-noteframe.add(resultspage, text='Data')
-simframe  = GUI.frame_create(resultspage, 0, 0)
+topframe = ttk.Notebook(mainframe)
+topframe.grid(column=0, row=0)
+statframe = ttk.Frame(topframe)
+sideframe = ttk.Frame(topframe)
+topframe.add(statframe, text='Unit Stats')
+topframe.add(sideframe, text='Results')
+
+
+graphpage   = GUI.label_frame_create(sideframe, 'Distribution', 0, 0)
+probframe   = GUI.label_frame_create(sideframe, 'Statistics', 0, 1)
+graphpage.grid(padx=7)
+probframe.grid(padx=7)
+
 
 atstatframe = GUI.label_frame_create(statframe, 'Attacker', 0, 0)
+atstatframe.grid(padx=7)
 atnameframe = GUI.frame_create(atstatframe, 0, 0)
 atsvldframe = GUI.frame_create(atnameframe, 0, 1)
 attackstat  = GUI.frame_create(atstatframe, 1, 0)
 
-opstatframe = GUI.label_frame_create(statframe, 'Enemy', 1, 0)
+opstatframe = GUI.label_frame_create(statframe, 'Enemy', 0, 1)
+opstatframe.grid(padx=7)
 opnameframe  = GUI.frame_create(opstatframe, 0, 0)
 opsvldframe = GUI.frame_create(opnameframe, 0, 1)
 enemystat   = GUI.frame_create(opstatframe, 1, 0)
@@ -605,10 +617,14 @@ opweaponframe.add(primop, text='Primary Unit')
 atweaponframe.add(extrat, text='Secondary Unit')
 opweaponframe.add(extrop, text='Secondary Unit')
 
+primatsh = GUI.label_frame_create(primat, 'Shooting', 0, 0)
+primatcc = GUI.label_frame_create(primat, 'Assault',  0, 1)
+extratsh = GUI.label_frame_create(extrat, 'Shooting', 0, 0)
+extratcc = GUI.label_frame_create(extrat, 'Assault',  0, 1)
+primopcc = GUI.label_frame_create(primop, 'Assault',  0, 0)
+extropcc = GUI.label_frame_create(extrop, 'Assault',  0, 0)
 
-probframe = GUI.label_frame_create(simframe, 'Results', 0, 0)
-
-barframe = GUI.label_frame_create(simframe, 'Simulation Control', 0, 1)
+barframe = GUI.frame_create(mainframe, 1, 0)
 
 graphframe = GUI.canvas_create(graphpage, 0, 0, [500, 350])
 
@@ -629,10 +645,12 @@ enemyex_one.rowconfigure(2, weight=1)
 #=============#
 root.option_add('*tearOff', FALSE)
 menubar = Menu(root)
+
 #Top Menus
 filemenu = Menu(menubar, tearoff=0)
 optmenu  = Menu(menubar, tearoff=0)
 helpmenu = Menu(menubar, tearoff=0)
+
 #Sub Menus
 itermenu = Menu(optmenu, tearoff=0)
 menubar.add_cascade(label="File", menu=filemenu)
@@ -677,6 +695,7 @@ W_box       = GUI.input_create(attackstat, 'spinbox', attacker_1.W,     2,  [3, 
 I_box       = GUI.input_create(attackstat, 'spinbox', attacker_1.I,     2,  [3, 7, (W)], [1, 10])
 A_box       = GUI.input_create(attackstat, 'spinbox', attacker_1.A,     2,  [3, 8, (W)], [1, 10])
 SVA_box     = GUI.input_create(attackstat, 'spinbox', attacker_1.SV,    2,  [3, 9, (W)], [2,  6])
+INV_box     = GUI.input_create(attackstat, 'spinbox', attacker_1.INV,   2,  [3, 10,(W)], [0,  6])
 attacker_1.name.set('UNIT NAME')
 attacker_1.attacks.set(1)
 
@@ -690,7 +709,8 @@ ta1_box    = GUI.input_create(attackex_one, 'spinbox', attacker_2.T,     2, [0, 
 wa1_box    = GUI.input_create(attackex_one, 'spinbox', attacker_2.W,     2, [0, 6, (W)], [1, 10])
 ia1_box    = GUI.input_create(attackex_one, 'spinbox', attacker_2.I,     2, [0, 7, (W)], [1, 10])
 aa1_box    = GUI.input_create(attackex_one, 'spinbox', attacker_2.A,     2, [0, 8, (W)], [1, 10])
-sva1_box   = GUI.input_create(attackex_one, 'spinbox', attacker_2.SV,    2, [0, 9, (W)], [2,  6])     
+sva1_box   = GUI.input_create(attackex_one, 'spinbox', attacker_2.SV,    2, [0, 9, (W)], [2,  6])
+inv1_box   = GUI.input_create(attackex_one, 'spinbox', attacker_2.INV,   2, [0, 10,(W)], [0,  6])
 attacker_2.name.set('UNIT NAME')
 attacker_2.attacks.set(1)
       
@@ -710,6 +730,7 @@ WO_box      = GUI.input_create(enemystat, 'spinbox', enemy_1.W,     2, [3, 6, (W
 IO_box      = GUI.input_create(enemystat, 'spinbox', enemy_1.I,     2, [3, 7, (W)], [1, 10])
 AO_box      = GUI.input_create(enemystat, 'spinbox', enemy_1.A,     2, [3, 8, (W)], [1, 10])
 SV_box      = GUI.input_create(enemystat, 'spinbox', enemy_1.SV,    2, [3, 9, (W)], [2,  6])
+INVO_box    = GUI.input_create(enemystat, 'spinbox', enemy_1.INV,   2, [3, 10,(W)], [0,  6])
 enemy_1.name.set('UNIT NAME')
 enemy_1.attacks.set(1)
 
@@ -723,7 +744,8 @@ to1_box     = GUI.input_create(enemyex_one, 'spinbox', enemy_2.T,     2, [0, 5, 
 wo1_box     = GUI.input_create(enemyex_one, 'spinbox', enemy_2.W,     2, [0, 6, (W)], [1, 10])
 io1_box     = GUI.input_create(enemyex_one, 'spinbox', enemy_2.I,     2, [0, 7, (W)], [1, 10])
 ao1_box     = GUI.input_create(enemyex_one, 'spinbox', enemy_2.A,     2, [0, 8, (W)], [1, 10])
-svo1_box    = GUI.input_create(enemyex_one, 'spinbox', enemy_2.SV,    2, [0, 9, (W)], [2,  6])    
+svo1_box    = GUI.input_create(enemyex_one, 'spinbox', enemy_2.SV,    2, [0, 9, (W)], [2,  6])
+invo1_box    = GUI.input_create(enemyex_one, 'spinbox', enemy_2.INV,   2, [0, 10,(W)], [0,  6])
 enemy_2.name.set('UNIT NAME')
 enemy_2.attacks.set(1)
 
@@ -741,11 +763,62 @@ ExOpVal.set('0')
 addAttacker()
 addEnemy()
 
+# Weapon entrys
+primAtWep1 = StringVar()
+primAtWep2 = StringVar()
+primAtWep3 = StringVar()
+primAtWep4 = StringVar()
+primAtWep5 = StringVar()
+pAtWep1Box = GUI.input_create(primatsh, 'entry', primAtWep1, 3, [1, 0, ()], [0])
+pAtWep2Box = GUI.input_create(primatsh, 'entry', primAtWep2, 3, [2, 0, ()], [0])
+pAtWep3Box = GUI.input_create(primatsh, 'entry', primAtWep3, 3, [3, 0, ()], [0])
+pAtWep4Box = GUI.input_create(primatsh, 'entry', primAtWep4, 3, [4, 0, ()], [0])
+pAtWep5Box = GUI.input_create(primatsh, 'entry', primAtWep5, 3, [5, 0, ()], [0])
+
+primAtCC1 = StringVar()
+primAtCC2 = StringVar()
+primAtCC3 = StringVar()
+primAtCC4 = StringVar()
+primAtCC5 = StringVar()
+pAtCC1Box = GUI.input_create(primatcc, 'entry', primAtCC1, 3, [1, 0, ()], [0])
+pAtCC2Box = GUI.input_create(primatcc, 'entry', primAtCC2, 3, [2, 0, ()], [0])
+pAtCC3Box = GUI.input_create(primatcc, 'entry', primAtCC3, 3, [3, 0, ()], [0])
+pAtCC4Box = GUI.input_create(primatcc, 'entry', primAtCC4, 3, [4, 0, ()], [0])
+pAtCC5Box = GUI.input_create(primatcc, 'entry', primAtCC5, 3, [5, 0, ()], [0])
+
+extrAtWep1 = StringVar()
+extrAtWep2 = StringVar()
+eAtWep1Box = GUI.input_create(extratsh, 'entry', extrAtWep1, 3, [1, 0, ()], [0])
+eAtWep2Box = GUI.input_create(extratsh, 'entry', extrAtWep2, 3, [2, 0, ()], [0])
+
+
+extrAtCC1 = StringVar()
+extrAtCC2 = StringVar()
+eAtCC1Box = GUI.input_create(extratcc, 'entry', extrAtCC1, 3, [1, 0, ()], [0])
+eAtCC2Box = GUI.input_create(extratcc, 'entry', extrAtCC2, 3, [2, 0, ()], [0])
+
+
+primOpCC1 = StringVar()
+primOpCC2 = StringVar()
+primOpCC3 = StringVar()
+primOpCC4 = StringVar()
+primOpCC5 = StringVar()
+pOpCC1Box = GUI.input_create(primopcc, 'entry', primOpCC1, 3, [1, 0, ()], [0])
+pOpCC2Box = GUI.input_create(primopcc, 'entry', primOpCC2, 3, [2, 0, ()], [0])
+pOpCC3Box = GUI.input_create(primopcc, 'entry', primOpCC3, 3, [3, 0, ()], [0])
+pOpCC4Box = GUI.input_create(primopcc, 'entry', primOpCC4, 3, [4, 0, ()], [0])
+pOpCC5Box = GUI.input_create(primopcc, 'entry', primOpCC5, 3, [5, 0, ()], [0])
+
+extrOpCC1 = StringVar()
+extrOpCC2 = StringVar()
+eOpCC1Box = GUI.input_create(extropcc, 'entry', extrOpCC1, 3, [1, 0, ()], [0])
+eOpCC2Box = GUI.input_create(extropcc, 'entry', extrOpCC2, 3, [2, 0, ()], [0])
+
 #=============#
 #   Buttons   #  
 #=============#
-calc = ttk.Button(statframe, text='Calculate', command=calculate, width=20)
-calc.grid(column=0, row=3, columnspan=2, ipady=5, pady=10)
+calc = ttk.Button(barframe, text='Calculate', command=calculate, width=20)
+calc.grid(column=0, row=0, ipady=5, pady=10)
 
 saveAttack = ttk.Button(atsvldframe, text = 'Save', command=save_attacker, width=10)
 saveAttack.grid(column=1, row=0, sticky=(W))
@@ -762,65 +835,78 @@ loadEnemy.grid(column=0, row=0, sticky=(W))
 
 
 #=============#
-#  Comboboxes #  
+#  Comboboxes #
 #=============#
 at1GunVar = StringVar()
-at1Gun = ttk.Combobox(primat, textvariable=at1GunVar, width=15)
-at1Gun.grid(column=1, row=1, padx=10, pady=7, sticky=(W))
-at1Gun.set('No Guns Found')
-
-at1WepVar = StringVar()
-at1Wep = ttk.Combobox(primat, textvariable=at1WepVar, width=15)
-at1Wep.grid(column=2, row=1, pady=7, sticky=(W))
-at1Wep['values'] = ('Default')
-at1Wep.set('Default')
-
 at2GunVar = StringVar()
-at2Gun = ttk.Combobox(extrat, textvariable=at2GunVar, width=15)
-at2Gun.grid(column=1, row=2, padx=10, pady=7, sticky=(W))
-at2Gun.set('No Guns Found')
+at3GunVar = StringVar()
+at4GunVar = StringVar()
+at5GunVar = StringVar()
+varlist = [at1GunVar, at2GunVar,at3GunVar, at4GunVar, at5GunVar]
+l = [at1Gun, at2Gun, at3Gun, at4Gun, at5Gun] = GUI.weapon_boxes(primatsh, varlist,1, 1, 20)
+for box in l:
+    box.set('No Weapons Found')
 
-at2WepVar = StringVar()
-at2Wep = ttk.Combobox(extrat, textvariable=at2WepVar, width=15)
-at2Wep.grid(column=2, row=2, pady=7, sticky=(W))
-at2Wep['values'] = ('Default')
-at2Wep.set('Default')
+at1CCVar  = StringVar()
+at2CCVar  = StringVar()
+at3CCVar  = StringVar()
+at4CCVar  = StringVar()
+at5CCVar  = StringVar()
+varlist = [at1CCVar, at2CCVar,at3CCVar, at4CCVar, at5CCVar]
+l = [at1CC, at2CC, at3CC, at4CC, at5CC] = GUI.weapon_boxes(primatcc, varlist,1, 1, 20)
+for box in l:
+    box.set('Default')
 
-op1GunVar = StringVar()
-op1Gun = ttk.Combobox(primop, textvariable=op1GunVar, width=15)
-op1Gun.grid(column=1, row=1, padx=10, pady=7, sticky=(W))
-op1Gun.set('No Guns Found')
 
-op1WepVar = StringVar()
-op1Wep = ttk.Combobox(primop, textvariable=op1WepVar, width=15)
-op1Wep.grid(column=2, row=1, pady=7, sticky=(W))
-op1Wep['values'] = ('Default')
-op1Wep.set('Default')
+atex1GunVar = StringVar()
+atex2GunVar = StringVar()
+varlist = [atex1GunVar, atex2GunVar]
+l =[atex1Gun, atex2Gun] = GUI.weapon_boxes(extratsh, varlist, 1, 1, 20)
+for box in l:
+    box.set('No Weapons Found')
 
-op2GunVar = StringVar()
-op2Gun = ttk.Combobox(extrop, textvariable=op2GunVar, width=15)
-op2Gun.grid(column=1, row=2, padx=10, pady=7, sticky=(W))
-op2Gun.set('No Guns Found')
+atex1CCVar  = StringVar()
+atex2CCVar  = StringVar()
+varlist = [atex1CCVar, atex2CCVar]
+l = [atex1CC, atex2CC] = GUI.weapon_boxes(extratcc, varlist, 1, 1, 20)
+for box in l:
+    box.set('Default')
 
-op2WepVar = StringVar()
-op2Wep = ttk.Combobox(extrop, textvariable=op2WepVar, width=15)
-op2Wep.grid(column=2, row=2, pady=7, sticky=(W))
-op2Wep['values'] = ('Default')
-op2Wep.set('Default')
+op1CCVar  = StringVar()
+op2CCVar  = StringVar()
+op3CCVar  = StringVar()
+op4CCVar  = StringVar()
+op5CCVar  = StringVar()
+varlist = [op1CCVar, op2CCVar,op3CCVar, op4CCVar, op5CCVar]
+l = [op1CC, op2CC, op3CC, op4CC, op5CC] = GUI.weapon_boxes(primopcc, varlist,1, 1, 20)
+for box in l:
+    box.set('Default')
 
+opex1CCVar  = StringVar()
+opex2CCVar  = StringVar()
+varlist = [opex1CCVar, opex2CCVar]
+l = [opex1CC, opex2CC] = GUI.weapon_boxes(extropcc, varlist, 1, 1, 20)
+for box in l:
+    box.set('Default')
+    
 #=============#
 #   Labels    #  
 #=============#
 
 # Weapon Labels
-ttk.Label(primat,  text='Shooting', justify='center', font='TkTextFont 8 bold underline').grid(column=1, row=0, pady=5)
-ttk.Label(primop,  text='Shooting', justify='center', font='TkTextFont 8 bold underline').grid(column=1, row=0)
-ttk.Label(primat,  text='Assault',  justify='center', font='TkTextFont 8 bold underline').grid(column=2, row=0, pady=5)
-ttk.Label(primop,  text='Assault',  justify='center', font='TkTextFont 8 bold underline').grid(column=2, row=0)
-ttk.Label(extrat,  text='Shooting', justify='center', font='TkTextFont 8 bold underline').grid(column=1, row=0, pady=5)
-ttk.Label(extrop,  text='Shooting', justify='center', font='TkTextFont 8 bold underline').grid(column=1, row=0)
-ttk.Label(extrat,  text='Assault',  justify='center', font='TkTextFont 8 bold underline').grid(column=2, row=0, pady=5)
-ttk.Label(extrop,  text='Assault',  justify='center', font='TkTextFont 8 bold underline').grid(column=2, row=0)
+ttk.Label(primatsh,  text='Weapon', justify='center', font='TkTextFont 8 bold').grid(column=1, row=0, pady=2)
+ttk.Label(primatcc,  text='Weapon', justify='center', font='TkTextFont 8 bold').grid(column=1, row=0, pady=2)
+ttk.Label(extratsh,  text='Weapon', justify='center', font='TkTextFont 8 bold').grid(column=1, row=0, pady=2)
+ttk.Label(extratcc,  text='Weapon', justify='center', font='TkTextFont 8 bold').grid(column=1, row=0, pady=2)
+ttk.Label(primopcc,  text='Weapon', justify='center', font='TkTextFont 8 bold').grid(column=1, row=0)
+ttk.Label(extropcc,  text='Weapon', justify='center', font='TkTextFont 8 bold').grid(column=1, row=0)
+ttk.Label(primatsh,  text='Number', justify='center', font='TkTextFont 8 bold').grid(column=0, row=0)
+ttk.Label(extratsh,  text='Number', justify='center', font='TkTextFont 8 bold').grid(column=0, row=0)
+ttk.Label(primatcc,  text='Number', justify='center', font='TkTextFont 8 bold').grid(column=0, row=0)
+ttk.Label(extratcc,  text='Number', justify='center', font='TkTextFont 8 bold').grid(column=0, row=0)
+ttk.Label(primopcc,  text='Number', justify='center', font='TkTextFont 8 bold').grid(column=0, row=0)
+ttk.Label(extropcc,  text='Number', justify='center', font='TkTextFont 8 bold').grid(column=0, row=0)
+
 
 # Attacker labels
 SHOT_label = ttk.Label(attackstat, text='#')
@@ -850,6 +936,9 @@ A_label.grid(column=8, row=2, sticky=(W, E))
 SVA_label = ttk.Label(attackstat, text='SV')
 SVA_label.grid(column=9, row=2, sticky=(W, E))
 
+INV_label = ttk.Label(attackstat, text='Inv')
+INV_label.grid(column=10, row=2, sticky=(W, E))
+
 # Enemy labels
 ENEMY_label = ttk.Label(enemystat, text="#")
 ENEMY_label.grid(column=1, row=2, sticky=(W, E))
@@ -878,6 +967,8 @@ AO_label.grid(column=8, row=2, sticky=(W, E))
 SV_label = ttk.Label(enemystat, text='SV')
 SV_label.grid(column=9, row=2, sticky=(W, E))
 
+INVO_label = ttk.Label(enemystat, text='Inv')
+INVO_label.grid(column=10, row=2, sticky=(W, E))
 
 # Probability Labels
 HIT_label = ttk.Label(probframe, text='Average Hits')
@@ -905,15 +996,10 @@ KILLNUM_label.grid(column=1, row=2, sticky=(N, E))
 KillVal.set('0')
 
 # Progress Bar
-PBAR = ttk.Progressbar(sideframe, orient=HORIZONTAL, length=120, mode='determinate')
-PBAR.grid(column=0, row=1, sticky=(E))
+PBAR = ttk.Progressbar(barframe, orient=HORIZONTAL, length=120, mode='determinate')
+PBAR.grid(column=1, row=0, sticky=(S, E))
 PBAR['value']=0
 
-# Weapons
-#ttk.Label(atweaponframe, text='Shooting', justify='center').grid(column=0, row=0, pady=1)
-#ttk.Label(atweaponframe, text='Assault', justify='center').grid(column=1, row=0, pady=1)
-#ttk.Label(opweaponframe, text='Shooting', justify='center').grid(column=0, row=0, pady=1)
-#ttk.Label(opweaponframe, text='Assault', justify='center').grid(column=1, row=0, pady=1)
 
 #=============#
 #   Graph     #  

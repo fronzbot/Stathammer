@@ -1,3 +1,9 @@
+v0.06a
+* Streamlined GUI more. 
+* Added skeleton for different weapons per unit. 
+* Added in skeleton for weapon creation tool.
+ 
+
 v0.052a
 * Added Unit class to streamline unit stat handling
  
