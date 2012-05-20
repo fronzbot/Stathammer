@@ -1,3 +1,7 @@
+v0.052a
+* Added Unit class to streamline unit stat handling
+ 
+
 v0.051a
 * Fixed bug with multiple unit calls. 
 * Added menu. 
