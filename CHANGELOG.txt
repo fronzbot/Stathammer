@@ -1,3 +1,9 @@
+v0.051a
+* Fixed bug with multiple unit calls. 
+* Added menu. 
+* Menu contains Exit and Iteration selections so far
+ 
+
 v0.05a
 * Added load/save support for multiple units (attackers and enemies). 
 * Next need to add in special weapon support and invulnerable saves and such
