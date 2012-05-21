@@ -254,30 +254,13 @@ def addEnemy(*args):
 
 # Weapon creation window
 def create_weapon(*args):
-    weaponcreator = Toplevel(root)
-    weaponcreator.title('Weapon Creation Tool')
-    weaponcreator.lift(root)
-    weaponcreator.protocol('WM_DELETE_WINDOW', weaponcreator.withdraw)
+    weaponcreator.deiconify()
 
-    # Frames
-    gunframe = GUI.label_frame_create(weaponcreator, 'Shooting', 0, 0)
-    ccframe  = GUI.label_frame_create(weaponcreator, 'Assault', 1, 0)
-    gunstatframe = GUI.frame_create(gunframe, 0, 0) 
-    gunsvframe   = GUI.frame_create(gunframe, 1, 0)
-    ccstatframe  = GUI.frame_create(ccframe, 0, 0)
-    ccsvframe    = GUI.frame_create(ccframe, 1, 0)
-    
-    # Labels
-    ttk.Label(gunstatframe, text='Weapon Name').grid(column=0, row=0, sticky=W)
-    ttk.Label(gunstatframe, text='S', justify='center').grid(column=1, row=0)
-    ttk.Label(gunstatframe, text='AP', justify='center').grid(column=2, row=0)
-    ttk.Label(gunstatframe, text='Attributes', justify='center').grid(column=3, row=0)
+def save_gun(*args):
+    pass
 
-    ttk.Label(ccstatframe, text='Weapon Name').grid(column=0, row=0, sticky=W)
-    ttk.Label(ccstatframe, text='S', justify='center').grid(column=1, row=0)
-    ttk.Label(ccstatframe, text='AP', justify='center').grid(column=2, row=0)
-    ttk.Label(ccstatframe, text='Attributes', justify='center').grid(column=3, row=0)
-    
+def save_cc(*args):
+    pass
     
 # Method to create probability distribution
 def create_distribution(sh_data, at_data, en_data):
@@ -591,6 +574,14 @@ probframe   = GUI.label_frame_create(sideframe, 'Statistics', 0, 1)
 graphpage.grid(padx=7)
 probframe.grid(padx=7)
 
+# TABLE
+tableframe  = GUI.frame_create(probframe, 99, 99)
+statTable = GUI.Table(tableframe, 3, 5)
+statTable.create(0, 0)
+
+for row in range(0, statTable.rows):
+    statTable.change_width(row, 0, 15)
+
 
 atstatframe = GUI.label_frame_create(statframe, 'Attacker', 0, 0)
 atstatframe.grid(padx=7)
@@ -791,12 +782,10 @@ extrAtWep2 = StringVar()
 eAtWep1Box = GUI.input_create(extratsh, 'entry', extrAtWep1, 3, [1, 0, ()], [0])
 eAtWep2Box = GUI.input_create(extratsh, 'entry', extrAtWep2, 3, [2, 0, ()], [0])
 
-
 extrAtCC1 = StringVar()
 extrAtCC2 = StringVar()
 eAtCC1Box = GUI.input_create(extratcc, 'entry', extrAtCC1, 3, [1, 0, ()], [0])
 eAtCC2Box = GUI.input_create(extratcc, 'entry', extrAtCC2, 3, [2, 0, ()], [0])
-
 
 primOpCC1 = StringVar()
 primOpCC2 = StringVar()
@@ -888,6 +877,7 @@ varlist = [opex1CCVar, opex2CCVar]
 l = [opex1CC, opex2CC] = GUI.weapon_boxes(extropcc, varlist, 1, 1, 20)
 for box in l:
     box.set('Default')
+
     
 #=============#
 #   Labels    #  
@@ -1008,8 +998,71 @@ graphframe.create_line(50,300,450,300, width=2)  # X-axis
 graphframe.create_line(50,300,50,50, width=2)    # Y-axis
 
 
-root.bind('<Return>', calculate)
+#================#
+# Weapon Creator #
+#================#
+weaponcreator = Toplevel(root)
+weaponcreator.title('Weapon Creation Tool')
+weaponcreator.lift(root)
+weaponcreator.protocol('WM_DELETE_WINDOW', weaponcreator.withdraw)
 
+# Frames
+gunframe = GUI.label_frame_create(weaponcreator, 'Shooting', 0, 0)
+ccframe  = GUI.label_frame_create(weaponcreator, 'Assault', 1, 0)
+gunstatframe = GUI.frame_create(gunframe, 0, 0) 
+gunsvframe   = GUI.frame_create(gunframe, 1, 0)
+ccstatframe  = GUI.frame_create(ccframe, 0, 0)
+ccsvframe    = GUI.frame_create(ccframe, 1, 0)
+gunsvframe   = GUI.frame_create(gunstatframe, 2, 0)
+ccsvframe    = GUI.frame_create(ccstatframe,  2, 0)
+
+# Labels
+ttk.Label(gunstatframe, text='Weapon Name').grid(column=0, row=0, sticky=W)
+ttk.Label(gunstatframe, text='S', justify='center').grid(column=1, row=0)
+ttk.Label(gunstatframe, text='AP', justify='center').grid(column=2, row=0)
+ttk.Label(gunstatframe, text='Attributes', justify='center').grid(column=3, row=0)
+
+ttk.Label(ccstatframe, text='Weapon Name').grid(column=0, row=0, sticky=W)
+ttk.Label(ccstatframe, text='S', justify='center').grid(column=1, row=0)
+ttk.Label(ccstatframe, text='Attributes', justify='center').grid(column=2, row=0)
+
+# Entries
+gunNameVar = StringVar()
+ccNameVar  = StringVar()
+gunSVar    = StringVar()
+gunAPVar   = StringVar()
+ccSVar     = StringVar()
+gunName = GUI.input_create(gunstatframe, 'entry', gunNameVar, 25, [1, 0, (W, E)], [])
+gunS    = GUI.input_create(gunstatframe, 'entry', gunSVar,    2,  [1, 1, (W, E)], [])
+gunAP   = GUI.input_create(gunstatframe, 'entry', gunAPVar,   2,  [1, 2, (W, E)], [])
+CCName  = GUI.input_create(ccstatframe,  'entry', ccNameVar,  25, [1, 0, (W, E)], [])
+CCS     = GUI.input_create(ccstatframe,  'entry', ccSVar,     2,  [1, 1, (W, E)], [])
+gunS.grid(padx=2)
+CCS.grid(padx=2)
+weaponcreator.withdraw()
+
+# Attributes Boxes
+gunAttrVar = StringVar()
+ccAttrVar  = StringVar()
+gunAttr = ttk.Combobox(gunstatframe, textvariable=gunAttrVar)
+ccAttr  = ttk.Combobox(ccstatframe,  textvariable=ccAttrVar)
+gunAttr.grid(column=3, row=1, padx=2)
+ccAttr.grid(column=2, row=1, padx=2)
+
+gunAttr['values']=('Blast', 'Gets Hot', 'Ignore Armor', 'Ignore Invul', 'Lance', 'None', 'Ordinance',
+                   'Poisoned', 'Re-roll Hits', 'Re-roll Wounds', 'Rending', 'Sniper', 'Template')
+ccAttr['values'] =('None', 'Ignore Invul', 'Poisoned', 'Power Fist', 'Power Weapon', 'Re-roll Hits',
+                   'Re-roll Wounds', 'Rending', 'Thunder Hammer', 'Witchblade')
+gunAttr.set('None')
+ccAttr.set('None')
+
+
+saveGun = ttk.Button(gunsvframe, text = 'Save Weapon', width=15, command=save_gun)
+saveCC  = ttk.Button(ccsvframe,  text = 'Save Weapon', width=15, command=save_cc)
+saveGun.grid(column=0, row=0, sticky=(N, S))
+saveCC.grid(column=0,  row=0, sticky=(N, S))
+
+root.bind('<Return>', calculate)
 for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
 
 

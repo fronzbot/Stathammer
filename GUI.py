@@ -3,6 +3,31 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
 
+
+class Table(object):
+    def __init__(self, parent, rows, columns):
+        self.parent = parent
+        self.rows   = rows
+        self.cols   = columns
+        self.var    = []
+        self.boxes  = []
+        for i in range(0, self.rows):
+            self.var.append([])
+            for j in range(0, self.cols):
+                self.var[i].append(StringVar())
+
+    def create(self, row, col):
+        for i in range(0, self.rows):
+            self.boxes.append([])
+            for j in range(0, self.cols):
+                box = ttk.Entry(self.parent, textvariable=self.var[i][j], width=4,
+                                state='readonly', justify='center')
+                box.grid(column=col+j, row=i, padx=1, pady=1)
+                self.boxes[i].append(box)
+
+    def change_width(self, x, y, width):
+        self.boxes[x][y].config(width=width)
+
     
 def frame_create(root_window, row, col):
     frame = ttk.Frame(root_window, padding="3 3 12 12")
@@ -62,7 +87,6 @@ def weapon_boxes(root_window, variables, start_row, start_col, width):
         col = col
 
     return boxList
-
 
 
 

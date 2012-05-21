@@ -1,3 +1,9 @@
+v0.07a
+* Changed view to paged format. 
+* Added in further weapon support though it still just a skeleton. 
+* Weapon creation tool next thing to be implemented
+ 
+
 v0.06a
 * Streamlined GUI more. 
 * Added skeleton for different weapons per unit. 
