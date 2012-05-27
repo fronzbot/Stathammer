@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = 0.07
+version = 0.09
 
 from tkinter import *
 from tkinter import ttk
@@ -10,8 +10,10 @@ import random
 import os
 import GUI
 import simulation
+import WCreate
 
-
+# Class for units.  Allows for creation of multiple
+# attackers and enemies with a minimal increase in code
 class Unit(object):
     def __init__(self):
         self.name    = StringVar()
@@ -39,11 +41,13 @@ class Unit(object):
         self.SV.set(unitStats[9])
         self.INV.set("0")
 
+    # Method returns all values for a unit
     def get_values(self):
         return [self.name.get(), self.attacks.get(), self.WS.get(),
                 self.BS.get(), self.S.get(), self.T.get(), self.W.get(),
                 self.I.get(), self.A.get(), self.SV.get()]
 
+    # Method returns all values and converts number strings into ints
     def get_int_values(self):
         return [self.name.get(), int(self.attacks.get()), int(self.WS.get()),
                 int(self.BS.get()), int(self.S.get()), int(self.T.get()), int(self.W.get()),
@@ -147,7 +151,7 @@ def load_attacker():
     loadFile = filedialog.askopenfilename(initialdir='profiles',
                                             filetypes=types)
     if loadFile[-3:] != '.at':
-        messagebox.showinfo(message='ERROR', detail='Invalid File Type!', icon='error', default='ok',parent=root)
+        messagebox.showerror(message='ERROR', detail='Invalid File Type!', icon='error', default='ok',parent=root)
     else:
         load = open(loadFile, 'r')
         data = load.readlines()
@@ -171,7 +175,7 @@ def load_enemy():
     loadFile = filedialog.askopenfilename(initialdir='profiles',
                                             filetypes=types)
     if loadFile[-3:] != '.op':
-        messagebox.showinfo(message='ERROR', detail='Invalid File Type!', icon='error', default='ok',parent=root)
+        messagebox.showerror(message='ERROR', detail='Invalid File Type!', icon='error', default='ok',parent=root)
     else:
         load = open(loadFile, 'r')
         data = load.readlines()
@@ -250,18 +254,30 @@ def addEnemy(*args):
         svo1_box.config(state=NORMAL)
         invo1_box.config(state=NORMAL)
 
+# Refreshes weapon list
+def refresh_weapons(*args):
+    gunList = ['No Weapon Selected']
+    for key in weaponCreator.guns:
+        gunList.append(key)
 
+    ccList = ['Default']
+    for key in weaponCreator.cc:
+        ccList.append(key)
 
-# Weapon creation window
-def create_weapon(*args):
-    weaponcreator.deiconify()
+    # Update Guns
+    l = [at1Gun, at2Gun, at3Gun, at4Gun, at5Gun, atex1Gun, atex2Gun]
+    for box in l:
+        box['values'] = tuple(gunList)
+        box.set('No Weapon Selected')
 
-def save_gun(*args):
-    pass
-
-def save_cc(*args):
-    pass
+    # Update CC Weapons
+    l = [at1CC, at2CC, at3CC, at4CC, at5CC, atex1CC, atex2CC,
+         op1CC, op2CC, op3CC, op4CC, op5CC, opex1CC, opex2CC]
+    for box in l:
+        box['values'] = tuple(ccList)
+        box.set('Default')
     
+        
 # Method to create probability distribution
 def create_distribution(sh_data, at_data, en_data):
     try:
@@ -455,7 +471,7 @@ def calculate(*args):
         sva = 0
 
     if (not shots) or (not A_attacks) or (not O_attacks):
-        messagebox.showinfo(message='ERROR', detail='Number of Attackers and Enemies cannot be empty or zero!',
+        messagebox.showerror(message='ERROR', detail='Number of Attackers and Enemies cannot be empty or zero!',
                             icon='error', default='ok',parent=root)
         return
         
@@ -546,13 +562,19 @@ root = Tk()
 
 root.title("Stathammer "+str(version))
 if os.name == "posix":
-    root.wm_iconbitmap('@staticon.xbm')
+    root.wm_iconbitmap('@staticon.xbm') # For non-windows systems (works on linux, not sure about OSX)
 else:
-    root.wm_iconbitmap('staticon.ico')
+    root.wm_iconbitmap('staticon.ico')  # For windows
 
 root.protocol('WM_DELETE_WINDOW', save_init)
 #root.minsize(480, 640)
 #root.maxsize(1024, 768)
+
+#================#
+# Weapon Creator #
+#================#
+weaponCreator = WCreate.WWindow(root)
+
 
 #=============#
 #   Frames    #  
@@ -649,11 +671,13 @@ menubar.add_cascade(label="Options", menu=optmenu)
 menubar.add_cascade(label="Help", menu=helpmenu)
 
 # File ->
-filemenu.add_command(label="New Weapon", command=create_weapon)
+filemenu.add_command(label="New Weapon", command=weaponCreator.show)
 filemenu.add_separator()
 filemenu.add_command(label="Exit", command=save_init)
 
 # Options ->
+optmenu.add_command(label="Refresh Weapon List", command=refresh_weapons)
+
 IterVar = StringVar()
 optmenu.add_cascade(label="Iterations", menu=itermenu)
 itermenu.add_radiobutton(label="100", variable=IterVar, value="100")
@@ -826,6 +850,14 @@ loadEnemy.grid(column=0, row=0, sticky=(W))
 #=============#
 #  Comboboxes #
 #=============#
+gunList = ['No Weapon Selected']
+for key in weaponCreator.guns:
+    gunList.append(key)
+
+ccList = ['Default']
+for key in weaponCreator.cc:
+    ccList.append(key)
+
 at1GunVar = StringVar()
 at2GunVar = StringVar()
 at3GunVar = StringVar()
@@ -834,7 +866,8 @@ at5GunVar = StringVar()
 varlist = [at1GunVar, at2GunVar,at3GunVar, at4GunVar, at5GunVar]
 l = [at1Gun, at2Gun, at3Gun, at4Gun, at5Gun] = GUI.weapon_boxes(primatsh, varlist,1, 1, 20)
 for box in l:
-    box.set('No Weapons Found')
+    box['values'] = tuple(gunList)
+    box.set('No Weapon Selected')
 
 at1CCVar  = StringVar()
 at2CCVar  = StringVar()
@@ -844,6 +877,7 @@ at5CCVar  = StringVar()
 varlist = [at1CCVar, at2CCVar,at3CCVar, at4CCVar, at5CCVar]
 l = [at1CC, at2CC, at3CC, at4CC, at5CC] = GUI.weapon_boxes(primatcc, varlist,1, 1, 20)
 for box in l:
+    box['values'] = tuple(ccList)
     box.set('Default')
 
 
@@ -852,13 +886,15 @@ atex2GunVar = StringVar()
 varlist = [atex1GunVar, atex2GunVar]
 l =[atex1Gun, atex2Gun] = GUI.weapon_boxes(extratsh, varlist, 1, 1, 20)
 for box in l:
-    box.set('No Weapons Found')
+    box['values'] = tuple(gunList)
+    box.set('No Weapon Selected')
 
 atex1CCVar  = StringVar()
 atex2CCVar  = StringVar()
 varlist = [atex1CCVar, atex2CCVar]
 l = [atex1CC, atex2CC] = GUI.weapon_boxes(extratcc, varlist, 1, 1, 20)
 for box in l:
+    box['values'] = tuple(ccList)
     box.set('Default')
 
 op1CCVar  = StringVar()
@@ -869,6 +905,7 @@ op5CCVar  = StringVar()
 varlist = [op1CCVar, op2CCVar,op3CCVar, op4CCVar, op5CCVar]
 l = [op1CC, op2CC, op3CC, op4CC, op5CC] = GUI.weapon_boxes(primopcc, varlist,1, 1, 20)
 for box in l:
+    box['values'] = tuple(ccList)
     box.set('Default')
 
 opex1CCVar  = StringVar()
@@ -876,6 +913,7 @@ opex2CCVar  = StringVar()
 varlist = [opex1CCVar, opex2CCVar]
 l = [opex1CC, opex2CC] = GUI.weapon_boxes(extropcc, varlist, 1, 1, 20)
 for box in l:
+    box['values'] = tuple(ccList)
     box.set('Default')
 
     
@@ -997,70 +1035,6 @@ PBAR['value']=0
 graphframe.create_line(50,300,450,300, width=2)  # X-axis
 graphframe.create_line(50,300,50,50, width=2)    # Y-axis
 
-
-#================#
-# Weapon Creator #
-#================#
-weaponcreator = Toplevel(root)
-weaponcreator.title('Weapon Creation Tool')
-weaponcreator.lift(root)
-weaponcreator.protocol('WM_DELETE_WINDOW', weaponcreator.withdraw)
-
-# Frames
-gunframe = GUI.label_frame_create(weaponcreator, 'Shooting', 0, 0)
-ccframe  = GUI.label_frame_create(weaponcreator, 'Assault', 1, 0)
-gunstatframe = GUI.frame_create(gunframe, 0, 0) 
-gunsvframe   = GUI.frame_create(gunframe, 1, 0)
-ccstatframe  = GUI.frame_create(ccframe, 0, 0)
-ccsvframe    = GUI.frame_create(ccframe, 1, 0)
-gunsvframe   = GUI.frame_create(gunstatframe, 2, 0)
-ccsvframe    = GUI.frame_create(ccstatframe,  2, 0)
-
-# Labels
-ttk.Label(gunstatframe, text='Weapon Name').grid(column=0, row=0, sticky=W)
-ttk.Label(gunstatframe, text='S', justify='center').grid(column=1, row=0)
-ttk.Label(gunstatframe, text='AP', justify='center').grid(column=2, row=0)
-ttk.Label(gunstatframe, text='Attributes', justify='center').grid(column=3, row=0)
-
-ttk.Label(ccstatframe, text='Weapon Name').grid(column=0, row=0, sticky=W)
-ttk.Label(ccstatframe, text='S', justify='center').grid(column=1, row=0)
-ttk.Label(ccstatframe, text='Attributes', justify='center').grid(column=2, row=0)
-
-# Entries
-gunNameVar = StringVar()
-ccNameVar  = StringVar()
-gunSVar    = StringVar()
-gunAPVar   = StringVar()
-ccSVar     = StringVar()
-gunName = GUI.input_create(gunstatframe, 'entry', gunNameVar, 25, [1, 0, (W, E)], [])
-gunS    = GUI.input_create(gunstatframe, 'entry', gunSVar,    2,  [1, 1, (W, E)], [])
-gunAP   = GUI.input_create(gunstatframe, 'entry', gunAPVar,   2,  [1, 2, (W, E)], [])
-CCName  = GUI.input_create(ccstatframe,  'entry', ccNameVar,  25, [1, 0, (W, E)], [])
-CCS     = GUI.input_create(ccstatframe,  'entry', ccSVar,     2,  [1, 1, (W, E)], [])
-gunS.grid(padx=2)
-CCS.grid(padx=2)
-weaponcreator.withdraw()
-
-# Attributes Boxes
-gunAttrVar = StringVar()
-ccAttrVar  = StringVar()
-gunAttr = ttk.Combobox(gunstatframe, textvariable=gunAttrVar)
-ccAttr  = ttk.Combobox(ccstatframe,  textvariable=ccAttrVar)
-gunAttr.grid(column=3, row=1, padx=2)
-ccAttr.grid(column=2, row=1, padx=2)
-
-gunAttr['values']=('Blast', 'Gets Hot', 'Ignore Armor', 'Ignore Invul', 'Lance', 'None', 'Ordinance',
-                   'Poisoned', 'Re-roll Hits', 'Re-roll Wounds', 'Rending', 'Sniper', 'Template')
-ccAttr['values'] =('None', 'Ignore Invul', 'Poisoned', 'Power Fist', 'Power Weapon', 'Re-roll Hits',
-                   'Re-roll Wounds', 'Rending', 'Thunder Hammer', 'Witchblade')
-gunAttr.set('None')
-ccAttr.set('None')
-
-
-saveGun = ttk.Button(gunsvframe, text = 'Save Weapon', width=15, command=save_gun)
-saveCC  = ttk.Button(ccsvframe,  text = 'Save Weapon', width=15, command=save_cc)
-saveGun.grid(column=0, row=0, sticky=(N, S))
-saveCC.grid(column=0,  row=0, sticky=(N, S))
 
 root.bind('<Return>', calculate)
 for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)

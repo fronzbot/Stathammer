@@ -1,3 +1,9 @@
+v0.08a
+* Added Table class to GUI.py. 
+* Added in user-input elements in Weapon Creator tool. 
+* Added in prototype of table class which will be used for stat reporting
+ 
+
 v0.07a
 * Changed view to paged format. 
 * Added in further weapon support though it still just a skeleton. 
@@ -10,11 +16,11 @@ v0.06a
 * Added in skeleton for weapon creation tool.
  
 
-v0.052a
+v0.05.2a
 * Added Unit class to streamline unit stat handling
  
 
-v0.051a
+v0.05.1a
 * Fixed bug with multiple unit calls. 
 * Added menu. 
 * Menu contains Exit and Iteration selections so far
