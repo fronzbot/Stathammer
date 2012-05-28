@@ -7,11 +7,12 @@ import sys
 import os
 
 weaponAttributes = {'gun': ('Blast', 'Gets-Hot', 'Ignore-Armor', 'Ignore-Invul', 'Lance',
-                            'Melta', 'None', 'Ordinance', 'Poisoned', 'Re-roll Hits',
-                            'Re-roll Wounds', 'Rending', 'Sniper', 'Template'),
+                            'Melta', 'None', 'Ordinance', 'Poisoned_3+', 'Poisoned_4+',
+                            'Poisoned_5+', 'Re-roll Hits','Re-roll Wounds', 'Rending', 'Sniper',
+                            'Template'),
                     'cc' : ('+1-Strength', '+2-Strength', 'Double-Strength', 'None', 'Ignore-Invul',
-                            'Poisoned', 'Power-Fist', 'Power-Weapon', 'Re-roll Hits', 'Re-roll Wounds',
-                            'Rending', 'Thunder-Hammer', 'Witchblade')}
+                            'Poisoned_3+', 'Poisoned_4+', 'Poisoned_5+', 'Power-Fist', 'Power-Weapon',
+                            'Re-roll Hits', 'Re-roll Wounds', 'Rending', 'Thunder-Hammer', 'Witchblade')}
 
 
 class WWindow(object):
@@ -41,33 +42,42 @@ class WWindow(object):
         self.ccsvframe    = GUI.frame_create(self.ccframe, 1, 0)
         self.gunsvframe   = GUI.frame_create(self.gunstatframe, 2, 0)
         self.ccsvframe    = GUI.frame_create(self.ccstatframe,  2, 0)
-        self.gunattrbtns  = GUI.frame_create(self.gunstatframe, 0, 4)
-        self.ccattrbtns   = GUI.frame_create(self.ccstatframe,  0, 2)
+        self.gunattrbtns  = GUI.frame_create(self.gunstatframe, 0, 5)
+        self.ccattrbtns   = GUI.frame_create(self.ccstatframe,  0, 3)
         self.gunattrbtns.grid(sticky=(N, S))
         self.ccattrbtns.grid(sticky=(N, S))
         
         # Labels
         ttk.Label(self.gunstatframe, text='Weapon Name').grid(column=0, row=0, sticky=W)
-        ttk.Label(self.gunstatframe, text='S', justify='center').grid(column=1, row=0)
-        ttk.Label(self.gunstatframe, text='AP', justify='center').grid(column=2, row=0)
-        ttk.Label(self.gunstatframe, text='Attributes', justify='center').grid(column=3, row=0)
+        ttk.Label(self.gunstatframe, text='Shots', justify='center').grid(column=1, row=0, sticky=W)
+        ttk.Label(self.gunstatframe, text='S', justify='center').grid(column=2, row=0)
+        ttk.Label(self.gunstatframe, text='AP', justify='center').grid(column=3, row=0)
+        ttk.Label(self.gunstatframe, text='Attributes', justify='center').grid(column=4, row=0)
     
         ttk.Label(self.ccstatframe, text='Weapon Name').grid(column=0, row=0, sticky=W)
-        ttk.Label(self.ccstatframe, text='Attributes', justify='center').grid(column=1, row=0)
+        ttk.Label(self.ccstatframe, text='Atx', justify='center').grid(column=1, row=0)
+        ttk.Label(self.ccstatframe, text='Attributes', justify='center').grid(column=2, row=0)
         
         # Entries
         self.gunNameVar = StringVar()
         self.ccNameVar  = StringVar()
+        self.ccAtkVar   = StringVar()
+        self.gunShotVar = StringVar()
         self.gunSVar    = StringVar()
         self.gunAPVar   = StringVar()
-        self.gunName = GUI.input_create(self.gunstatframe, 'entry', self.gunNameVar, 25, [1, 0, (W, E)], [])
-        self.gunS    = GUI.input_create(self.gunstatframe, 'entry', self.gunSVar,    2,  [1, 1, (W, E)], [])
-        self.gunAP   = GUI.input_create(self.gunstatframe, 'entry', self.gunAPVar,   2,  [1, 2, (W, E)], [])
-        self.CCName  = GUI.input_create(self.ccstatframe,  'entry', self.ccNameVar,  25, [1, 0, (W, E)], [])
+        self.gunName    = GUI.input_create(self.gunstatframe, 'entry', self.gunNameVar, 25, [1, 0, (W, E)], [])
+        self.gunShots   = GUI.input_create(self.gunstatframe, 'entry', self.gunShotVar, 4,  [1, 1, (W, E)], [])
+        self.gunS       = GUI.input_create(self.gunstatframe, 'entry', self.gunSVar,    2,  [1, 2, (W, E)], [])
+        self.gunAP      = GUI.input_create(self.gunstatframe, 'entry', self.gunAPVar,   2,  [1, 3, (W, E)], [])
+        self.CCName     = GUI.input_create(self.ccstatframe,  'entry', self.ccNameVar,  25, [1, 0, (W, E)], [])
+        self.CCAtk      = GUI.input_create(self.ccstatframe,  'entry', self.ccAtkVar,   4,  [1, 1, (W, E)], [])
+        
         self.gunS.grid(padx=2)
         self.app.withdraw()
         self.gunNameVar.set('ENTER NAME OF GUN')
         self.ccNameVar.set('ENTER NAME OF WEAPON')
+        self.gunShotVar.set('#')
+        self.ccAtkVar.set('#')
         self.gunSVar.set('#')
         self.gunAPVar.set('#')
 
@@ -97,14 +107,14 @@ class WWindow(object):
         self.ccAttr2  = ttk.Combobox(self.ccstatframe,  textvariable=self.ccAttrVar2, state=DISABLED)
         self.ccAttr3  = ttk.Combobox(self.ccstatframe,  textvariable=self.ccAttrVar3, state=DISABLED)
         self.ccAttr4  = ttk.Combobox(self.ccstatframe,  textvariable=self.ccAttrVar4, state=DISABLED)
-        self.gunAttr1.grid(column=3, row=1, padx=2)
-        self.gunAttr2.grid(column=4, row=1, padx=2)
-        self.gunAttr3.grid(column=3, row=2, padx=2)
-        self.gunAttr4.grid(column=4, row=2, padx=2)
-        self.ccAttr1.grid(column=1, row=1, padx=2)
-        self.ccAttr2.grid(column=2, row=1, padx=2)
-        self.ccAttr3.grid(column=1, row=2, padx=2)
-        self.ccAttr4.grid(column=2, row=2, padx=2)
+        self.gunAttr1.grid(column=4, row=1, padx=2)
+        self.gunAttr2.grid(column=5, row=1, padx=2)
+        self.gunAttr3.grid(column=4, row=2, padx=2)
+        self.gunAttr4.grid(column=5, row=2, padx=2)
+        self.ccAttr1.grid(column=2, row=1, padx=2)
+        self.ccAttr2.grid(column=3, row=1, padx=2)
+        self.ccAttr3.grid(column=2, row=2, padx=2)
+        self.ccAttr4.grid(column=3, row=2, padx=2)
         
         self.gunAttr1['values'] = weaponAttributes['gun']
         self.gunAttr2['values'] = weaponAttributes['gun']
@@ -145,7 +155,7 @@ class WWindow(object):
             if not result:
                 return
         
-        data = [self.gunSVar.get(), self.gunAPVar.get()]
+        data = [self.gunShotVar.get(), self.gunSVar.get(), self.gunAPVar.get()]
         
         # Loop through additional attributes and append to data
         for i in range(0, self.gunAttrCount):
@@ -190,7 +200,7 @@ class WWindow(object):
             if not result:
                 return
 
-        data = []
+        data = [self.ccAtkVar.get()]
         # Loop through additional attributes and append to data
         for i in range(0, self.ccAttrCount):
             data.append(ccAttrBoxes[i])

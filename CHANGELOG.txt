@@ -1,3 +1,10 @@
+v0.09a
+* Completed Weapon Creator file handling. 
+* Possbily add in number of attacks/shots as a weapon attribute. 
+* Moved Weapon Creator tool to WCreate module. 
+* Added more comments to files
+ 
+
 v0.08a
 * Added Table class to GUI.py. 
 * Added in user-input elements in Weapon Creator tool. 

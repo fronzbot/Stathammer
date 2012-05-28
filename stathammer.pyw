@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = 0.09
+version = 0.010
 
 from tkinter import *
 from tkinter import ttk
@@ -410,18 +410,57 @@ def calculate(*args):
     Enemy_MeanKill   = 0
     shoot_kill_list  = []
     enemy_kill_list  = []
-    attack_kill_list  = []
+    attack_kill_list = []
     loop_count = 0
 
     # Get Parameters
     [name, numAttack, wsa, bsa, sa, ta, wa, ia, aa, sva] = attacker_1.get_int_values()
     [name, numEnemy,  wso, bso, so, to, wo, io, ao, svo] = enemy_1.get_int_values()
+
+    # Get weapon usage
+    ##################
+    # Guns for primary attacker
+    unitGunCount = [primAtWep1.get(), primAtWep2.get(), primAtWep3.get(), primAtWep4.get(), primAtWep5.get()]
+    unitGunNames = [at1GunVar.get(), at2GunVar.get(), at3GunVar.get(), at4GunVar.get(), at5GunVar.get()] 
+    attackerGuns = simulation.sort_weapons(unitGunNames, unitGunCount)
+        
+    # Guns for secondary attacker
+    extraGunCount = [extrAtWep1.get(), extrAtWep2.get()]
+    extraGunNames = [atex1GunVar.get(), atex2GunVar.get()] 
+    extraAttackerGuns = simulation.sort_weapons(extraGunNames, extraGunCount)
+
+    # CC Weapons for primary attacker
+    unitCCCount = [primAtCC1.get(), primAtCC2.get(), primAtCC3.get(), primAtCC4.get(), primAtCC5.get()]
+    unitCCNames = [at1CCVar.get(), at2CCVar.get(), at3CCVar.get(), at4CCVar.get(), at5CCVar.get()]
+    attackerCC  = simulation.sort_weapons(unitCCNames, unitCCCount)
+
+    # CC Weapons for secondary attacker
+    extraCCCount = [extrAtCC1.get(), extrAtCC2.get()]
+    extraCCNames = [atex1CCVar.get(), atex2CCVar.get()]
+    extraAttackerCC  = simulation.sort_weapons(extraCCNames, extraCCCount)    
+
+    # Get total number of attacks for weapons and modify strength for cc weapons
+    attackerCCStrength = {}
+    for gun in attackerGuns:
+        attackerGuns[gun] *= int(weaponCreator.guns[gun][0])
+    for gun in extraAttackerGuns:
+        extraAttackerGuns[gun] *= int(weaponCreator.guns[gun][0])
+    for cc in attackerCC:
+        try:
+            attackerCC[cc] *= int(weaponCreator.cc[cc][0])
+            attackerCCStrength[cc] = simulation.get_cc_strength(weaponCreator.cc[cc][2:], sa)
+        except KeyError:
+            attackerCCStrength[cc] = sa
+            
+        attackerCC[cc] *= aa
+
+        
+    for cc in extraAttackerCC:
+        extraAttackerCC[cc] *= int(weaponCreator.cc[cc][0])
     
-    shots     = numAttack
-    A_attacks = numAttack*aa
-    O_attacks = numEnemy*ao
-    A_wounds  = numAttack*wa
-    O_wounds  = numEnemy*wo
+    PrimOp_attacks = numEnemy*ao
+    PrimAt_wounds  = numAttack*wa
+    PrimOp_wounds  = numEnemy*wo
 
     # Retrieve score needed to hit
     if bsa > 5:
@@ -442,95 +481,106 @@ def calculate(*args):
         Attack_ToHit = 4
         Enemy_ToHit  = 4
 
-    # Retrieve score needed to wound
-    if sa == to:
-        Attack_ToWound = 4
-    elif sa < to:
-        Attack_ToWound = 4 + (to-sa)
-        if Attack_ToWound > 6:
-            Attack_ToWound = 7
-    elif sa > to:
-        Attack_ToWound = 4 - (sa-to)
-        if Attack_ToWound < 2:
-            Attack_ToWound = 2
-    if so == ta:
-        Enemy_ToWound = 4
-    elif so < ta:
-        Enemy_ToWound = 4 + (ta-so)
-        if Enemy_ToWound > 6:
-            Enemy_ToWound = 7
-    elif so > ta:
-        Enemy_ToWound = 4 - (so-ta)
-        if Enemy_ToWound < 2:
-            Enemy_ToWound = 2
+    # Retrieve score needed to wound for shooting and Instant-Kill check
+    Gun_ToWound      = {}
+    Gun_InstantKill  = {}
+    for weapon in attackerGuns:
+        Gun_ToWound[weapon] = simulation.get_scoreToWound(int(weaponCreator.guns[weapon][1]),
+                                                          weaponCreator.guns[weapon][3:], to)
 
-    # Handle Instant Kills on double strength
-    if sa > 2*to:
-        svo = 0
-    if so > 2*ta:
-        sva = 0
-
-    if (not shots) or (not A_attacks) or (not O_attacks):
-        messagebox.showerror(message='ERROR', detail='Number of Attackers and Enemies cannot be empty or zero!',
-                            icon='error', default='ok',parent=root)
-        return
+        Gun_InstantKill[weapon] = simulation.check_instant_kill(int(weaponCreator.guns[weapon][1]),
+                                                     to, weaponCreator.guns[weapon][3:],
+                                                     int(weaponCreator.guns[weapon][2]))
         
+    # Retrieve score needed to wound for cc and Instant-Kill check
+    CC_ToWound      = {}
+    CC_InstantKill  = {}
+    for weapon in attackerCC:
+        try:
+            CC_ToWound[weapon] = simulation.get_scoreToWound(attackerCCStrength[weapon],
+                                                              weaponCreator.cc[weapon][1:], to)
+            CC_InstantKill[weapon] = simulation.check_instant_kill(attackerCCStrength[weapon],
+                                                         to, weaponCreator.cc[weapon][1:], 0)
+        except KeyError:
+            CC_ToWound[weapon] = simulation.get_scoreToWound(attackerCCStrength[weapon], [], to)
+            CC_InstantKill[weapon] = simulation.check_instant_kill(attackerCCStrength[weapon], to, [], 0)
+
+    Enemy_ToWound  = 4 # Temporary holder
+    
     while(loop_count < iterations):
         PBAR.step(1.0)
         root.update()
 
-        #Get hit probability
-        shoot_hits  = simulation.to_hit(scoreToHit, shots)
-        if ia == io:
-            attack_hits = simulation.to_hit(Attack_ToHit, A_attacks)
-            enemy_hits  = simulation.to_hit(Enemy_ToHit, O_attacks)
-        
-        # Get wound probability
-        shoot_wounds = simulation.to_wound(Attack_ToWound, shoot_hits)
-        if ia == io:
-            attack_wounds = simulation.to_wound(Attack_ToWound, attack_hits)
-            enemy_wounds  = simulation.to_wound(Enemy_ToWound, enemy_hits)
+        shoot_hits   = {}
+        shoot_wounds = {}
+        shoot_kills  = {}
+        currentShot_hits   = []
+        currentShot_wounds = []
+        currentShot_kills  = []
+        for weapon in attackerGuns:
+            shoot_hits[weapon]   = simulation.to_hit(scoreToHit, attackerGuns[weapon]) # Get hit probability
+            shoot_wounds[weapon] = simulation.to_wound(Gun_ToWound[weapon], shoot_hits[weapon]) # Get Wound Probability
+            if Gun_InstantKill[weapon]:
+                shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], 0)
+            else:
+                shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], svo)
+            currentShot_hits.append(shoot_hits[weapon])
+            currentShot_wounds.append(shoot_wounds[weapon])
+            currentShot_kills.append(shoot_kills[weapon])
+
+        cc_hits   = {}
+        cc_wounds = {}
+        cc_kills  = {}
+        currentCC_hits   = []
+        currentCC_wounds = []
+        currentCC_kills  = []
+        for weapon in attackerCC:
+            cc_hits[weapon]   = simulation.to_hit(Attack_ToHit, attackerCC[weapon]) # Get hit probability
+            cc_wounds[weapon] = simulation.to_wound(CC_ToWound[weapon], cc_hits[weapon]) # Get Wound Probability
+            if CC_InstantKill[weapon]:
+                cc_kills[weapon] = simulation.kills(cc_wounds[weapon], 0)
+            else:
+                cc_kills[weapon] = simulation.kills(cc_wounds[weapon], svo)
+            currentCC_hits.append(cc_hits[weapon])
+            currentCC_wounds.append(cc_wounds[weapon])
+            currentCC_kills.append(cc_kills[weapon])
             
-        # Get kill probability
-        if ia > io:
-            attack_hits   = simulation.to_hit(Attack_ToHit, A_attacks)
-            attack_wounds = simulation.to_wound(Attack_ToWound, attack_hits)
-            attack_kills  = simulation.kills(attack_wounds, svo)
-  
-            enemy_hits    = simulation.to_hit(Enemy_ToHit, O_attacks - attack_kills)
-            enemy_wounds  = simulation.to_wound(Enemy_ToWound, enemy_hits)
-            enemy_kills   = simulation.kills(enemy_wounds, sva)
 
-        elif io > ia:
-            enemy_hits    = simulation.to_hit(Enemy_ToHit, O_attacks)
-            enemy_wounds  = simulation.to_wound(Enemy_ToWound, enemy_hits)
-            enemy_kills   = simulation.kills(enemy_wounds, sva)
+        # Get total stats from shooting
+        total_hits   = 0
+        total_wounds = 0
+        total_kills  = 0
+        for hits, wounds, kills in zip(currentShot_hits, currentShot_wounds, currentShot_kills):
+            total_hits   += hits
+            total_wounds += wounds
+            total_kills  += kills
 
-            attack_hits   = simulation.to_hit(Attack_ToHit, A_attacks - enemy_kills)
-            attack_wounds = simulation.to_wound(Attack_ToWound, attack_hits)
-            attack_kills  = simulation.kills(attack_wounds, svo)
+        shoot_kill_list.append(total_kills)
 
-        else:
-            attack_kills = simulation.kills(attack_wounds, svo)
-            enemy_kills  = simulation.kills(enemy_wounds, sva)
-            
-        shoot_kills = simulation.kills(shoot_wounds, svo)
+        Shoot_MeanHit   += total_hits
+        Shoot_MeanWound += total_wounds
+        Shoot_MeanKill  += total_kills
         
-        shoot_kill_list.append(shoot_kills)
-        attack_kill_list.append(attack_kills)
-        enemy_kill_list.append(enemy_kills)
+        # Get total stats from assault
+        total_hits   = 0
+        total_wounds = 0
+        total_kills  = 0
+        for hits, wounds, kills in zip(currentCC_hits, currentCC_wounds, currentCC_kills):
+            total_hits   += hits
+            total_wounds += wounds
+            total_kills  += kills
+
+        attack_kill_list.append(total_kills)   
+
+        Attack_MeanHit   += total_hits
+        Attack_MeanWound += total_wounds
+        Attack_MeanKill  += total_kills
+    
+        enemy_kill_list.append(0)
         
-        Shoot_MeanHit   += shoot_hits
-        Shoot_MeanWound += shoot_wounds
-        Shoot_MeanKill  += shoot_kills
-
-        Attack_MeanHit   += attack_hits
-        Attack_MeanWound += attack_wounds
-        Attack_MeanKill  += attack_kills
-
-        Enemy_MeanHit   += enemy_hits
-        Enemy_MeanWound += enemy_wounds
-        Enemy_MeanKill  += enemy_kills
+        Enemy_MeanHit   += 0
+        Enemy_MeanWound += 0
+        Enemy_MeanKill  += 0
 
         loop_count += 1
 
