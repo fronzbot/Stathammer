@@ -7,6 +7,11 @@ def round_int(num):
     else:
         return int(num-.5)
 
+# Method to return pairwise elements of list
+def pairwise(iterable):
+    a = iter(iterable)
+    return zip(a, a)
+
 # Monte_carlo algorithm   
 def monte_carlo(iters):
     cnt = 0
@@ -24,27 +29,59 @@ def monte_carlo(iters):
     return rollProb
 
 # Calculates number of hits
-def to_hit(score, attacks):
+def to_hit(score, attacks, attributes):
     attack_dice = monte_carlo(attacks)
-  
-    attack_hit_prob = 0
-
+    
     # Get HIT probability
+    attack_hit_prob = 0
     for i in range(score-1, 6):
         attack_hit_prob += attack_dice[i]
+        
+    # Get re-roll probability
+    if 'Re-roll Hits' in attributes:
+        rrCnt  = 0
+        rrProb = 0
+        while(rrCnt < score-1):
+            re_roll = random.randint(1,6)
+            if re_roll > score-1:
+                rrProb += 1
+            rrCnt += 1
+        rrProb /= rrCnt
+        rrProb /= attacks
 
+        attack_hit_prob += rrProb
+        
     return round_int(attack_hit_prob*attacks)
 
 # Calculate number of wounds
-def to_wound(score, hits):
+def to_wound(score, hits, attributes):
     attack_dice = monte_carlo(hits)
   
     attack_wound_prob = 0
-
     for i in range(score-1, 6):
         attack_wound_prob += attack_dice[i]
 
-    return round_int(attack_wound_prob*hits)
+    # Get re-roll probability
+    if 'Re-roll Wounds' in attributes:
+        rrCnt  = 0
+        rrProb = 0
+        while(rrCnt < score-1):
+            re_roll = random.randint(1,6)
+            if re_roll > score-1:
+                rrProb += 1
+            rrCnt += 1
+        rrProb /= rrCnt
+        rrProb /= attacks
+
+        attack_hit_prob += rrProb
+
+    # Get Rending Probability
+    rending_wounds = 0
+    if 'Rending' in attributes:
+        rending_wounds = round_int(attack_dice[5]*hits)
+
+    attack_wounds = round_int(attack_wound_prob*hits) - rending_wounds 
+    return [attack_wounds, rending_wounds]
 
 # Calculates amount of kills
 def kills(wounds, save):
@@ -88,9 +125,13 @@ def sort_weapons(key_list, val_list):
 # parameter 'weapon' is a list ordered as:
 # [Shots, Strength, AP, Attributes...]
 def get_scoreToWound(weapon_strength, weapon_attributes, opposing_toughness):
+    if "Witchblade" in weapon_attributes:
+        return 2
     if "Poisoned_3+" in weapon_attributes:
         return 3
     if "Poisoned_4+" in weapon_attributes:
+        return 4
+    if "Sniper" in weapon_attributes:
         return 4
     if "Poisoned_5+" in weapon_attributes:
         return 5
@@ -131,7 +172,6 @@ def get_cc_strength(weapon_attributes, base_strength):
 # Method to check if weapon will ignore armor or have high enough
 # Strength for an instant-kill (AP is set to 0 for CC weapons)
 def check_instant_kill(strength, toughness, weapon_attributes, weapon_AP):
-    print(weapon_attributes)
     if strength >= 2*toughness:
         return True
     if ("Power-Weapon" or "Ignore-Armor" or "Power-Fist" or "Thunder-Hammer") in weapon_attributes:

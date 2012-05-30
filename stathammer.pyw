@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = 0.010
+version = '0.010'
 
 from tkinter import *
 from tkinter import ttk
@@ -39,19 +39,19 @@ class Unit(object):
         self.I.set(unitStats[7])
         self.A.set(unitStats[8])
         self.SV.set(unitStats[9])
-        self.INV.set("0")
+        self.INV.set(unitStats[10])
 
     # Method returns all values for a unit
     def get_values(self):
         return [self.name.get(), self.attacks.get(), self.WS.get(),
                 self.BS.get(), self.S.get(), self.T.get(), self.W.get(),
-                self.I.get(), self.A.get(), self.SV.get()]
+                self.I.get(), self.A.get(), self.SV.get(), self.INV.get()]
 
     # Method returns all values and converts number strings into ints
     def get_int_values(self):
         return [self.name.get(), int(self.attacks.get()), int(self.WS.get()),
                 int(self.BS.get()), int(self.S.get()), int(self.T.get()), int(self.W.get()),
-                int(self.I.get()), int(self.A.get()), int(self.SV.get())]
+                int(self.I.get()), int(self.A.get()), int(self.SV.get()), int(self.INV.get())]
 
             
 
@@ -62,14 +62,22 @@ def load_init():
     f.close()
 
     #Attackers
-    data[0] = data[0].split(" ")
-    data[1] = data[1].split(" ")
-    data[2] = data[2].split(" ")
+    data[0]  = data[0].split(" ")   # Attacker name
+    data[1]  = data[1].split(" ")   # Attacker params
+    data[2]  = data[2].split(" ")   # Extra Attacker params
 
     #Enemies
-    data[3] = data[3].split(" ")
-    data[4] = data[4].split(" ")
-    data[5] = data[5].split(" ")
+    data[3]  = data[3].split(" ")   # Enemy name
+    data[4]  = data[4].split(" ")   # Enemy params
+    data[5]  = data[5].split(" ")   # Extra Enemy params
+
+    #Weapons
+    data[6]  = data[6].split(" ")   # Attacker Guns
+    data[7]  = data[7].split(" ")   # Extra Attacker Guns
+    data[8]  = data[8].split(" ")   # Attacker CC
+    data[9]  = data[9].split(" ")   # Extra Attacker CC
+    data[10] = data[10].split(" ")  # Enemy CC
+    data[11] = data[11].split(" ")  # Extra Enemy CC
 
     #Set variables
     Unitvar.set(" ".join(data[0][0].split("_")))
@@ -77,20 +85,68 @@ def load_init():
     
     attacker_1.set_values([data[1][0], data[1][1], data[1][2], data[1][3],
                            data[1][4], data[1][5], data[1][6], data[1][7],
-                           data[1][8], data[1][9]])
+                           data[1][8], data[1][9], data[1][10]])
     
     attacker_2.set_values([data[2][0], data[2][1], data[2][2], data[2][3],
                            data[2][4], data[2][5], data[2][6], data[2][7],
-                           data[2][8], data[2][9]])
+                           data[2][8], data[2][9], data[2][10]])
 
     
     enemy_1.set_values([data[4][0], data[4][1], data[4][2], data[4][3],
                         data[4][4], data[4][5], data[4][6], data[4][7],
-                        data[4][8], data[4][9]])
+                        data[4][8], data[4][9], data[4][10]])
     
     enemy_2.set_values([data[5][0], data[5][1], data[5][2], data[5][3],
                         data[5][4], data[5][5], data[5][6], data[5][7],
-                        data[5][8], data[5][9]])
+                        data[5][8], data[5][9], data[5][10]])
+
+    i = 0
+    vals = [primAtWep1, primAtWep2, primAtWep3, primAtWep4, primAtWep5]
+    weps = [at1Gun, at2Gun, at3Gun, at4Gun, at5Gun]
+    for count, name in simulation.pairwise(data[6]):
+        vals[i].set(count)
+        weps[i].set(name)
+        i += 1
+
+    i = 0
+    vals = [extrAtWep1, extrAtWep2]
+    weps = [atex1Gun, atex2Gun]
+    for count, name in simulation.pairwise(data[7]):
+        vals[i].set(count)
+        weps[i].set(name)
+        i += 1
+
+    i = 0
+    vals = [primAtCC1, primAtCC2, primAtCC3, primAtCC4, primAtCC5]
+    weps = [at1CC, at2CC, at3CC, at4CC, at5CC]
+    for count, name in simulation.pairwise(data[8]):
+        vals[i].set(count)
+        weps[i].set(name)
+        i += 1
+
+    i = 0
+    vals = [extrAtCC1, extrAtCC2]
+    weps = [atex1CC, atex2CC]
+    for count, name in simulation.pairwise(data[9]):
+        vals[i].set(count)
+        weps[i].set(name)
+        i += 1
+
+    i = 0
+    vals = [primOpCC1, primOpCC2, primOpCC3, primOpCC4, primOpCC5]
+    weps = [op1CC, op2CC, op3CC, op4CC, op5CC]
+    for count, name in simulation.pairwise(data[10]):
+        vals[i].set(count)
+        weps[i].set(name)
+        i += 1
+
+    i = 0
+    vals = [extrOpCC1, extrOpCC2]
+    weps = [opex1CC, opex2CC]
+    for count, name in simulation.pairwise(data[11]):
+        vals[i].set(count)
+        weps[i].set(name)
+        i += 1
    
 # Saves window state for re-initialization
 def save_init():
@@ -105,9 +161,34 @@ def save_init():
     enemy = (str(ue)+" \n"+
              " ".join(enemy_1.get_values())+" \n"+
              " ".join(enemy_2.get_values()))
+
+    attackWeapons = ""
+    weapons = [[primAtWep1, primAtWep2, primAtWep3, primAtWep4, primAtWep5],
+               [at1Gun, at2Gun, at3Gun, at4Gun, at5Gun],
+               [extrAtWep1, extrAtWep2],
+               [atex1Gun, atex2Gun],
+               [primAtCC1, primAtCC2, primAtCC3, primAtCC4, primAtCC5],
+               [at1CC, at2CC, at3CC, at4CC, at5CC],
+               [extrAtCC1, extrAtCC2],
+               [atex1CC, atex2CC],
+               [primOpCC1, primOpCC2, primOpCC3, primOpCC4, primOpCC5],
+               [op1CC, op2CC, op3CC, op4CC, op5CC],
+               [extrOpCC1, extrOpCC2],
+               [opex1CC, opex2CC]]
+
+    i = 0
+    while (i < 11):
+        for j in range(0, len(weapons[i])):
+            if weapons[i][j].get() != "":
+                string = weapons[i][j].get()+" "+weapons[i+1][j].get()+" "
+                attackWeapons += string
+            else:
+                break
+        attackWeapons += "\n"
+        i += 2
              
     f = open('.init', 'w')
-    f.write(attacker+" \n"+enemy)
+    f.write(attacker+" \n"+enemy+" \n"+attackWeapons)
     f.close
     root.destroy()
 
@@ -123,9 +204,31 @@ def save_attacker():
         attacker = (str(ua)+" \n"+
                     " ".join(attacker_1.get_values())+" \n"+
                     " ".join(attacker_2.get_values()))
-                    
+
+        attackWeapons = ""
+        weapons = [[primAtWep1, primAtWep2, primAtWep3, primAtWep4, primAtWep5],
+                   [at1Gun, at2Gun, at3Gun, at4Gun, at5Gun],
+                   [extrAtWep1, extrAtWep2],
+                   [atex1Gun, atex2Gun],
+                   [primAtCC1, primAtCC2, primAtCC3, primAtCC4, primAtCC5],
+                   [at1CC, at2CC, at3CC, at4CC, at5CC],
+                   [extrAtCC1, extrAtCC2],
+                   [atex1CC, atex2CC]]
+
+        i = 0
+        while (i < 7):
+            for j in range(0, len(weapons[i])):
+                if weapons[i][j].get() != "":
+                    string = weapons[i][j].get()+" "+weapons[i+1][j].get()+" "
+                    attackWeapons += string
+                else:
+                    break
+            
+            attackWeapons += "\n"
+            i += 2
+            
         save = open(saveFile, 'w')
-        save.write(attacker)
+        save.write(attacker+" \n"+attackWeapons)
         save.close()
 
 # Save enemy profile
@@ -140,9 +243,26 @@ def save_enemy():
         enemy = (str(ue)+" \n"+
                  " ".join(enemy_1.get_values())+" \n"+
                  " ".join(enemy_2.get_values()))
-                 
+
+        attackWeapons = ""
+        weapons = [[primOpCC1, primOpCC2, primOpCC3, primOpCC4, primOpCC5],
+                   [op1CC, op2CC, op3CC, op4CC, op5CC],
+                   [extrOpCC1, extrOpCC2],
+                   [opex1CC, opex2CC]]
+
+        i = 0
+        while (i < 3):
+            for j in range(0, len(weapons[i])):
+                if weapons[i][j].get() != "":
+                    string = weapons[i][j].get()+" "+weapons[i+1][j].get()+" "
+                    attackWeapons += string
+                else:
+                    break
+            attackWeapons += "\n"
+            i += 2
+            
         save = open(saveFile, 'w')
-        save.write(enemy)
+        save.write(enemy+" \n"+attackWeapons)
         save.close()
 
 # Load attacker profile
@@ -159,15 +279,60 @@ def load_attacker():
         data[0] = data[0].split()
         data[1] = data[1].split()
         data[2] = data[2].split()
+        data[3] = data[3].split(" ")   # Attacker Guns
+        data[4] = data[4].split(" ")   # Extra Attacker Guns
+        data[5] = data[5].split(" ")   # Attacker CC
+        data[6] = data[6].split(" ")   # Extra Attacker CC
         
         Unitvar.set(" ".join(data[0][0].split("_")))
         attacker_1.set_values([data[1][0], data[1][1], data[1][2], data[1][3],
                                data[1][4], data[1][5], data[1][6], data[1][7],
-                               data[1][8], data[1][9]])
+                               data[1][8], data[1][9], data[1][10]])
         attacker_2.set_values([data[2][0], data[2][1], data[2][2], data[2][3],
                                data[2][4], data[2][5], data[2][6], data[2][7],
-                               data[2][8], data[2][9]])
+                               data[2][8], data[2][9], data[2][10]])
+
+        i = 0
+        vals = [primAtWep1, primAtWep2, primAtWep3, primAtWep4, primAtWep5]
+        weps = [at1Gun, at2Gun, at3Gun, at4Gun, at5Gun]
+        for count, name in simulation.pairwise(data[3]):
+            vals[i].set(count)
+            weps[i].set(name)
+            i += 1
+        for j in range(i, len(vals)):
+            vals[i].set("")
+            weps[i].set("No Weapon Selected")
+    
+        i = 0
+        vals = [extrAtWep1, extrAtWep2]
+        weps = [atex1Gun, atex2Gun]
+        for count, name in simulation.pairwise(data[4]):
+            vals[i].set(count)
+            weps[i].set(name)
+            i += 1
+        for j in range(i, len(vals)):
+            vals[i].set("")
+            weps[i].set("No Weapon Selected")
         
+        i = 0
+        vals = [primAtCC1, primAtCC2, primAtCC3, primAtCC4, primAtCC5]
+        weps = [at1CC, at2CC, at3CC, at4CC, at5CC]
+        for count, name in simulation.pairwise(data[5]):
+            vals[i].set(count)
+            weps[i].set(name)
+            i += 1
+        for j in range(i, len(vals)):
+            vals[i].set("")
+            weps[i].set("No Weapon Selected")
+            
+        i = 0
+        vals = [extrAtCC1, extrAtCC2]
+        weps = [atex1CC, atex2CC]
+        for count, name in simulation.pairwise(data[6]):
+            vals[i].set(count)
+            weps[i].set(name)
+            i += 1
+            
         root.update()
 
 def load_enemy():
@@ -183,15 +348,38 @@ def load_enemy():
         data[0] = data[0].split()
         data[1] = data[1].split()
         data[2] = data[2].split()
+        data[3] = data[3].split(" ")  # Enemy CC
+        data[4] = data[4].split(" ")  # Extra Enemy CC
         
         UnitvarO.set(" ".join(data[0][0].split("_")))
         enemy_1.set_values([data[1][0], data[1][1], data[1][2], data[1][3],
                             data[1][4], data[1][5], data[1][6], data[1][7],
-                            data[1][8], data[1][9]])
+                            data[1][8], data[1][9], data[1][10]])
         enemy_2.set_values([data[2][0], data[2][1], data[2][2], data[2][3],
                             data[2][4], data[2][5], data[2][6], data[2][7],
-                            data[2][8], data[2][9]])
-        
+                            data[2][8], data[2][9], data[1][10]])
+        i = 0
+        vals = [primOpCC1, primOpCC2, primOpCC3, primOpCC4, primOpCC5]
+        weps = [op1CC, op2CC, op3CC, op4CC, op5CC]
+        for count, name in simulation.pairwise(data[3]):
+            vals[i].set(count)
+            weps[i].set(name)
+            i += 1
+        for j in range(i, len(vals)):
+            vals[i].set("")
+            weps[i].set("No Weapon Selected")
+            
+        i = 0
+        vals = [extrOpCC1, extrOpCC2]
+        weps = [opex1CC, opex2CC]
+        for count, name in simulation.pairwise(data[4]):
+            vals[i].set(count)
+            weps[i].set(name)
+            i += 1
+        for j in range(i, len(vals)):
+            vals[i].set("")
+            weps[i].set("No Weapon Selected")
+            
         root.update()
 
 # Disable/Enable extra attacker        
@@ -414,8 +602,8 @@ def calculate(*args):
     loop_count = 0
 
     # Get Parameters
-    [name, numAttack, wsa, bsa, sa, ta, wa, ia, aa, sva] = attacker_1.get_int_values()
-    [name, numEnemy,  wso, bso, so, to, wo, io, ao, svo] = enemy_1.get_int_values()
+    [name, numAttack, wsa, bsa, sa, ta, wa, ia, aa, sva, inva] = attacker_1.get_int_values()
+    [name, numEnemy,  wso, bso, so, to, wo, io, ao, svo, invo] = enemy_1.get_int_values()
 
     # Get weapon usage
     ##################
@@ -517,13 +705,22 @@ def calculate(*args):
         currentShot_hits   = []
         currentShot_wounds = []
         currentShot_kills  = []
+        
         for weapon in attackerGuns:
-            shoot_hits[weapon]   = simulation.to_hit(scoreToHit, attackerGuns[weapon]) # Get hit probability
-            shoot_wounds[weapon] = simulation.to_wound(Gun_ToWound[weapon], shoot_hits[weapon]) # Get Wound Probability
+            # Get hit probability
+            shoot_hits[weapon]   = simulation.to_hit(scoreToHit, attackerGuns[weapon],
+                                                     weaponCreator.guns[weapon][3:])
+            # Get Wound Probability
+            [shoot_wounds[weapon], rending] = simulation.to_wound(Gun_ToWound[weapon],
+                                                                  shoot_hits[weapon],
+                                                                  weaponCreator.guns[weapon][3:])
+            
             if Gun_InstantKill[weapon]:
                 shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], 0)
             else:
                 shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], svo)
+                
+            shoot_kills[weapon] += rending
             currentShot_hits.append(shoot_hits[weapon])
             currentShot_wounds.append(shoot_wounds[weapon])
             currentShot_kills.append(shoot_kills[weapon])
@@ -534,13 +731,20 @@ def calculate(*args):
         currentCC_hits   = []
         currentCC_wounds = []
         currentCC_kills  = []
+        # NEED TO CHECK INITIATIVE AND WEAPON ATTRIBUTES
         for weapon in attackerCC:
-            cc_hits[weapon]   = simulation.to_hit(Attack_ToHit, attackerCC[weapon]) # Get hit probability
-            cc_wounds[weapon] = simulation.to_wound(CC_ToWound[weapon], cc_hits[weapon]) # Get Wound Probability
+            # Get hit probability
+            cc_hits[weapon]   = simulation.to_hit(Attack_ToHit, attackerCC[weapon],
+                                                  weaponCreator.cc[weapon][1:])
+            # Get Wound Probability
+            [cc_wounds[weapon], rending] = simulation.to_wound(CC_ToWound[weapon],
+                                                               cc_hits[weapon],
+                                                               weaponCreator.cc[weapon][1:]) 
             if CC_InstantKill[weapon]:
                 cc_kills[weapon] = simulation.kills(cc_wounds[weapon], 0)
             else:
                 cc_kills[weapon] = simulation.kills(cc_wounds[weapon], svo)
+            cc_kills[weapon] += rending
             currentCC_hits.append(cc_hits[weapon])
             currentCC_wounds.append(cc_wounds[weapon])
             currentCC_kills.append(cc_kills[weapon])
@@ -610,7 +814,7 @@ def calculate(*args):
 
 root = Tk()
 
-root.title("Stathammer "+str(version))
+root.title("Stathammer "+version)
 if os.name == "posix":
     root.wm_iconbitmap('@staticon.xbm') # For non-windows systems (works on linux, not sure about OSX)
 else:

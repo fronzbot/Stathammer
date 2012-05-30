@@ -6,10 +6,9 @@ import GUI
 import sys
 import os
 
-weaponAttributes = {'gun': ('Blast', 'Gets-Hot', 'Ignore-Armor', 'Ignore-Invul', 'Lance',
-                            'Melta', 'None', 'Ordinance', 'Poisoned_3+', 'Poisoned_4+',
-                            'Poisoned_5+', 'Re-roll Hits','Re-roll Wounds', 'Rending', 'Sniper',
-                            'Template'),
+weaponAttributes = {'gun': ('Ignore-Armor', 'Ignore-Invul', 'Lance',
+                            'Melta', 'None', 'Poisoned_3+', 'Poisoned_4+',
+                            'Poisoned_5+', 'Re-roll Hits','Re-roll Wounds', 'Rending', 'Sniper'),
                     'cc' : ('+1-Strength', '+2-Strength', 'Double-Strength', 'None', 'Ignore-Invul',
                             'Poisoned_3+', 'Poisoned_4+', 'Poisoned_5+', 'Power-Fist', 'Power-Weapon',
                             'Re-roll Hits', 'Re-roll Wounds', 'Rending', 'Thunder-Hammer', 'Witchblade')}

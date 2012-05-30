@@ -1,3 +1,11 @@
+v0.010a
+* Massive overhaul of calculate method. 
+* Slowly adding in support for different weapon types. 
+* Currently handles primary attacker shooting phase and primary attacker Assault phase. 
+* Need to implement handlers for many weapon attributes (such as re-rolls). 
+* Need to implement invulnerable save handling as well
+ 
+
 v0.09a
 * Completed Weapon Creator file handling. 
 * Possbily add in number of attacks/shots as a weapon attribute. 
