@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = '0.010'
+version = '0.012'
 
 from tkinter import *
 from tkinter import ttk
@@ -625,7 +625,17 @@ def calculate(*args):
     # CC Weapons for secondary attacker
     extraCCCount = [extrAtCC1.get(), extrAtCC2.get()]
     extraCCNames = [atex1CCVar.get(), atex2CCVar.get()]
-    extraAttackerCC  = simulation.sort_weapons(extraCCNames, extraCCCount)    
+    extraAttackerCC  = simulation.sort_weapons(extraCCNames, extraCCCount)
+
+    # CC Weapons for primary enemy
+    opCCCount = [primOpCC1.get(), primOpCC2.get(), primOpCC3.get(), primOpCC4.get(), primOpCC5.get()]
+    opCCNames = [op1CCVar.get(), op2CCVar.get(), op3CCVar.get(), op4CCVar.get(), op5CCVar.get()]
+    enemyCC  = simulation.sort_weapons(opCCNames, opCCCount)
+
+    # CC Weapons for secondary enemy
+    extraOpCCCount = [extrOpCC1.get(), extrOpCC2.get()]
+    extraOpCCNames = [opex1CCVar.get(), opex2CCVar.get()]
+    extraEnemyCC  = simulation.sort_weapons(extraOpCCNames, extraOpCCCount)
 
     # Get total number of attacks for weapons and modify strength for cc weapons
     attackerCCStrength = {}
@@ -642,11 +652,23 @@ def calculate(*args):
             
         attackerCC[cc] *= aa
 
+    #for cc in extraAttackerCC:
+    #    extraAttackerCC[cc] *= int(weaponCreator.cc[cc][0])
+
+    # Enemy
+    enemyCCStrength = {}
+    for cc in enemyCC:
+        try:
+            enemyCC[cc] *= int(weaponCreator.cc[cc][0])
+            enemyCCStrength[cc] = simulation.get_cc_strength(weaponCreator.cc[cc][2:], so)
+        except KeyError:
+            enemyCCStrength[cc] = so
+            
+        enemyCC[cc] *= ao
+
+    #for cc in extraEnemyCC:
+    #    extraEnemyCC[cc] *= int(weaponCreator.cc[cc][0])
         
-    for cc in extraAttackerCC:
-        extraAttackerCC[cc] *= int(weaponCreator.cc[cc][0])
-    
-    PrimOp_attacks = numEnemy*ao
     PrimAt_wounds  = numAttack*wa
     PrimOp_wounds  = numEnemy*wo
 
@@ -693,7 +715,18 @@ def calculate(*args):
             CC_ToWound[weapon] = simulation.get_scoreToWound(attackerCCStrength[weapon], [], to)
             CC_InstantKill[weapon] = simulation.check_instant_kill(attackerCCStrength[weapon], to, [], 0)
 
-    Enemy_ToWound  = 4 # Temporary holder
+    # Retrieve enemy score needed to wound for cc and Instant-Kill check
+    enemyCC_ToWound      = {}
+    enemyCC_InstantKill  = {}
+    for weapon in enemyCC:
+        try:
+            enemyCC_ToWound[weapon] = simulation.get_scoreToWound(enemyCCStrength[weapon],
+                                                                  weaponCreator.cc[weapon][1:], to)
+            enemyCC_InstantKill[weapon] = simulation.check_instant_kill(enemyCCStrength[weapon],
+                                                                        ta, weaponCreator.cc[weapon][1:], 0)
+        except KeyError:
+            enemyCC_ToWound[weapon] = simulation.get_scoreToWound(enemyCCStrength[weapon], [], ta)
+            enemyCC_InstantKill[weapon] = simulation.check_instant_kill(enemyCCStrength[weapon], ta, [], 0)
     
     while(loop_count < iterations):
         PBAR.step(1.0)
@@ -716,9 +749,9 @@ def calculate(*args):
                                                                   weaponCreator.guns[weapon][3:])
             
             if Gun_InstantKill[weapon]:
-                shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], 0)
+                shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], 0, invo)
             else:
-                shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], svo)
+                shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], svo, invo)
                 
             shoot_kills[weapon] += rending
             currentShot_hits.append(shoot_hits[weapon])
@@ -728,26 +761,82 @@ def calculate(*args):
         cc_hits   = {}
         cc_wounds = {}
         cc_kills  = {}
-        currentCC_hits   = []
-        currentCC_wounds = []
-        currentCC_kills  = []
+        attackerCC_hits     = []
+        attackerCC_wounds   = []
+        attackerCC_kills    = []
+        enemyCC_hits        = []
+        enemyCC_wounds      = []
+        enemyCC_kills       = []
+        weaponList = [attackerCC, enemyCC]
+
+        strikeSameTime = False
+        if ia > io:
+            select = 0
+        elif ia < io:
+            select = 1
+        elif ia == io:
+            select = 0
+            strikeSameTime = True
+            
+        strikeLast = False
         # NEED TO CHECK INITIATIVE AND WEAPON ATTRIBUTES
-        for weapon in attackerCC:
-            # Get hit probability
-            cc_hits[weapon]   = simulation.to_hit(Attack_ToHit, attackerCC[weapon],
-                                                  weaponCreator.cc[weapon][1:])
-            # Get Wound Probability
-            [cc_wounds[weapon], rending] = simulation.to_wound(CC_ToWound[weapon],
-                                                               cc_hits[weapon],
-                                                               weaponCreator.cc[weapon][1:]) 
-            if CC_InstantKill[weapon]:
-                cc_kills[weapon] = simulation.kills(cc_wounds[weapon], 0)
-            else:
-                cc_kills[weapon] = simulation.kills(cc_wounds[weapon], svo)
-            cc_kills[weapon] += rending
-            currentCC_hits.append(cc_hits[weapon])
-            currentCC_wounds.append(cc_wounds[weapon])
-            currentCC_kills.append(cc_kills[weapon])
+        for i in range(0, 2):
+            initiative_kills = 0
+            if select == 0:
+                for weapon in attackerCC:
+                    attacks = attackerCC[weapon]
+                    if strikeLast and not strikeSameTime:
+                        if not initiative_kills:
+                            for kills in enemyCC_kills:
+                                initiative_kills += kills
+                        attacks -= int(initiative_kills/len(attackerCC))    # Distribute kills
+                        if attacks < 0:
+                            attacks = 0
+                    # Get hit probability
+                    cc_hits[weapon]   = simulation.to_hit(Attack_ToHit, attacks,
+                                                          weaponCreator.cc[weapon][1:])
+                    # Get Wound Probability
+                    [cc_wounds[weapon], rending] = simulation.to_wound(CC_ToWound[weapon],
+                                                                       cc_hits[weapon],
+                                                                       weaponCreator.cc[weapon][1:]) 
+                    if CC_InstantKill[weapon]:
+                        cc_kills[weapon] = simulation.kills(cc_wounds[weapon], 0, invo)
+                    else:
+                        cc_kills[weapon] = simulation.kills(cc_wounds[weapon], svo, invo)
+                    cc_kills[weapon] += rending
+                    attackerCC_hits.append(cc_hits[weapon])
+                    attackerCC_wounds.append(cc_wounds[weapon])
+                    attackerCC_kills.append(cc_kills[weapon])
+                strikeLast = True
+                select ^= 1
+                    
+            elif select == 1:
+                for weapon in enemyCC:
+                    attacks = enemyCC[weapon]
+                    if strikeLast and not strikeSameTime:
+                        if not initiative_kills:
+                            for kills in attackerCC_kills:
+                                initiative_kills += kills
+                        attacks -= int(initiative_kills/len(enemyCC)) # Distribute kills
+                        if attacks < 0:
+                            attacks = 0
+                    # Get hit probability
+                    cc_hits[weapon]   = simulation.to_hit(Enemy_ToHit, attacks,
+                                                          weaponCreator.cc[weapon][1:])
+                    # Get Wound Probability
+                    [cc_wounds[weapon], rending] = simulation.to_wound(enemyCC_ToWound[weapon],
+                                                                       cc_hits[weapon],
+                                                                       weaponCreator.cc[weapon][1:]) 
+                    if enemyCC_InstantKill[weapon]:
+                        cc_kills[weapon] = simulation.kills(cc_wounds[weapon], 0, inva)
+                    else:
+                        cc_kills[weapon] = simulation.kills(cc_wounds[weapon], sva, inva)
+                    cc_kills[weapon] += rending
+                    enemyCC_hits.append(cc_hits[weapon])
+                    enemyCC_wounds.append(cc_wounds[weapon])
+                    enemyCC_kills.append(cc_kills[weapon])
+                strikeLast = True
+                select ^= 1
             
 
         # Get total stats from shooting
@@ -769,22 +858,31 @@ def calculate(*args):
         total_hits   = 0
         total_wounds = 0
         total_kills  = 0
-        for hits, wounds, kills in zip(currentCC_hits, currentCC_wounds, currentCC_kills):
+        for hits, wounds, kills in zip(attackerCC_hits, attackerCC_wounds, attackerCC_kills):
             total_hits   += hits
             total_wounds += wounds
             total_kills  += kills
 
-        attack_kill_list.append(total_kills)   
-
         Attack_MeanHit   += total_hits
         Attack_MeanWound += total_wounds
         Attack_MeanKill  += total_kills
-    
-        enemy_kill_list.append(0)
+
+        attack_kill_list.append(total_kills)
         
-        Enemy_MeanHit   += 0
-        Enemy_MeanWound += 0
-        Enemy_MeanKill  += 0
+        # Get total stats from assault
+        total_hits   = 0
+        total_wounds = 0
+        total_kills  = 0
+        for hits, wounds, kills in zip(enemyCC_hits, enemyCC_wounds, enemyCC_kills):
+            total_hits   += hits
+            total_wounds += wounds
+            total_kills  += kills
+
+        enemy_kill_list.append(total_kills)   
+
+        Enemy_MeanHit   += total_hits
+        Enemy_MeanWound += total_wounds
+        Enemy_MeanKill  += total_kills
 
         loop_count += 1
 

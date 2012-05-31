@@ -1,3 +1,9 @@
+v0.011a
+* Added re-roll simulations. 
+* Added Rending, Sniper support. 
+* Added in weapon saving
+ 
+
 v0.010a
 * Massive overhaul of calculate method. 
 * Slowly adding in support for different weapon types. 

@@ -84,14 +84,21 @@ def to_wound(score, hits, attributes):
     return [attack_wounds, rending_wounds]
 
 # Calculates amount of kills
-def kills(wounds, save):
+def kills(wounds, save, inv_save):
     if save:
         dice = monte_carlo(wounds)
         save_prob = 0
+        if inv_save < save and inv_save != 0:
+            save = inv_save
         for i in range(save-1, 6):
             save_prob += dice[i]
         return round_int((1-save_prob)*wounds)
-
+    elif inv_save:
+        dice = monte_carlo(wounds)
+        save_prob = 0
+        for i in range(inv_save-1, 6):
+            save_prob += dice[i]
+        return round_int((1-save_prob)*wounds)
     else:
         return wounds
 
