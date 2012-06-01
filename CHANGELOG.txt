@@ -1,3 +1,10 @@
+v0.012a
+* Added invulnerable save support. 
+* Added in enemy assault phase. 
+* Added in initiative checking for assult. 
+* Need to add in extra unit support and add in stat table before beta testing release
+ 
+
 v0.011a
 * Added re-roll simulations. 
 * Added Rending, Sniper support. 

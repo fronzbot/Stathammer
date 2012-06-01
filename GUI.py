@@ -3,8 +3,9 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
 
-
+# Table class to handle entry widgets in a cell form
 class Table(object):
+    # Creates table object with a parent window, row number and column number
     def __init__(self, parent, rows, columns):
         self.parent = parent
         self.rows   = rows
@@ -15,19 +16,68 @@ class Table(object):
             self.var.append([])
             for j in range(0, self.cols):
                 self.var[i].append(StringVar())
-
+    # Creates table at row and col position in parent
     def create(self, row, col):
         for i in range(0, self.rows):
             self.boxes.append([])
             for j in range(0, self.cols):
-                box = ttk.Entry(self.parent, textvariable=self.var[i][j], width=4,
-                                state='readonly', justify='center')
-                box.grid(column=col+j, row=i, padx=1, pady=1)
+                box = Entry(self.parent, textvariable=self.var[i][j], width=4,
+                            state='readonly', justify='center', borderwidth=2)
+                box.grid(column=col+j, row=row+i, sticky=(N,W,E))
                 self.boxes[i].append(box)
+                box['readonlybackground'] = 'snow2'
 
     def change_width(self, x, y, width):
         self.boxes[x][y].config(width=width)
 
+    def set_background(self, x, y, color):
+        self.boxes[x][y]['readonlybackground'] = color
+
+    def set_font_color(self, x, y, color):
+        self.boxes[x][y]['foreground'] = color
+
+    def insert(self, x, y, text):
+        self.var[x][y].set(text)
+               
+
+    def set_font(self, x, y, font):
+        if not font:
+            raise ValueError("font must not be empty in GUI.Table.set_font method")
+        # If the font parameters are not correct, use default
+        fontlist = font.split(" ")
+        if len(fontlist) < 3:
+            if len(fontlist) == 1:
+                try:
+                    int(fontlist[0])
+                    fontlist.append(fontlist[0])
+                    fontlist[0] = 'TkTextFont'
+                    fontlist.append('normal')
+                    font = " ".join(fontlist)
+                except ValueError:
+                    if fontlist[0] in ('normal', 'bold', 'roman', 'italic', 'underline', 'overstrike'):
+                        font = " ".join(['TkTextFont', '8', fontlist[0]])
+            else:
+                try:
+                    int(fontlist[0])
+                    if fontlist[1] in ('normal', 'bold', 'roman', 'italic', 'underline', 'overstrike'):
+                        font = " ".join(['TkTextFont', fontlist[0], fontlist[1]])
+                    else:
+                        font = " ".join([fontlist[1], fontlist[0], 'normal'])
+                        
+                except ValueError:
+                    try:
+                        int(fontlist[1])
+                        if fontlist[0] in ('normal', 'bold', 'roman', 'italic', 'underline', 'overstrike'):
+                            font = " ".join(['TkTextFont', fontlist[1], fontlist[0]])
+                        else:
+                            font = " ".join([fontlist[0], fontlist[1], 'normal'])
+                    except ValueError:
+                        if fontlist[0] in ('normal', 'bold', 'roman', 'italic', 'underline', 'overstrike'):
+                            font = " ".join([fontlist[1], '8', fontlist[0]])
+                        else:
+                            font = " ".join([fontlist[0], '8', fontlist[1]])
+                    
+        self.boxes[x][y]['font'] = font
     
 def frame_create(root_window, row, col):
     frame = ttk.Frame(root_window, padding="3 3 12 12")
@@ -88,7 +138,26 @@ def weapon_boxes(root_window, variables, start_row, start_col, width):
 
     return boxList
 
-
+def create_stat_table(table):
+    table.create(0, 0)
+    table.set_background(0, 0, 'gray50')
+    for i in range(0, 4):
+        for j in range(0, 5):
+            table.change_width(i, j, 8)
+    table.insert(  0, 1, 'Average')
+    table.set_font(0, 1, 'bold')
+    table.insert(  0, 2, 'Std. Dev')
+    table.set_font(0, 2, 'bold')
+    table.insert(  0, 3, 'Min')
+    table.set_font(0, 3, 'bold')
+    table.insert(  0, 4, 'Max')
+    table.set_font(0, 4, 'bold')
+    table.insert(  1, 0, 'Hits')
+    table.set_font(1, 0, 'bold')
+    table.insert(  2, 0, 'Wounds')
+    table.set_font(2, 0, 'bold')
+    table.insert(  3, 0, 'Kills')
+    table.set_font(3, 0, 'bold')
 
 
     

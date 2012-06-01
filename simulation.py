@@ -187,3 +187,17 @@ def check_instant_kill(strength, toughness, weapon_attributes, weapon_AP):
         return True
 
     return False
+
+
+# Calculate standard deviation given list of values and mean
+def standard_dev(values, mean):
+    total = 0
+    for value in values:
+        total += (value-mean)*(value-mean)
+    total /= (len(values)-1)
+
+    # Round to two decimal places
+    total *= 100
+    total = int(total)
+    total /= 100
+    return total

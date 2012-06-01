@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = '0.012'
+version = '0.013'
 
 from tkinter import *
 from tkinter import ttk
@@ -596,9 +596,16 @@ def calculate(*args):
     Enemy_MeanHit    = 0
     Enemy_MeanWound  = 0
     Enemy_MeanKill   = 0
-    shoot_kill_list  = []
-    enemy_kill_list  = []
-    attack_kill_list = []
+
+    shoot_hit_list    = []
+    enemy_hit_list    = []
+    attack_hit_list   = []
+    shoot_wound_list  = []
+    enemy_wound_list  = []
+    attack_wound_list = []
+    shoot_kill_list   = []
+    enemy_kill_list   = []
+    attack_kill_list  = []
     loop_count = 0
 
     # Get Parameters
@@ -848,11 +855,14 @@ def calculate(*args):
             total_wounds += wounds
             total_kills  += kills
 
+        shoot_hit_list.append(total_hits)
+        shoot_wound_list.append(total_wounds)
         shoot_kill_list.append(total_kills)
 
         Shoot_MeanHit   += total_hits
         Shoot_MeanWound += total_wounds
         Shoot_MeanKill  += total_kills
+        
         
         # Get total stats from assault
         total_hits   = 0
@@ -867,6 +877,8 @@ def calculate(*args):
         Attack_MeanWound += total_wounds
         Attack_MeanKill  += total_kills
 
+        attack_hit_list.append(total_hits)
+        attack_wound_list.append(total_wounds)
         attack_kill_list.append(total_kills)
         
         # Get total stats from assault
@@ -878,6 +890,8 @@ def calculate(*args):
             total_wounds += wounds
             total_kills  += kills
 
+        enemy_hit_list.append(total_hits)
+        enemy_wound_list.append(total_wounds)
         enemy_kill_list.append(total_kills)   
 
         Enemy_MeanHit   += total_hits
@@ -899,19 +913,66 @@ def calculate(*args):
     Enemy_MeanWound /= iterations
     Enemy_MeanKill /= iterations
 
-    if shoot_kill_list:
-        HitVal.set(simulation.round_int(Shoot_MeanHit))
-        WoundVal.set(simulation.round_int(Shoot_MeanWound))
-        KillVal.set(simulation.round_int(Shoot_MeanKill))
+    # Averages
+    shootTable.insert(1, 1, simulation.round_int(Shoot_MeanHit))
+    shootTable.insert(2, 1, simulation.round_int(Shoot_MeanWound))
+    shootTable.insert(3, 1, simulation.round_int(Shoot_MeanKill))
 
-        create_distribution(shoot_kill_list, attack_kill_list, enemy_kill_list)
+    atccTable.insert(1, 1, simulation.round_int(Attack_MeanHit))
+    atccTable.insert(2, 1, simulation.round_int(Attack_MeanWound))
+    atccTable.insert(3, 1, simulation.round_int(Attack_MeanKill))
+
+    opccTable.insert(1, 1, simulation.round_int(Enemy_MeanHit))
+    opccTable.insert(2, 1, simulation.round_int(Enemy_MeanWound))
+    opccTable.insert(3, 1, simulation.round_int(Enemy_MeanKill))
+
+    # Standard Deviations
+    shootTable.insert(1, 2, simulation.standard_dev(shoot_hit_list,   Shoot_MeanHit))
+    shootTable.insert(2, 2, simulation.standard_dev(shoot_wound_list, Shoot_MeanWound))
+    shootTable.insert(3, 2, simulation.standard_dev(shoot_kill_list,  Shoot_MeanKill))
+
+    atccTable.insert(1, 2, simulation.standard_dev(attack_hit_list,   Attack_MeanHit))
+    atccTable.insert(2, 2, simulation.standard_dev(attack_wound_list, Attack_MeanWound))
+    atccTable.insert(3, 2, simulation.standard_dev(attack_kill_list,  Attack_MeanKill))
+
+    opccTable.insert(1, 2, simulation.standard_dev(enemy_hit_list,   Enemy_MeanHit))
+    opccTable.insert(2, 2, simulation.standard_dev(enemy_wound_list, Enemy_MeanWound))
+    opccTable.insert(3, 2, simulation.standard_dev(enemy_kill_list,  Enemy_MeanKill))
+
+    # Min
+    shootTable.insert(1, 3, simulation.round_int(min(shoot_hit_list)))
+    shootTable.insert(2, 3, simulation.round_int(min(shoot_wound_list)))
+    shootTable.insert(3, 3, simulation.round_int(min(shoot_kill_list)))
+
+    atccTable.insert(1, 3, simulation.round_int(min(attack_hit_list)))
+    atccTable.insert(2, 3, simulation.round_int(min(attack_wound_list)))
+    atccTable.insert(3, 3, simulation.round_int(min(attack_kill_list)))
+
+    opccTable.insert(1, 3, simulation.round_int(min(enemy_hit_list)))
+    opccTable.insert(2, 3, simulation.round_int(min(enemy_wound_list)))
+    opccTable.insert(3, 3, simulation.round_int(min(enemy_kill_list)))
+
+    # Max
+    shootTable.insert(1, 4, simulation.round_int(max(shoot_hit_list)))
+    shootTable.insert(2, 4, simulation.round_int(max(shoot_wound_list)))
+    shootTable.insert(3, 4, simulation.round_int(max(shoot_kill_list)))
+
+    atccTable.insert(1, 4, simulation.round_int(max(attack_hit_list)))
+    atccTable.insert(2, 4, simulation.round_int(max(attack_wound_list)))
+    atccTable.insert(3, 4, simulation.round_int(max(attack_kill_list)))
+
+    opccTable.insert(1, 4, simulation.round_int(max(enemy_hit_list)))
+    opccTable.insert(2, 4, simulation.round_int(max(enemy_wound_list)))
+    opccTable.insert(3, 4, simulation.round_int(max(enemy_kill_list)))
+
+    create_distribution(shoot_kill_list, attack_kill_list, enemy_kill_list)
     
 '''
     GUI Setup
 '''
 
 root = Tk()
-
+root.columnconfigure(0, weight=1)
 root.title("Stathammer "+version)
 if os.name == "posix":
     root.wm_iconbitmap('@staticon.xbm') # For non-windows systems (works on linux, not sure about OSX)
@@ -919,8 +980,9 @@ else:
     root.wm_iconbitmap('staticon.ico')  # For windows
 
 root.protocol('WM_DELETE_WINDOW', save_init)
-#root.minsize(480, 640)
-#root.maxsize(1024, 768)
+
+root.minsize(800, 520)
+
 
 #================#
 # Weapon Creator #
@@ -948,13 +1010,19 @@ probframe   = GUI.label_frame_create(sideframe, 'Statistics', 0, 1)
 graphpage.grid(padx=7)
 probframe.grid(padx=7)
 
-# TABLE
-tableframe  = GUI.frame_create(probframe, 99, 99)
-statTable = GUI.Table(tableframe, 3, 5)
-statTable.create(0, 0)
 
-for row in range(0, statTable.rows):
-    statTable.change_width(row, 0, 15)
+# TABLE
+tableframe = ttk.Frame(probframe)
+shootstatframe      = GUI.label_frame_create(tableframe, 'Attacker Shooting Phase', 0, 0)
+atassaultstatframe  = GUI.label_frame_create(tableframe, 'Attacker Assault Phase', 1, 0)
+opassaultstatframe  = GUI.label_frame_create(tableframe, 'Enemy Assault Phase', 2, 0)
+shootTable  = GUI.Table(shootstatframe, 4, 5)
+atccTable   = GUI.Table(atassaultstatframe, 4, 5)
+opccTable   = GUI.Table(opassaultstatframe, 4, 5)
+GUI.create_stat_table(shootTable)
+GUI.create_stat_table(atccTable)
+GUI.create_stat_table(opccTable)
+tableframe.pack()
 
 
 atstatframe = GUI.label_frame_create(statframe, 'Attacker', 0, 0)
@@ -1350,30 +1418,6 @@ SV_label.grid(column=9, row=2, sticky=(W, E))
 INVO_label = ttk.Label(enemystat, text='Inv')
 INVO_label.grid(column=10, row=2, sticky=(W, E))
 
-# Probability Labels
-HIT_label = ttk.Label(probframe, text='Average Hits')
-HIT_label.grid(column=0, row=0, sticky=(N, W), ipadx=10)
-
-WOUND_label = ttk.Label(probframe, text='Average Wounded')
-WOUND_label.grid(column=0, row=1, sticky=(N, W), ipadx=10)
-
-KILL_label = ttk.Label(probframe, text='Average Killed')
-KILL_label.grid(column=0, row=2, sticky=(N, W), ipadx=10)
-
-HitVal = StringVar()
-HITNUM_label = ttk.Label(probframe, textvariable=HitVal)
-HITNUM_label.grid(column=1, row=0, sticky=(N, E))
-HitVal.set('0')
-
-WoundVal = StringVar()
-WOUNDNUM_label = ttk.Label(probframe, textvariable=WoundVal)
-WOUNDNUM_label.grid(column=1, row=1, sticky=(N, E))
-WoundVal.set('0')
-
-KillVal = StringVar()
-KILLNUM_label = ttk.Label(probframe, textvariable=KillVal)
-KILLNUM_label.grid(column=1, row=2, sticky=(N, E))
-KillVal.set('0')
 
 # Progress Bar
 PBAR = ttk.Progressbar(barframe, orient=HORIZONTAL, length=120, mode='determinate')
