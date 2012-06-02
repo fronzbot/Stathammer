@@ -1,4 +1,30 @@
+'''
+Stathammer (c) 2012
+Author : Kevin Fronczak
+Email  : kfronczak@gmail.com
+Source : http://github.com/fronzbot/Stathammer
+
+This file is part of stathammer.pyw.
+
+Stathammer is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Stathammer is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Stathammer.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
 import random
+
+shooting_prob = {}
+attacker_prob = {}
+enemy_prob    = {}
 
 # Method to properly round float to int
 def round_int(num):
@@ -71,7 +97,7 @@ def to_wound(score, hits, attributes):
                 rrProb += 1
             rrCnt += 1
         rrProb /= rrCnt
-        rrProb /= attacks
+        rrProb /= hits
 
         attack_hit_prob += rrProb
 
@@ -102,10 +128,11 @@ def kills(wounds, save, inv_save):
     else:
         return wounds
 
-# NEEDS A COMMENT    
+# Creates a probability table  
 def create_prob_dict(data, attacks):
     data.sort()
     probdict = {}
+    # For every number of kills
     for val in data:
         if val > attacks:
             val = attacks

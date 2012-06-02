@@ -1,7 +1,30 @@
+'''
+Stathammer (c) 2012
+Author : Kevin Fronczak
+Email  : kfronczak@gmail.com
+Source : http://github.com/fronzbot/Stathammer
+
+This file is part of stathammer.pyw.
+
+Stathammer is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Stathammer is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Stathammer.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
+import webbrowser
 
 # Table class to handle entry widgets in a cell form
 class Table(object):
@@ -78,7 +101,19 @@ class Table(object):
                             font = " ".join([fontlist[0], '8', fontlist[1]])
                     
         self.boxes[x][y]['font'] = font
-    
+
+class Link:
+    def __init__(self, parent, text, website):
+        self.parent = parent
+        self.hyperlink = ttk.Label(parent, text=text, font='TkTextFont 8 underline',
+                              foreground='SkyBlue2', cursor='hand2')
+        self.hyperlink.bind("<1>", lambda event, text=text: self.click_link(event))
+        self.website = website
+    def click_link(self, event):
+        webbrowser.open(self.website)
+        self.hyperlink.configure(foreground='magenta3')
+
+
 def frame_create(root_window, row, col):
     frame = ttk.Frame(root_window, padding="3 3 12 12")
     frame.grid(column=col, row=row, sticky=(N, E, W, S))
@@ -96,7 +131,7 @@ def label_frame_create(root_window, labelName, row, col):
     return frame 
 
 def canvas_create(root_window, row, col, dims, color):
-    frame = Canvas(root_window, width=dims[0], height=dims[1], bg=color)
+    frame = Canvas(root_window, width=dims[0], height=dims[1], bg=color, cursor='tcross')
     frame.grid(column=col, row=row, sticky=(N, E, W, S))
     frame.columnconfigure(col, weight=1)
     frame.rowconfigure(row, weight=1)
@@ -159,5 +194,4 @@ def create_stat_table(table):
     table.insert(  3, 0, 'Kills')
     table.set_font(3, 0, 'bold')
 
-
-    
+   

@@ -1,3 +1,25 @@
+'''
+Stathammer (c) 2012
+Author : Kevin Fronczak
+Email  : kfronczak@gmail.com
+Source : http://github.com/fronzbot/Stathammer
+
+This file is part of stathammer.pyw.
+
+Stathammer is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Stathammer is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Stathammer.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
@@ -21,8 +43,7 @@ class WWindow(object):
         self.app = Toplevel(top_level)
         self.app.title("Weapon Creation Tool")
         self.app.lift(top_level)
-        self.app.protocol('WM_DELETE_WINDOW', self.app.withdraw)
-
+        
         # Get current weapon lists
         self.guns = self.update_dicts('gnl.wf')
         self.cc   = self.update_dicts('ccl.wf')

@@ -1,3 +1,11 @@
+v0.014a
+* Feature freeze. 
+* Changed graph layout/colors. 
+* Added in support for multiple units and added a primative initiative check. 
+* The check does not distribute wounds but since the algorithm itself performs 
+  worst-case-scenario analysis, this will cause negligable variance in data from what is expected
+ 
+
 v0.013a
 * Massive overhaul of Table class. 
 * Added in standard deviation, min and max calculations. 

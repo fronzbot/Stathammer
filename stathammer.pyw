@@ -1,16 +1,45 @@
 #!/usr/bin/python
+'''
+Stathammer (c) 2012
+Author : Kevin Fronczak
+Email  : kfronczak@gmail.com
+Source : http://github.com/fronzbot/Stathammer
 
-version = '0.014'
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
+version = '0.015'
 
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
+import webbrowser
 import random
 import os
 import GUI
 import simulation
 import WCreate
+
+# Check for <ccl.wf> ands create if it does not exist
+try:
+    f = open('ccl.wf', 'r')
+    f.close()
+except IOError:
+    f = open('ccl.wf', 'w')
+    f.write('Default 1 None \n')
+    f.close() 
 
 # Class for units.  Allows for creation of multiple
 # attackers and enemies with a minimal increase in code
@@ -54,7 +83,12 @@ class Unit(object):
                 int(self.I.get()), int(self.A.get()), int(self.SV.get()), int(self.INV.get())]
 
             
+def get_about(*args):
+    app.deiconify()
 
+def open_source(*args):
+    webbrowser.open('http://github.com/fronzbot/Stathammer')
+    
 # Method used to return window to previous state (on last close)
 def load_init():
     f = open('.init', 'r')
@@ -282,7 +316,7 @@ def load_attacker():
     types = [('Attacker Profile', '.at'),('All Files', '.*')]
     loadFile = filedialog.askopenfilename(initialdir='profiles',
                                             filetypes=types)
-    if loadFile[-3:] != '.at':
+    if loadFile[-3:] != '.at' and loadFile:
         messagebox.showerror(message='ERROR', detail='Invalid File Type!', icon='error', default='ok',parent=root)
     else:
         load = open(loadFile, 'r')
@@ -335,7 +369,7 @@ def load_attacker():
             i += 1
         for j in range(i, len(vals)):
             vals[i].set("")
-            weps[i].set("No Weapon Selected")
+            weps[i].set("Default")
             
         i = 0
         vals = [extrAtCC1, extrAtCC2]
@@ -344,6 +378,9 @@ def load_attacker():
             vals[i].set(count)
             weps[i].set(name)
             i += 1
+        for j in range(i, len(vals)):
+            vals[i].set("")
+            weps[i].set("Default")
             
         root.update()
 
@@ -379,7 +416,7 @@ def load_enemy():
             i += 1
         for j in range(i, len(vals)):
             vals[i].set("")
-            weps[i].set("No Weapon Selected")
+            weps[i].set("Default")
             
         i = 0
         vals = [extrOpCC1, extrOpCC2]
@@ -390,9 +427,49 @@ def load_enemy():
             i += 1
         for j in range(i, len(vals)):
             vals[i].set("")
-            weps[i].set("No Weapon Selected")
+            weps[i].set("Default")
             
         root.update()
+
+
+def export_csv(*args):
+    types = [('CSV (Comma Delimited)', '.csv'),('All Files', '.*')]
+    saveFile = filedialog.asksaveasfilename(defaultextension='.csv', filetypes=types)
+    if saveFile != '':
+        data = ["Kills, Shooting, Attacker Assault, Enemy Assault, "]
+
+        total = max(len(simulation.shooting_prob), len(simulation.attacker_prob), len(simulation.enemy_prob))
+        for kills in range(0, total+1):
+            data.append(str(kills)+", ")
+            index = kills+1
+            try:
+                prob = simulation.shooting_prob[kills]
+                data[index] = data[index] + str(prob)+", "
+            except KeyError:
+                data[index] = data[index] + "0.00, "
+                
+            try:
+                prob = simulation.attacker_prob[kills]
+                data[index] = data[index] + str(prob)+", "
+            except KeyError:
+                data[index] = data[index] + "0.00, "
+            
+            try:
+                prob = simulation.enemy_prob[kills]
+                data[index] = data[index] + str(prob)
+            except KeyError:
+                data[index] = data[index] + "0.00"
+        try:
+            if os.path.exists(saveFile):
+                os.remove(saveFile)
+            save = open(saveFile, 'w')
+            for line in data:
+                save.write(line+",\n")
+            save.close()
+        except IOError as e:
+            messagebox.showerror(message='ERROR', detail=e,
+                                 icon='error', default='ok',parent=root)
+
 
 # Disable/Enable extra attacker        
 def addAttacker(*args):
@@ -468,16 +545,18 @@ def refresh_weapons(*args):
     l = [at1Gun, at2Gun, at3Gun, at4Gun, at5Gun, atex1Gun, atex2Gun]
     for box in l:
         box['values'] = tuple(gunList)
-        box.set('No Weapon Selected')
+        box.set(box.get())
 
     # Update CC Weapons
     l = [at1CC, at2CC, at3CC, at4CC, at5CC, atex1CC, atex2CC,
          op1CC, op2CC, op3CC, op4CC, op5CC, opex1CC, opex2CC]
     for box in l:
         box['values'] = tuple(ccList)
-        box.set('Default')
+        box.set(box.get())
     
-        
+    weaponCreator.app.withdraw()
+
+    
 # Method to create probability distribution
 def create_distribution(sh_data, at_data, en_data):
     try:
@@ -485,7 +564,7 @@ def create_distribution(sh_data, at_data, en_data):
         attack_w = int(attacker_1.attacks.get())*int(attacker_1.W.get())+int(attacker_2.attacks.get())*int(attacker_2.W.get())
         enemies  = int(enemy_1.attacks.get())*int(enemy_1.A.get())+int(enemy_2.attacks.get())*int(enemy_2.A.get())
         enemy_w  = int(enemy_1.attacks.get())*int(enemy_1.W.get())+int(enemy_2.attacks.get())*int(enemy_2.W.get())
-        attacks  = min([attacks, enemies, attack_w, enemy_w])
+        attacks  = max([attacks, enemies, attack_w, enemy_w])
             
         if attacks < 5:
             attacks = 5
@@ -497,6 +576,8 @@ def create_distribution(sh_data, at_data, en_data):
     at_prob = simulation.create_prob_dict(at_data, attacks)
     en_prob = simulation.create_prob_dict(en_data, attacks)
 
+    attacks = max(len(sh_prob), len(at_prob), len(en_prob)) + 1
+    
     graphframe.delete(ALL)
     root.update()
     graphframe.create_line(50,300,450,300, width=2)  # X-axis
@@ -538,7 +619,9 @@ def create_distribution(sh_data, at_data, en_data):
     for key in en_prob:
         en_prob[key] /= len(en_data)
         en_probs.append(en_prob[key])
-
+    simulation.shooting_prob = sh_prob
+    simulation.attacker_prob = at_prob
+    simulation.enemy_prob    = en_prob
     sh_probs = sorted(sh_probs)	 	
     sh_largestProb = int(sh_probs.pop()*100)+10
     at_probs = sorted(at_probs)	 	
@@ -581,13 +664,20 @@ def create_distribution(sh_data, at_data, en_data):
     # Axis labels
     graphframe.create_text(250, 340, text='%s'%("Number of Kills"), anchor=S)
     root.update()
-
+    
+graphLocs = {}
+graphProb = {}
 def create_marks(attacks, max_prob, probdict, color, width):
     m = width/2+2
+    ticks = 0
     for key in probdict:
         x_pos = 50 + (key * 400/attacks)
         y_pos = 300 - round((probdict[key]*250*100/max_prob))
-
+        if x_pos not in graphLocs:
+            graphLocs[x_pos] = [(y_pos, width)]
+        else:
+            graphLocs[x_pos].append((y_pos, width))
+        graphProb[y_pos] = probdict[key]
         if x_pos >= 50:
             graphframe.create_line(x_pos, 300, x_pos, y_pos, width=width, fill=color)
             graphframe.create_oval(x_pos-m, y_pos-m, x_pos+m, y_pos+m, fill=color, width=2, outline=color)
@@ -595,7 +685,21 @@ def create_marks(attacks, max_prob, probdict, color, width):
 
             
     
-        
+def popup_prob(event):
+    graphcontext.delete(0)
+    mouse_x = graphframe.canvasx(event.x)
+    mouse_y = graphframe.canvasy(event.y)
+    popup_x = event.x+root.winfo_x()+graphframe.winfo_x()+topframe.winfo_x()+graphpage.winfo_x()+sideframe.winfo_x()+10
+    popup_y = event.y+root.winfo_y()+graphframe.winfo_y()+topframe.winfo_y()+graphpage.winfo_y()+sideframe.winfo_y()+25
+    for x in graphLocs:
+        if mouse_x <= x+8 and mouse_x >= x-8:
+            for y, tolerance in sorted(graphLocs[x], reverse=True):
+                if mouse_y <= y+tolerance/2 and mouse_y >= y-tolerance/2:
+                    graphcontext.insert(0, 'command', label=str(int(graphProb[y]*100*1000)/1000) + "%")
+                    graphcontext.post(int(popup_x), int(popup_y))
+                    break
+    #print(str(graphframe.canvasx(event.x))+", "+str(graphframe.canvasy(event.y)))
+    
 def calculate(*args):
     iterations = int(IterVar.get())
     if iterations == 0:
@@ -628,6 +732,9 @@ def calculate(*args):
     attack_kill_list  = []
     loop_count = 0
 
+    attackerGunAttributes = {}
+    exAttackerGunAttributes = {}
+    
     # Get Parameters
     [name, numAttack, wsa, bsa, sa, ta, wa, ia, aa, sva, inva] = attacker_1.get_int_values()
     [name, numEnemy,  wso, bso, so, to, wo, io, ao, svo, invo] = enemy_1.get_int_values()
@@ -675,6 +782,7 @@ def calculate(*args):
     attackerCCStrength = {}
     for gun in attackerGuns:
         attackerGuns[gun] *= int(weaponCreator.guns[gun][0])
+        attackerGunAttributes[gun] = weaponCreator.guns[gun][3:]
     for cc in attackerCC:
         try:
             attackerCC[cc] *= int(weaponCreator.cc[cc][0])
@@ -688,6 +796,7 @@ def calculate(*args):
         extraAttackerCCStrength = {}
         for gun in extraAttackerGuns:
             extraAttackerGuns[gun] *= int(weaponCreator.guns[gun][0])
+            exAttackerGunAttributes[gun] = weaponCreator.guns[gun][3:]
         for cc in extraAttackerCC:
             try:
                 extraAttackerCC[cc] *= int(weaponCreator.cc[cc][0])
@@ -725,10 +834,12 @@ def calculate(*args):
         ExtrAt_wounds  = numAttack2*wa2
     if hasExtraEnemy:
         ExtrOp_wounds  = numEnemy2*wo2
-
+    
     # Retrieve score needed to hit for Primary Units
     if bsa > 5:
         bsa = 5
+        for gun in attackerGuns:
+            attackerGunAttributes[gun].append('Re-roll Hits')
     scoreToHit = 7-bsa
     
     if wso > wsa:
@@ -749,6 +860,8 @@ def calculate(*args):
     if hasExtraAttacker:
         if bsa2 > 5:
             bsa2 = 5
+            for gun in extraAttackerGuns:
+                exAttackerGunAttributes[gun].append('Re-roll Hits')
         scoreToHit2 = 7-bsa2
     
         if wso > wsa2:
@@ -776,10 +889,10 @@ def calculate(*args):
     Gun_InstantKill  = {}
     for weapon in attackerGuns:
         Gun_ToWound[weapon] = simulation.get_scoreToWound(int(weaponCreator.guns[weapon][1]),
-                                                          weaponCreator.guns[weapon][3:], to)
+                                                          attackerGunAttributes[gun], to)
 
         Gun_InstantKill[weapon] = simulation.check_instant_kill(int(weaponCreator.guns[weapon][1]),
-                                                     to, weaponCreator.guns[weapon][3:],
+                                                     to, attackerGunAttributes[gun],
                                                      int(weaponCreator.guns[weapon][2]))
 
     if hasExtraAttacker:
@@ -787,10 +900,10 @@ def calculate(*args):
         Gun2_InstantKill = {}
         for weapon in extraAttackerGuns:
             Gun2_ToWound[weapon] = simulation.get_scoreToWound(int(weaponCreator.guns[weapon][1]),
-                                                              weaponCreator.guns[weapon][3:], to)
+                                                              exAttackerGunAttributes[gun], to)
     
             Gun2_InstantKill[weapon] = simulation.check_instant_kill(int(weaponCreator.guns[weapon][1]),
-                                                         to, weaponCreator.guns[weapon][3:],
+                                                         to, exAttackerGunAttributes[gun],
                                                          int(weaponCreator.guns[weapon][2]))
         
     # Retrieve score needed to wound for cc and Instant-Kill check
@@ -875,11 +988,11 @@ def calculate(*args):
         for weapon in attackerGuns:
             # Get hit probability
             shoot_hits[weapon]   = simulation.to_hit(scoreToHit, attackerGuns[weapon],
-                                                     weaponCreator.guns[weapon][3:])
+                                                     attackerGunAttributes[gun])
             # Get Wound Probability
             [shoot_wounds[weapon], rending] = simulation.to_wound(Gun_ToWound[weapon],
                                                                   shoot_hits[weapon],
-                                                                  weaponCreator.guns[weapon][3:])
+                                                                  attackerGunAttributes[gun])
             
             if Gun_InstantKill[weapon]:
                 shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], 0, invo)
@@ -896,22 +1009,22 @@ def calculate(*args):
         if hasExtraAttacker:
             if currentShot_kills[-1] == numEnemy:
                 allocateToSecondary = True
-                for weapon in enemyAttackerGuns:
+                for weapon in extraAttackerGuns:
                     Gun2_ToWound[weapon] = simulation.get_scoreToWound(int(weaponCreator.guns[weapon][1]),
-                                                                           weaponCreator.guns[weapon][3:], to2)
+                                                                           exAttackerGunAttributes[gun], to2)
 
                     Gun2_InstantKill[weapon] = simulation.check_instant_kill(int(weaponCreator.guns[weapon][1]),
-                                                                             to2, weaponCreator.guns[weapon][3:],
+                                                                             to2, exAttackerGunAttributes[gun],
                                                                              int(weaponCreator.guns[weapon][2]))
                     
             for weapon in extraAttackerGuns:
                 # Get hit probability
                 shoot_hits[weapon]   = simulation.to_hit(scoreToHit2, extraAttackerGuns[weapon],
-                                                         weaponCreator.guns[weapon][3:])
+                                                         exAttackerGunAttributes[gun])
                 # Get Wound Probability
                 [shoot_wounds[weapon], rending] = simulation.to_wound(Gun2_ToWound[weapon],
                                                                       shoot_hits[weapon],
-                                                                      weaponCreator.guns[weapon][3:])
+                                                                      exAttackerGunAttributes[gun])
                 
                 if Gun2_InstantKill[weapon]:
                     if allocateToSecondary:
@@ -1267,7 +1380,7 @@ root.minsize(800, 520)
 # Weapon Creator #
 #================#
 weaponCreator = WCreate.WWindow(root)
-
+weaponCreator.app.protocol('WM_DELETE_WINDOW', refresh_weapons)
 
 #=============#
 #   Frames    #  
@@ -1339,7 +1452,7 @@ extropcc = GUI.label_frame_create(extrop, 'Assault',  0, 0)
 barframe = GUI.frame_create(mainframe, 1, 0)
 
 graphframe = GUI.canvas_create(graphpage, 0, 0, [500, 350], 'gray94')
-
+graphframe.bind('<1>', popup_prob)
 
 attackex_one = ttk.Frame(atstatframe, padding="3 3 12 12")
 attackex_one.grid(column=0, row=2, sticky=(N, E, W, S))
@@ -1376,7 +1489,8 @@ filemenu.add_command(label="Exit", command=save_init)
 
 # Options ->
 optmenu.add_command(label="Refresh Weapon List", command=refresh_weapons)
-
+optmenu.add_separator()
+optmenu.add_command(label="Export Distribution", command=export_csv)
 IterVar = StringVar()
 optmenu.add_cascade(label="Iterations", menu=itermenu)
 itermenu.add_radiobutton(label="100", variable=IterVar, value="100")
@@ -1385,9 +1499,16 @@ itermenu.add_radiobutton(label="2500", variable=IterVar, value="2500")
 itermenu.add_radiobutton(label="5000", variable=IterVar, value="5000")
 itermenu.add_radiobutton(label="10000", variable=IterVar, value="10000")
 IterVar.set("2500")
+
+# Help ->
+helpmenu.add_command(label="About", command=get_about)
+
+
 root.config(menu=menubar)
 
-
+graphcontext = Menu(graphframe)
+graphcontext.configure(background='BlanchedAlmond', activebackground='BlanchedAlmond',
+                       activeforeground='black', cursor='tcross')
 
 #=============#
 #   Entries   #  
@@ -1709,6 +1830,110 @@ PBAR['value']=0
 #=============#
 graphframe.create_line(50,300,450,300, width=2)  # X-axis
 graphframe.create_line(50,300,50,50, width=2)    # Y-axis
+
+
+#=============#
+#   About     #
+#=============#
+app = Toplevel(root)
+app.title("About Stathammer")
+app.lift(root)
+app.protocol('WM_DELETE_WINDOW', app.withdraw)
+if os.name == "posix":
+    app.wm_iconbitmap('@staticon.xbm')
+else:
+    app.wm_iconbitmap('staticon.ico')
+app.resizable(0,0)
+titlefrm = GUI.frame_create(app, 0, 0)
+txtframe = GUI.frame_create(app, 1, 0)
+btnframe = GUI.frame_create(app, 2, 0)
+ttk.Label(titlefrm, text='Stathammer v'+version, font='TkDefaultFont 16 bold').grid(column=0,row=0)
+ttk.Label(txtframe, text='Kevin Fronczak (c) 2012').grid(column=0,row=0, sticky=W)
+GUI.Link(txtframe, 'Email', 'mailto:kfronczak@gmail.com').hyperlink.grid(column=0, row=1, sticky=W)
+GUI.Link(txtframe, 'Website', 'http://kevinfronczak.com').hyperlink.grid(column=0, row=2, sticky=W)
+
+# README
+readme = Toplevel(app)
+readme.title("Readme")
+readme.lift(root)
+if os.name == "posix":
+    readme.wm_iconbitmap('@staticon.xbm')
+else:
+    readme.wm_iconbitmap('staticon.ico')
+readme.protocol('WM_DELETE_WINDOW', readme.withdraw)
+
+t = Text(readme, width=60, height=25, wrap='word', background='gray95', font='TkDefaultFont 10 normal')
+t.grid(column=0, row=0, sticky=(N,W,E,S))
+s = ttk.Scrollbar(readme, orient=VERTICAL, command=t.yview)
+s.grid(column=1, row=0, sticky=(N,S))
+t['yscrollcommand']=s.set
+f = open('README.txt', 'r')
+readme.grid_columnconfigure(0, weight=1)
+readme.grid_rowconfigure(0, weight=1)
+lines = f.readlines()   
+f.close()
+data = "".join(lines)
+t.insert(END, data)
+t.configure(state=DISABLED)
+readme.withdraw()
+
+# CHANGELOG
+change = Toplevel(app)
+change.title("Changelog")
+change.lift(root)
+if os.name == "posix":
+    change.wm_iconbitmap('@staticon.xbm')
+else:
+    change.wm_iconbitmap('staticon.ico')
+change.protocol('WM_DELETE_WINDOW', change.withdraw)
+
+t = Text(change, width=60, height=35, wrap='word', background='gray95', font='TkDefaultFont 10 normal')
+t.grid(column=0, row=0, sticky=(N,W,E,S))
+s = ttk.Scrollbar(change, orient=VERTICAL, command=t.yview)
+s.grid(column=1, row=0, sticky=(N,S))
+t['yscrollcommand']=s.set
+f = open('CHANGELOG.txt', 'r')
+change.grid_columnconfigure(0, weight=1)
+change.grid_rowconfigure(0, weight=1)
+lines = f.readlines()   
+f.close()
+data = "".join(lines)
+t.insert(END, data)
+t.configure(state=DISABLED)
+change.withdraw()
+
+
+# LICENSE
+licen = Toplevel(app)
+licen.title("License")
+licen.lift(root)
+if os.name == "posix":
+    licen.wm_iconbitmap('@staticon.xbm')
+else:
+    licen.wm_iconbitmap('staticon.ico')
+licen.protocol('WM_DELETE_WINDOW', licen.withdraw)
+
+t = Text(licen, width=60, height=35, wrap='word', background='gray95', font='TkDefaultFont 10 normal')
+t.grid(column=0, row=0, sticky=(N,W,E,S))
+s = ttk.Scrollbar(licen, orient=VERTICAL, command=t.yview)
+s.grid(column=1, row=0, sticky=(N,S))
+t['yscrollcommand']=s.set
+f = open('LICENSE.txt', 'r')
+licen.grid_columnconfigure(0, weight=1)
+licen.grid_rowconfigure(0, weight=1)
+lines = f.readlines()   
+f.close()
+data = "".join(lines)
+t.insert(END, data)
+t.configure(state=DISABLED)
+licen.withdraw()
+
+
+ttk.Button(btnframe, text='Readme',     command=readme.deiconify,  width=15).grid(column=0, row=0, sticky=W)
+ttk.Button(btnframe, text='License',    command=licen.deiconify,   width=15).grid(column=1, row=0, sticky=E)
+ttk.Button(btnframe, text='Changelog',  command=change.deiconify,  width=15).grid(column=0, row=1, sticky=W)
+ttk.Button(btnframe, text='Source',     command=open_source,       width=15).grid(column=1, row=1, sticky=E)
+app.withdraw()
 
 
 root.bind('<Return>', calculate)
