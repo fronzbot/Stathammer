@@ -95,8 +95,8 @@ def label_frame_create(root_window, labelName, row, col):
 
     return frame 
 
-def canvas_create(root_window, row, col, dims):
-    frame = Canvas(root_window, width=dims[0], height=dims[1], bg='white')
+def canvas_create(root_window, row, col, dims, color):
+    frame = Canvas(root_window, width=dims[0], height=dims[1], bg=color)
     frame.grid(column=col, row=row, sticky=(N, E, W, S))
     frame.columnconfigure(col, weight=1)
     frame.rowconfigure(row, weight=1)

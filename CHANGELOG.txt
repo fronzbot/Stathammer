@@ -1,3 +1,11 @@
+v0.013a
+* Massive overhaul of Table class. 
+* Added in standard deviation, min and max calculations. 
+* Added stat table for attacker and enemy. 
+* Add min and max size to window for resizing. 
+* Need to add in extra unit handling
+ 
+
 v0.012a
 * Added invulnerable save support. 
 * Added in enemy assault phase. 
@@ -44,21 +52,21 @@ v0.06a
 * Added in skeleton for weapon creation tool.
  
 
-v0.05.2a
+v0.05a
 * Added Unit class to streamline unit stat handling
  
 
-v0.05.1a
+v0.04a
 * Fixed bug with multiple unit calls. 
 * Added menu. 
 * Menu contains Exit and Iteration selections so far
  
 
-v0.05a
+v0.03a
 * Added load/save support for multiple units (attackers and enemies). 
 * Next need to add in special weapon support and invulnerable saves and such
  
 
-v0.04a
+v0.02a
 * Initial alpha release
  

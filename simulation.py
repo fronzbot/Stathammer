@@ -201,3 +201,38 @@ def standard_dev(values, mean):
     total = int(total)
     total /= 100
     return total
+
+def calculate_assault(weaponCreator, attackCC, Attack_ToHit, CC_ToWound,
+                      invo, svo, CC_InstantKill, kill_modifier):
+    cc_hits   = {}
+    cc_wounds = {}
+    cc_kills  = {}
+    attackCC_hits     = []
+    attackCC_wounds   = []
+    attackCC_kills    = []
+    
+    for weapon in attackCC:
+        attacks = attackCC[weapon]
+        attacks -= int(kill_modifier/len(attackCC))
+        if attacks < 0:
+            attacks = 0
+        
+        # Get hit probability
+        cc_hits[weapon]   = to_hit(Attack_ToHit, attacks,
+                                    weaponCreator.cc[weapon][1:])
+        # Get Wound Probability
+        [cc_wounds[weapon], rending] = to_wound(CC_ToWound[weapon],
+                                                cc_hits[weapon],
+                                                weaponCreator.cc[weapon][1:]) 
+        if CC_InstantKill[weapon]:
+            cc_kills[weapon] = kills(cc_wounds[weapon], 0, invo)
+        else:
+            cc_kills[weapon] = kills(cc_wounds[weapon], svo, invo)
+        cc_kills[weapon] += rending
+        attackCC_hits.append(cc_hits[weapon])
+        attackCC_wounds.append(cc_wounds[weapon])
+        attackCC_kills.append(cc_kills[weapon])
+
+
+    return [attackCC_hits, attackCC_wounds, attackCC_kills]
+ 

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-version = '0.013'
+version = '0.014'
 
 from tkinter import *
 from tkinter import ttk
@@ -104,6 +104,8 @@ def load_init():
     vals = [primAtWep1, primAtWep2, primAtWep3, primAtWep4, primAtWep5]
     weps = [at1Gun, at2Gun, at3Gun, at4Gun, at5Gun]
     for count, name in simulation.pairwise(data[6]):
+        if name == "\n":
+            name = "No Weapon Selected"
         vals[i].set(count)
         weps[i].set(name)
         i += 1
@@ -112,6 +114,8 @@ def load_init():
     vals = [extrAtWep1, extrAtWep2]
     weps = [atex1Gun, atex2Gun]
     for count, name in simulation.pairwise(data[7]):
+        if name == "\n":
+            name = "No Weapon Selected"
         vals[i].set(count)
         weps[i].set(name)
         i += 1
@@ -120,6 +124,8 @@ def load_init():
     vals = [primAtCC1, primAtCC2, primAtCC3, primAtCC4, primAtCC5]
     weps = [at1CC, at2CC, at3CC, at4CC, at5CC]
     for count, name in simulation.pairwise(data[8]):
+        if name == "\n":
+            name = "Default"
         vals[i].set(count)
         weps[i].set(name)
         i += 1
@@ -128,6 +134,8 @@ def load_init():
     vals = [extrAtCC1, extrAtCC2]
     weps = [atex1CC, atex2CC]
     for count, name in simulation.pairwise(data[9]):
+        if name == "\n":
+            name = "Default"
         vals[i].set(count)
         weps[i].set(name)
         i += 1
@@ -136,6 +144,8 @@ def load_init():
     vals = [primOpCC1, primOpCC2, primOpCC3, primOpCC4, primOpCC5]
     weps = [op1CC, op2CC, op3CC, op4CC, op5CC]
     for count, name in simulation.pairwise(data[10]):
+        if name == "\n":
+            name = "Default"
         vals[i].set(count)
         weps[i].set(name)
         i += 1
@@ -144,6 +154,8 @@ def load_init():
     vals = [extrOpCC1, extrOpCC2]
     weps = [opex1CC, opex2CC]
     for count, name in simulation.pairwise(data[11]):
+        if name == "\n":
+            name = "Default"
         vals[i].set(count)
         weps[i].set(name)
         i += 1
@@ -184,7 +196,7 @@ def save_init():
                 attackWeapons += string
             else:
                 break
-        attackWeapons += "\n"
+        attackWeapons += " \n"
         i += 2
              
     f = open('.init', 'w')
@@ -469,10 +481,10 @@ def refresh_weapons(*args):
 # Method to create probability distribution
 def create_distribution(sh_data, at_data, en_data):
     try:
-        attacks  = int(attacker_1.attacks.get())*int(attacker_1.A.get())
-        attack_w = int(attacker_1.attacks.get())*int(attacker_1.W.get())
-        enemies  = int(enemy_1.attacks.get())*int(enemy_1.A.get())
-        enemy_w  = int(enemy_1.attacks.get())*int(enemy_1.W.get())
+        attacks  = int(attacker_1.attacks.get())*int(attacker_1.A.get())+int(attacker_2.attacks.get())*int(attacker_2.A.get())
+        attack_w = int(attacker_1.attacks.get())*int(attacker_1.W.get())+int(attacker_2.attacks.get())*int(attacker_2.W.get())
+        enemies  = int(enemy_1.attacks.get())*int(enemy_1.A.get())+int(enemy_2.attacks.get())*int(enemy_2.A.get())
+        enemy_w  = int(enemy_1.attacks.get())*int(enemy_1.W.get())+int(enemy_2.attacks.get())*int(enemy_2.W.get())
         attacks  = min([attacks, enemies, attack_w, enemy_w])
             
         if attacks < 5:
@@ -537,16 +549,16 @@ def create_distribution(sh_data, at_data, en_data):
     largestProb = max([sh_largestProb, at_largestProb, en_largestProb])
 
     # Create legend
-    graphframe.create_line(430, 20, 460, 20, fill='DarkOliveGreen', width=4)
-    graphframe.create_line(430, 32, 460, 32, fill='RoyalBlue2', width=4)
-    graphframe.create_line(430, 44, 460, 44, fill='firebrick3', width=4)
+    graphframe.create_line(430, 20, 460, 20, fill='DeepSkyBlue4', width=4)
+    graphframe.create_line(430, 32, 460, 32, fill='LightSkyBlue3', width=4)
+    graphframe.create_line(430, 44, 460, 44, fill='orange2', width=4)
     graphframe.create_text(420, 20, text='%s'%("Shooting Phase"), anchor=E)
     graphframe.create_text(420, 32, text='%s'%("Assault (Attacker)"), anchor=E)
     graphframe.create_text(420, 44, text='%s'%("Assault (Enemy)"), anchor=E)
     
-    create_marks(attacks, largestProb, sh_prob, 'DarkOliveGreen', 12)
-    create_marks(attacks, largestProb, at_prob, 'RoyalBlue2', 6)
-    create_marks(attacks, largestProb, en_prob, 'firebrick3', 3)
+    create_marks(attacks, largestProb, sh_prob, 'DeepSkyBlue4', 18)
+    create_marks(attacks, largestProb, at_prob, 'LightSkyBlue3', 10)
+    create_marks(attacks, largestProb, en_prob, 'orange2', 3)
     
     for i in range(0, largestProb):
         y_mark = 300 - (250*i/largestProb)
@@ -565,18 +577,22 @@ def create_distribution(sh_data, at_data, en_data):
         else:
             graphframe.create_line(45, y_mark, 55, y_mark)
             graphframe.create_text(20, y_mark, text='%s'% (str(i)+'%'), anchor=W)
-    	        
+
+    # Axis labels
+    graphframe.create_text(250, 340, text='%s'%("Number of Kills"), anchor=S)
     root.update()
 
 def create_marks(attacks, max_prob, probdict, color, width):
-    m = width/2+1
+    m = width/2+2
     for key in probdict:
         x_pos = 50 + (key * 400/attacks)
         y_pos = 300 - round((probdict[key]*250*100/max_prob))
 
         if x_pos >= 50:
-            graphframe.create_rectangle(x_pos-m, y_pos-m, x_pos+m, y_pos+m, fill=color)
             graphframe.create_line(x_pos, 300, x_pos, y_pos, width=width, fill=color)
+            graphframe.create_oval(x_pos-m, y_pos-m, x_pos+m, y_pos+m, fill=color, width=2, outline=color)
+            
+
             
     
         
@@ -586,6 +602,10 @@ def calculate(*args):
         iterations = 1
     PBAR['maximum'] = iterations
 
+    hasExtraAttacker = bool(int(ExAtVal.get()))
+    hasExtraEnemy = bool(int(ExOpVal.get()))
+
+    
     # Initialize Data Structures
     Shoot_MeanHit    = 0
     Shoot_MeanWound  = 0
@@ -611,6 +631,10 @@ def calculate(*args):
     # Get Parameters
     [name, numAttack, wsa, bsa, sa, ta, wa, ia, aa, sva, inva] = attacker_1.get_int_values()
     [name, numEnemy,  wso, bso, so, to, wo, io, ao, svo, invo] = enemy_1.get_int_values()
+    if hasExtraAttacker:
+        [name2, numAttack2, wsa2, bsa2, sa2, ta2, wa2, ia2, aa2, sva2, inva2] = attacker_2.get_int_values()
+    if hasExtraEnemy:
+        [name2, numEnemy2,  wso2, bso2, so2, to2, wo2, io2, ao2, svo2, invo2] = enemy_2.get_int_values()
 
     # Get weapon usage
     ##################
@@ -619,37 +643,38 @@ def calculate(*args):
     unitGunNames = [at1GunVar.get(), at2GunVar.get(), at3GunVar.get(), at4GunVar.get(), at5GunVar.get()] 
     attackerGuns = simulation.sort_weapons(unitGunNames, unitGunCount)
         
-    # Guns for secondary attacker
-    extraGunCount = [extrAtWep1.get(), extrAtWep2.get()]
-    extraGunNames = [atex1GunVar.get(), atex2GunVar.get()] 
-    extraAttackerGuns = simulation.sort_weapons(extraGunNames, extraGunCount)
-
     # CC Weapons for primary attacker
     unitCCCount = [primAtCC1.get(), primAtCC2.get(), primAtCC3.get(), primAtCC4.get(), primAtCC5.get()]
     unitCCNames = [at1CCVar.get(), at2CCVar.get(), at3CCVar.get(), at4CCVar.get(), at5CCVar.get()]
     attackerCC  = simulation.sort_weapons(unitCCNames, unitCCCount)
 
-    # CC Weapons for secondary attacker
-    extraCCCount = [extrAtCC1.get(), extrAtCC2.get()]
-    extraCCNames = [atex1CCVar.get(), atex2CCVar.get()]
-    extraAttackerCC  = simulation.sort_weapons(extraCCNames, extraCCCount)
+    if hasExtraAttacker:
+        # Guns for secondary attacker
+        extraGunCount = [extrAtWep1.get(), extrAtWep2.get()]
+        extraGunNames = [atex1GunVar.get(), atex2GunVar.get()] 
+        extraAttackerGuns = simulation.sort_weapons(extraGunNames, extraGunCount)
+
+        # CC Weapons for secondary attacker
+        extraCCCount = [extrAtCC1.get(), extrAtCC2.get()]
+        extraCCNames = [atex1CCVar.get(), atex2CCVar.get()]
+        extraAttackerCC  = simulation.sort_weapons(extraCCNames, extraCCCount)
+
 
     # CC Weapons for primary enemy
     opCCCount = [primOpCC1.get(), primOpCC2.get(), primOpCC3.get(), primOpCC4.get(), primOpCC5.get()]
     opCCNames = [op1CCVar.get(), op2CCVar.get(), op3CCVar.get(), op4CCVar.get(), op5CCVar.get()]
     enemyCC  = simulation.sort_weapons(opCCNames, opCCCount)
 
-    # CC Weapons for secondary enemy
-    extraOpCCCount = [extrOpCC1.get(), extrOpCC2.get()]
-    extraOpCCNames = [opex1CCVar.get(), opex2CCVar.get()]
-    extraEnemyCC  = simulation.sort_weapons(extraOpCCNames, extraOpCCCount)
+    if hasExtraEnemy:
+        # CC Weapons for secondary enemy
+        extraOpCCCount = [extrOpCC1.get(), extrOpCC2.get()]
+        extraOpCCNames = [opex1CCVar.get(), opex2CCVar.get()]
+        extraEnemyCC  = simulation.sort_weapons(extraOpCCNames, extraOpCCCount)
 
     # Get total number of attacks for weapons and modify strength for cc weapons
     attackerCCStrength = {}
     for gun in attackerGuns:
         attackerGuns[gun] *= int(weaponCreator.guns[gun][0])
-    for gun in extraAttackerGuns:
-        extraAttackerGuns[gun] *= int(weaponCreator.guns[gun][0])
     for cc in attackerCC:
         try:
             attackerCC[cc] *= int(weaponCreator.cc[cc][0])
@@ -659,8 +684,18 @@ def calculate(*args):
             
         attackerCC[cc] *= aa
 
-    #for cc in extraAttackerCC:
-    #    extraAttackerCC[cc] *= int(weaponCreator.cc[cc][0])
+    if hasExtraAttacker:
+        extraAttackerCCStrength = {}
+        for gun in extraAttackerGuns:
+            extraAttackerGuns[gun] *= int(weaponCreator.guns[gun][0])
+        for cc in extraAttackerCC:
+            try:
+                extraAttackerCC[cc] *= int(weaponCreator.cc[cc][0])
+                extraAttackerCCStrength[cc] = simulation.get_cc_strength(weaponCreator.cc[cc][2:], sa2)
+            except KeyError:
+                extraAttackerCCStrength[cc] = sa2
+                
+            extraAttackerCC[cc] *= aa2
 
     # Enemy
     enemyCCStrength = {}
@@ -673,13 +708,25 @@ def calculate(*args):
             
         enemyCC[cc] *= ao
 
-    #for cc in extraEnemyCC:
-    #    extraEnemyCC[cc] *= int(weaponCreator.cc[cc][0])
+    if hasExtraEnemy:
+        extraEnemyCCStrength = {}
+        for cc in extraEnemyCC:
+            try:
+                extraEnemyCC[cc] *= int(weaponCreator.cc[cc][0])
+                extraEnemyCCStrength[cc] = simulation.get_cc_strength(weaponCreator.cc[cc][2:], so2)
+            except KeyError:
+                extraEnemyCCStrength[cc] = so2
+                
+            extraEnemyCC[cc] *= ao2
         
     PrimAt_wounds  = numAttack*wa
     PrimOp_wounds  = numEnemy*wo
+    if hasExtraAttacker:
+        ExtrAt_wounds  = numAttack2*wa2
+    if hasExtraEnemy:
+        ExtrOp_wounds  = numEnemy2*wo2
 
-    # Retrieve score needed to hit
+    # Retrieve score needed to hit for Primary Units
     if bsa > 5:
         bsa = 5
     scoreToHit = 7-bsa
@@ -698,6 +745,32 @@ def calculate(*args):
         Attack_ToHit = 4
         Enemy_ToHit  = 4
 
+    # Retrieve score needed to hit for Secondary Units
+    if hasExtraAttacker:
+        if bsa2 > 5:
+            bsa2 = 5
+        scoreToHit2 = 7-bsa2
+    
+        if wso > wsa2:
+            Attack2_ToHit = 4
+            if wso > 2*wsa2:
+                Attack2_ToHit = 5      
+        elif wsa2 > wso:
+            Attack2_ToHit = 3
+        else:
+            Attack2_ToHit = 4
+
+    if hasExtraEnemy:
+        if wsa > wso2:
+            Enemy2_ToHit = 4
+            if wsa > 2*wso2:
+                Enemy2_ToHit = 5      
+        elif wso2 > wsa:
+            Enemy2_ToHit = 3
+        else:
+            Enemy2_ToHit = 4
+
+
     # Retrieve score needed to wound for shooting and Instant-Kill check
     Gun_ToWound      = {}
     Gun_InstantKill  = {}
@@ -708,6 +781,17 @@ def calculate(*args):
         Gun_InstantKill[weapon] = simulation.check_instant_kill(int(weaponCreator.guns[weapon][1]),
                                                      to, weaponCreator.guns[weapon][3:],
                                                      int(weaponCreator.guns[weapon][2]))
+
+    if hasExtraAttacker:
+        Gun2_ToWound     = {}
+        Gun2_InstantKill = {}
+        for weapon in extraAttackerGuns:
+            Gun2_ToWound[weapon] = simulation.get_scoreToWound(int(weaponCreator.guns[weapon][1]),
+                                                              weaponCreator.guns[weapon][3:], to)
+    
+            Gun2_InstantKill[weapon] = simulation.check_instant_kill(int(weaponCreator.guns[weapon][1]),
+                                                         to, weaponCreator.guns[weapon][3:],
+                                                         int(weaponCreator.guns[weapon][2]))
         
     # Retrieve score needed to wound for cc and Instant-Kill check
     CC_ToWound      = {}
@@ -722,9 +806,22 @@ def calculate(*args):
             CC_ToWound[weapon] = simulation.get_scoreToWound(attackerCCStrength[weapon], [], to)
             CC_InstantKill[weapon] = simulation.check_instant_kill(attackerCCStrength[weapon], to, [], 0)
 
+    if hasExtraAttacker:
+        CC2_ToWound     = {}
+        CC2_InstantKill = {}        
+        for weapon in extraAttackerCC:
+            try:
+                CC2_ToWound[weapon] = simulation.get_scoreToWound(extraAttackerCCStrength[weapon],
+                                                                  weaponCreator.cc[weapon][1:], to)
+                CC2_InstantKill[weapon] = simulation.check_instant_kill(extraAttackerCCStrength[weapon],
+                                                             to, weaponCreator.cc[weapon][1:], 0)
+            except KeyError:
+                CC2_ToWound[weapon] = simulation.get_scoreToWound(extraAttackerCCStrength[weapon], [], to)
+                CC2_InstantKill[weapon] = simulation.check_instant_kill(extraAttackerCCStrength[weapon], to, [], 0)
+    
     # Retrieve enemy score needed to wound for cc and Instant-Kill check
-    enemyCC_ToWound      = {}
-    enemyCC_InstantKill  = {}
+    enemyCC_ToWound       = {}
+    enemyCC_InstantKill   = {}
     for weapon in enemyCC:
         try:
             enemyCC_ToWound[weapon] = simulation.get_scoreToWound(enemyCCStrength[weapon],
@@ -734,7 +831,20 @@ def calculate(*args):
         except KeyError:
             enemyCC_ToWound[weapon] = simulation.get_scoreToWound(enemyCCStrength[weapon], [], ta)
             enemyCC_InstantKill[weapon] = simulation.check_instant_kill(enemyCCStrength[weapon], ta, [], 0)
-    
+
+    if hasExtraEnemy:
+        enemy2CC_ToWound      = {}
+        enemy2CC_InstantKill  = {}
+        for weapon in extraEnemyCC:
+            try:
+                enemy2CC_ToWound[weapon] = simulation.get_scoreToWound(extraEnemyCCStrength[weapon],
+                                                                      weaponCreator.cc[weapon][1:], to)
+                enemy2CC_InstantKill[weapon] = simulation.check_instant_kill(extraEnemyCCStrength[weapon],
+                                                                            ta, weaponCreator.cc[weapon][1:], 0)
+            except KeyError:
+                enemy2CC_ToWound[weapon] = simulation.get_scoreToWound(extraEnemyCCStrength[weapon], [], ta)
+                enemy2CC_InstantKill[weapon] = simulation.check_instant_kill(extraEnemyCCStrength[weapon], ta, [], 0)
+
     while(loop_count < iterations):
         PBAR.step(1.0)
         root.update()
@@ -745,6 +855,22 @@ def calculate(*args):
         currentShot_hits   = []
         currentShot_wounds = []
         currentShot_kills  = []
+        attackerCC_hits     = []
+        attackerCC_wounds   = []
+        attackerCC_kills    = []
+        
+        attacker2CC_hits     = []
+        attacker2CC_wounds   = []
+        attacker2CC_kills    = []
+        
+        enemyCC_hits     = []
+        enemyCC_wounds   = []
+        enemyCC_kills    = []
+        
+        enemy2CC_hits     = []
+        enemy2CC_wounds   = []
+        enemy2CC_kills    = []
+        
         
         for weapon in attackerGuns:
             # Get hit probability
@@ -765,87 +891,232 @@ def calculate(*args):
             currentShot_wounds.append(shoot_wounds[weapon])
             currentShot_kills.append(shoot_kills[weapon])
 
-        cc_hits   = {}
-        cc_wounds = {}
-        cc_kills  = {}
-        attackerCC_hits     = []
-        attackerCC_wounds   = []
-        attackerCC_kills    = []
-        enemyCC_hits        = []
-        enemyCC_wounds      = []
-        enemyCC_kills       = []
-        weaponList = [attackerCC, enemyCC]
+        # Check how many kills there are.  If there are <number of enemy> kills then allocate to secondary.
+        allocateToSecondary = False
+        if hasExtraAttacker:
+            if currentShot_kills[-1] == numEnemy:
+                allocateToSecondary = True
+                for weapon in enemyAttackerGuns:
+                    Gun2_ToWound[weapon] = simulation.get_scoreToWound(int(weaponCreator.guns[weapon][1]),
+                                                                           weaponCreator.guns[weapon][3:], to2)
 
-        strikeSameTime = False
-        if ia > io:
-            select = 0
-        elif ia < io:
-            select = 1
-        elif ia == io:
-            select = 0
-            strikeSameTime = True
-            
-        strikeLast = False
-        # NEED TO CHECK INITIATIVE AND WEAPON ATTRIBUTES
-        for i in range(0, 2):
-            initiative_kills = 0
-            if select == 0:
-                for weapon in attackerCC:
-                    attacks = attackerCC[weapon]
-                    if strikeLast and not strikeSameTime:
-                        if not initiative_kills:
-                            for kills in enemyCC_kills:
-                                initiative_kills += kills
-                        attacks -= int(initiative_kills/len(attackerCC))    # Distribute kills
-                        if attacks < 0:
-                            attacks = 0
-                    # Get hit probability
-                    cc_hits[weapon]   = simulation.to_hit(Attack_ToHit, attacks,
-                                                          weaponCreator.cc[weapon][1:])
-                    # Get Wound Probability
-                    [cc_wounds[weapon], rending] = simulation.to_wound(CC_ToWound[weapon],
-                                                                       cc_hits[weapon],
-                                                                       weaponCreator.cc[weapon][1:]) 
-                    if CC_InstantKill[weapon]:
-                        cc_kills[weapon] = simulation.kills(cc_wounds[weapon], 0, invo)
-                    else:
-                        cc_kills[weapon] = simulation.kills(cc_wounds[weapon], svo, invo)
-                    cc_kills[weapon] += rending
-                    attackerCC_hits.append(cc_hits[weapon])
-                    attackerCC_wounds.append(cc_wounds[weapon])
-                    attackerCC_kills.append(cc_kills[weapon])
-                strikeLast = True
-                select ^= 1
+                    Gun2_InstantKill[weapon] = simulation.check_instant_kill(int(weaponCreator.guns[weapon][1]),
+                                                                             to2, weaponCreator.guns[weapon][3:],
+                                                                             int(weaponCreator.guns[weapon][2]))
                     
-            elif select == 1:
-                for weapon in enemyCC:
-                    attacks = enemyCC[weapon]
-                    if strikeLast and not strikeSameTime:
-                        if not initiative_kills:
-                            for kills in attackerCC_kills:
-                                initiative_kills += kills
-                        attacks -= int(initiative_kills/len(enemyCC)) # Distribute kills
-                        if attacks < 0:
-                            attacks = 0
-                    # Get hit probability
-                    cc_hits[weapon]   = simulation.to_hit(Enemy_ToHit, attacks,
-                                                          weaponCreator.cc[weapon][1:])
-                    # Get Wound Probability
-                    [cc_wounds[weapon], rending] = simulation.to_wound(enemyCC_ToWound[weapon],
-                                                                       cc_hits[weapon],
-                                                                       weaponCreator.cc[weapon][1:]) 
-                    if enemyCC_InstantKill[weapon]:
-                        cc_kills[weapon] = simulation.kills(cc_wounds[weapon], 0, inva)
+            for weapon in extraAttackerGuns:
+                # Get hit probability
+                shoot_hits[weapon]   = simulation.to_hit(scoreToHit2, extraAttackerGuns[weapon],
+                                                         weaponCreator.guns[weapon][3:])
+                # Get Wound Probability
+                [shoot_wounds[weapon], rending] = simulation.to_wound(Gun2_ToWound[weapon],
+                                                                      shoot_hits[weapon],
+                                                                      weaponCreator.guns[weapon][3:])
+                
+                if Gun2_InstantKill[weapon]:
+                    if allocateToSecondary:
+                        shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], 0, invo2)
                     else:
-                        cc_kills[weapon] = simulation.kills(cc_wounds[weapon], sva, inva)
-                    cc_kills[weapon] += rending
-                    enemyCC_hits.append(cc_hits[weapon])
-                    enemyCC_wounds.append(cc_wounds[weapon])
-                    enemyCC_kills.append(cc_kills[weapon])
-                strikeLast = True
-                select ^= 1
-            
+                        shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], 0, invo)
+                else:
+                    if allocateToSecondary:
+                        shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], svo2, invo2)
+                    else:
+                        shoot_kills[weapon] = simulation.kills(shoot_wounds[weapon], svo, invo)
+                    
+                shoot_kills[weapon] += rending
+                currentShot_hits.append(shoot_hits[weapon])
+                currentShot_wounds.append(shoot_wounds[weapon])
+                currentShot_kills.append(shoot_kills[weapon])
 
+        # Initiative checking (not perfect, but it's sufficient)
+
+        # If there are extra units for both attackers and enemys
+        if hasExtraAttacker and hasExtraEnemy:
+            # Primary vs Primary
+            if ia > io:
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attack_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, 0)
+                kills = 0
+                for kill in attackerCC_kills:
+                    kills += kill
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, kills)
+            elif ia < io:
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, 0)
+                kills = 0
+                for kill in enemyCC_kills:
+                    kills += kill                
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attack_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, kills)
+            else:
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attack_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, 0)
+                
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, 0)
+            # Secondary vs Secondary
+            if ia2 > io2:
+                [attacker2CC_hits, attacker2CC_wounds, attacker2CC_kills] = simulation.calculate_assault(weaponCreator, extraAttackerCC,
+                                                                                                         Attack2_ToHit, CC2_ToWound,
+                                                                                                         invo2, svo2, CC2_InstantKill, 0)
+                kills = 0
+                for kill in attacker2CC_kills:
+                    kills += kill
+                [enemy2CC_hits, enemy2CC_wounds, enemy2CC_kills] = simulation.calculate_assault(weaponCreator, extraEnemyCC,
+                                                                                                Enemy2_ToHit, enemy2CC_ToWound,
+                                                                                                inva2, sva2, enemy2CC_InstantKill, kills)
+            elif ia2 < io2:
+                [enemy2CC_hits, enemy2CC_wounds, enemy2CC_kills] = simulation.calculate_assault(weaponCreator, extraEnemyCC,
+                                                                                                Enemy2_ToHit, enemy2CC_ToWound,
+                                                                                                inva2, sva2, enemy2CC_InstantKill, 0)
+                kills = 0
+                for kill in enemy2CC_kills:
+                    kills += kill
+                [attacker2CC_hits, attacker2CC_wounds, attacker2CC_kills] = simulation.calculate_assault(weaponCreator, extraAttackerCC,
+                                                                                                         Attack2_ToHit, CC2_ToWound,
+                                                                                                         invo2, svo2, CC2_InstantKill, kills)
+            else:
+                [attacker2CC_hits, attacker2CC_wounds, attacker2CC_kills] = simulation.calculate_assault(weaponCreator, extraAttackerCC,
+                                                                                                         Attack2_ToHit, CC2_ToWound,
+                                                                                                         invo2, svo2, CC2_InstantKill, 0)
+                
+                [enemy2CC_hits, enemy2CC_wounds, enemy2CC_kills] = simulation.calculate_assault(weaponCreator, extraEnemyCC,
+                                                                                                Enemy2_ToHit, enemy2CC_ToWound,
+                                                                                                inva2, sva2, enemy2CC_InstantKill, 0)
+        # If only extra Attacker (assumes all enemy hits land on primary unit)
+        elif hasExtraAttacker:
+            if ia > io:
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attack_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, 0)
+                
+                [attacker2CC_hits, attacker2CC_wounds, attacker2CC_kills] = simulation.calculate_assault(weaponCreator, extraAttackerCC,
+                                                                                                         Attack2_ToHit, CC2_ToWound,
+                                                                                                         invo, svo, CC2_InstantKill, 0)
+                kills = 0
+                for kill, kill2 in zip(attackerCC_kills, attacker2CC_kills):
+                    kills += kill
+                    kills += kill2
+
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, kills)
+            elif ia < io:
+                [attacker2CC_hits, attacker2CC_wounds, attacker2CC_kills] = simulation.calculate_assault(weaponCreator, extraAttackerCC,
+                                                                                                         Attack2_ToHit, CC2_ToWound,
+                                                                                                         invo, svo, CC2_InstantKill, 0)
+                kills = 0
+                for kill in attacker2CC_kills:
+                    kills += kill
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, kills)
+                kills = 0
+                for kill in enemyCC_kills:
+                    kills += kill
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attack_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, kills)
+                
+            else:
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attack_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, 0)
+                
+                [attacker2CC_hits, attacker2CC_wounds, attacker2CC_kills] = simulation.calculate_assault(weaponCreator, extraAttackerCC,
+                                                                                                         Attack2_ToHit, CC2_ToWound,
+                                                                                                         invo, svo, CC2_InstantKill, 0)
+ 
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, 0)
+                
+
+        # If only extra Enemy (assumes all attacker hits land on primary unit)
+        elif hasExtraAttacker:
+            if io > ia:
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, 0)
+                
+                [enemy2CC_hits, enemy2CC_wounds, enemy2CC_kills] = simulation.calculate_assault(weaponCreator, extraEnemyCC,
+                                                                                                Enemy2_ToHit, enemy2CC_ToWound,
+                                                                                                inva, sva, enemyCC2_InstantKill, 0)
+                kills = 0
+                for kill, kill2 in zip(enemyCC_kills, enemy2CC_kills):
+                    kills += kill
+                    kills += kill2
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attacker_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, kills)
+            elif io < ia:
+                [enemy2CC_hits, enemy2CC_wounds, enemy2CC_kills] = simulation.calculate_assault(weaponCreator, extraEnemyCC,
+                                                                                                Enemy2_ToHit, enemy2CC_ToWound,
+                                                                                                inva, sva, enemyCC2_InstantKill, 0)
+                kills = 0
+                for kill in enemy2CC_kills:
+                    kills += kill
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attacker_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, kills)
+                kills = 0
+                for kill in atackerCC_kills:
+                    kills += kill
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, kills)
+                
+            else:
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, 0)
+                
+                [enemy2CC_hits, enemy2CC_wounds, enemy2CC_kills] = simulation.calculate_assault(weaponCreator, extraEnemyCC,
+                                                                                                Enemy2_ToHit, enemy2CC_ToWound,
+                                                                                                inva, sva, enemyCC2_InstantKill, 0)
+                
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attacker_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, 0)
+        else:
+            # Primary vs Primary
+            if ia > io:
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attack_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, 0)
+                kills = 0
+                for kill in attackerCC_kills:
+                    kills += kill
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, kills)
+            elif ia < io:
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, 0)
+                kills = 0
+                for kill in enemyCC_kills:
+                    kills += kill                
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attack_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, kills)
+            else:
+                [attackerCC_hits, attackerCC_wounds, attackerCC_kills] = simulation.calculate_assault(weaponCreator, attackerCC,
+                                                                                                      Attack_ToHit, CC_ToWound,
+                                                                                                      invo, svo, CC_InstantKill, 0)
+                
+                [enemyCC_hits, enemyCC_wounds, enemyCC_kills] = simulation.calculate_assault(weaponCreator, enemyCC,
+                                                                                             Enemy_ToHit, enemyCC_ToWound,
+                                                                                             inva, sva, enemyCC_InstantKill, 0)
+                
         # Get total stats from shooting
         total_hits   = 0
         total_wounds = 0
@@ -872,6 +1143,10 @@ def calculate(*args):
             total_hits   += hits
             total_wounds += wounds
             total_kills  += kills
+        for hits, wounds, kills in zip(attacker2CC_hits, attacker2CC_wounds, attacker2CC_kills):
+            total_hits   += hits
+            total_wounds += wounds
+            total_kills  += kills
 
         Attack_MeanHit   += total_hits
         Attack_MeanWound += total_wounds
@@ -886,6 +1161,10 @@ def calculate(*args):
         total_wounds = 0
         total_kills  = 0
         for hits, wounds, kills in zip(enemyCC_hits, enemyCC_wounds, enemyCC_kills):
+            total_hits   += hits
+            total_wounds += wounds
+            total_kills  += kills
+        for hits, wounds, kills in zip(enemy2CC_hits, enemy2CC_wounds, enemy2CC_kills):
             total_hits   += hits
             total_wounds += wounds
             total_kills  += kills
@@ -1059,7 +1338,7 @@ extropcc = GUI.label_frame_create(extrop, 'Assault',  0, 0)
 
 barframe = GUI.frame_create(mainframe, 1, 0)
 
-graphframe = GUI.canvas_create(graphpage, 0, 0, [500, 350])
+graphframe = GUI.canvas_create(graphpage, 0, 0, [500, 350], 'gray94')
 
 
 attackex_one = ttk.Frame(atstatframe, padding="3 3 12 12")
