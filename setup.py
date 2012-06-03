@@ -7,7 +7,7 @@ from cx_Freeze import setup, Executable
 # GUI applications require a different base on Windows (the default is for a
 # console application).
 
-ver = "0.1.1"
+ver = "0.1.2"
 
 base = None
 if sys.platform == "win32":

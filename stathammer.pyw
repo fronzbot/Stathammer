@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-version = '0.1.1'
+version = '0.1.2'
 
 from tkinter import *
 from tkinter import ttk
@@ -77,13 +77,15 @@ class Unit(object):
 
     # Method returns all values for a unit
     def get_values(self):
-        return [self.name.get(), self.attacks.get(), self.WS.get(),
+        name = "_".join(self.name.get().split(" "))
+        return [name, self.attacks.get(), self.WS.get(),
                 self.BS.get(), self.S.get(), self.T.get(), self.W.get(),
                 self.I.get(), self.A.get(), self.SV.get(), self.INV.get()]
 
     # Method returns all values and converts number strings into ints
     def get_int_values(self):
-        return [self.name.get(), int(self.attacks.get()), int(self.WS.get()),
+        name = "_".join(self.name.get().split(" "))
+        return [name, int(self.attacks.get()), int(self.WS.get()),
                 int(self.BS.get()), int(self.S.get()), int(self.T.get()), int(self.W.get()),
                 int(self.I.get()), int(self.A.get()), int(self.SV.get()), int(self.INV.get())]
 
@@ -121,21 +123,24 @@ def load_init():
     #Set variables
     Unitvar.set(" ".join(data[0][0].split("_")))
     UnitvarO.set(" ".join(data[3][0].split("_")))
-    
-    attacker_1.set_values([data[1][0], data[1][1], data[1][2], data[1][3],
+    namea1 = " ".join(data[1][0].split("_"))
+    namea2 = " ".join(data[2][0].split("_"))
+    nameo1 = " ".join(data[3][0].split("_"))
+    nameo2 = " ".join(data[4][0].split("_"))
+    attacker_1.set_values([namea1, data[1][1], data[1][2], data[1][3],
                            data[1][4], data[1][5], data[1][6], data[1][7],
                            data[1][8], data[1][9], data[1][10]])
     
-    attacker_2.set_values([data[2][0], data[2][1], data[2][2], data[2][3],
+    attacker_2.set_values([namea2, data[2][1], data[2][2], data[2][3],
                            data[2][4], data[2][5], data[2][6], data[2][7],
                            data[2][8], data[2][9], data[2][10]])
 
     
-    enemy_1.set_values([data[4][0], data[4][1], data[4][2], data[4][3],
+    enemy_1.set_values([nameo1, data[4][1], data[4][2], data[4][3],
                         data[4][4], data[4][5], data[4][6], data[4][7],
                         data[4][8], data[4][9], data[4][10]])
     
-    enemy_2.set_values([data[5][0], data[5][1], data[5][2], data[5][3],
+    enemy_2.set_values([nameo2, data[5][1], data[5][2], data[5][3],
                         data[5][4], data[5][5], data[5][6], data[5][7],
                         data[5][8], data[5][9], data[5][10]])
 
@@ -1537,7 +1542,7 @@ I_box       = GUI.input_create(attackstat, 'spinbox', attacker_1.I,     2,  [3, 
 A_box       = GUI.input_create(attackstat, 'spinbox', attacker_1.A,     2,  [3, 8, (W)], [1, 10])
 SVA_box     = GUI.input_create(attackstat, 'spinbox', attacker_1.SV,    2,  [3, 9, (W)], [2,  6])
 INV_box     = GUI.input_create(attackstat, 'spinbox', attacker_1.INV,   2,  [3, 10,(W)], [0,  6])
-attacker_1.name.set('UNIT NAME')
+attacker_1.name.set('UNIT-NAME')
 attacker_1.attacks.set('1')
 
 attacker_2 = Unit()
@@ -1552,7 +1557,7 @@ ia1_box    = GUI.input_create(attackex_one, 'spinbox', attacker_2.I,     2, [0, 
 aa1_box    = GUI.input_create(attackex_one, 'spinbox', attacker_2.A,     2, [0, 8, (W)], [1, 10])
 sva1_box   = GUI.input_create(attackex_one, 'spinbox', attacker_2.SV,    2, [0, 9, (W)], [2,  6])
 inv1_box   = GUI.input_create(attackex_one, 'spinbox', attacker_2.INV,   2, [0, 10,(W)], [0,  6])
-attacker_2.name.set('UNIT NAME')
+attacker_2.name.set('UNIT-NAME')
 attacker_2.attacks.set('1')
       
 # Enemies
@@ -1572,7 +1577,7 @@ IO_box      = GUI.input_create(enemystat, 'spinbox', enemy_1.I,     2, [3, 7, (W
 AO_box      = GUI.input_create(enemystat, 'spinbox', enemy_1.A,     2, [3, 8, (W)], [1, 10])
 SV_box      = GUI.input_create(enemystat, 'spinbox', enemy_1.SV,    2, [3, 9, (W)], [2,  6])
 INVO_box    = GUI.input_create(enemystat, 'spinbox', enemy_1.INV,   2, [3, 10,(W)], [0,  6])
-enemy_1.name.set('UNIT NAME')
+enemy_1.name.set('UNIT-NAME')
 enemy_1.attacks.set('1')
 
 enemy_2     = Unit()
@@ -1587,7 +1592,7 @@ io1_box     = GUI.input_create(enemyex_one, 'spinbox', enemy_2.I,     2, [0, 7, 
 ao1_box     = GUI.input_create(enemyex_one, 'spinbox', enemy_2.A,     2, [0, 8, (W)], [1, 10])
 svo1_box    = GUI.input_create(enemyex_one, 'spinbox', enemy_2.SV,    2, [0, 9, (W)], [2,  6])
 invo1_box    = GUI.input_create(enemyex_one, 'spinbox', enemy_2.INV,   2, [0, 10,(W)], [0,  6])
-enemy_2.name.set('UNIT NAME')
+enemy_2.name.set('UNIT-NAME')
 enemy_2.attacks.set('1')
 
 # Extra unit check buttons
@@ -1837,7 +1842,6 @@ PBAR['value']=0
 graphframe.create_line(50,300,450,300, width=2)  # X-axis
 graphframe.create_line(50,300,50,50, width=2)    # Y-axis
 
-
 #=============#
 #   About     #
 #=============#
@@ -1948,7 +1952,7 @@ for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
 
 try:
     load_init()
-except:
+except IOError:
     pass
 
 root.mainloop()
