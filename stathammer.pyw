@@ -125,8 +125,8 @@ def load_init():
     UnitvarO.set(" ".join(data[3][0].split("_")))
     namea1 = " ".join(data[1][0].split("_"))
     namea2 = " ".join(data[2][0].split("_"))
-    nameo1 = " ".join(data[3][0].split("_"))
-    nameo2 = " ".join(data[4][0].split("_"))
+    nameo1 = " ".join(data[4][0].split("_"))
+    nameo2 = " ".join(data[5][0].split("_"))
     attacker_1.set_values([namea1, data[1][1], data[1][2], data[1][3],
                            data[1][4], data[1][5], data[1][6], data[1][7],
                            data[1][8], data[1][9], data[1][10]])
