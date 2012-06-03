@@ -1,95 +1,10 @@
+v0.1.2b
+* Fixed bug that force closed application on first run
+* Fixed bug that force closed application when run from the Program Menu
+
 v0.1.1b
 * Fixed bug when no .init file found
 * Added bug reporting link in Help menu
 
 v0.1.0b
 * Beta release
-
-v0.015a
-* Updated README. 
-* Added LICENSE. 
-* Added context menu on graph. 
-* Added About Menu. 
-* Fixed issue with BS > 5
- 
-
-v0.014a
-* Feature freeze. 
-* Changed graph layout/colors. 
-* Added in support for multiple units and added a primative initiative check. 
-* The check does not distribute wounds but since the algorithm itself performs 
-  worst-case-scenario analysis, this will cause negligable variance in data from what is expected
- 
-
-v0.013a
-* Massive overhaul of Table class. 
-* Added in standard deviation, min and max calculations. 
-* Added stat table for attacker and enemy. 
-* Add min and max size to window for resizing. 
-* Need to add in extra unit handling
- 
-
-v0.012a
-* Added invulnerable save support. 
-* Added in enemy assault phase. 
-* Added in initiative checking for assult. 
-* Need to add in extra unit support and add in stat table before beta testing release
- 
-
-v0.011a
-* Added re-roll simulations. 
-* Added Rending, Sniper support. 
-* Added in weapon saving
- 
-
-v0.010a
-* Massive overhaul of calculate method. 
-* Slowly adding in support for different weapon types. 
-* Currently handles primary attacker shooting phase and primary attacker Assault phase. 
-* Need to implement handlers for many weapon attributes (such as re-rolls). 
-* Need to implement invulnerable save handling as well
- 
-
-v0.09a
-* Completed Weapon Creator file handling. 
-* Possbily add in number of attacks/shots as a weapon attribute. 
-* Moved Weapon Creator tool to WCreate module. 
-* Added more comments to files
- 
-
-v0.08a
-* Added Table class to GUI.py. 
-* Added in user-input elements in Weapon Creator tool. 
-* Added in prototype of table class which will be used for stat reporting
- 
-
-v0.07a
-* Changed view to paged format. 
-* Added in further weapon support though it still just a skeleton. 
-* Weapon creation tool next thing to be implemented
- 
-
-v0.06a
-* Streamlined GUI more. 
-* Added skeleton for different weapons per unit. 
-* Added in skeleton for weapon creation tool.
- 
-
-v0.05a
-* Added Unit class to streamline unit stat handling
- 
-
-v0.04a
-* Fixed bug with multiple unit calls. 
-* Added menu. 
-* Menu contains Exit and Iteration selections so far
- 
-
-v0.03a
-* Added load/save support for multiple units (attackers and enemies). 
-* Next need to add in special weapon support and invulnerable saves and such
- 
-
-v0.02a
-* Initial alpha release
- 
