@@ -132,9 +132,10 @@ def label_frame_create(root_window, labelName, row, col):
 
 def canvas_create(root_window, row, col, dims, color):
     frame = Canvas(root_window, width=dims[0], height=dims[1], bg=color, cursor='tcross')
-    frame.grid(column=col, row=row, sticky=(N, E, W, S))
-    frame.columnconfigure(col, weight=1)
-    frame.rowconfigure(row, weight=1)
+    #frame.grid(column=col, row=row, sticky=(N, E, W, S))
+    #frame.columnconfigure(col, weight=1)
+    #frame.rowconfigure(row, weight=1)
+    frame.pack()
     frame['borderwidth'] = 4
     frame['relief'] = 'ridge'
 

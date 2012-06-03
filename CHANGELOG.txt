@@ -1,3 +1,8 @@
+v0.1.3b
+* Fixed Canvas sizing on different screen resolutions
+* Removed grid for calculate button and progress bar- they now dynamically move based on screen size
+* Removed application minimum size
+
 v0.1.2b
 * Fixed bug that force closed application on first run
 * Fixed bug that force closed application when run from the Program Menu

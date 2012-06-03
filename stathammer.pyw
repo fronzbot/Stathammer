@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-version = '0.1.2'
+version = '0.1.3'
 
 from tkinter import *
 from tkinter import ttk
@@ -1383,7 +1383,7 @@ else:
 
 root.protocol('WM_DELETE_WINDOW', save_init)
 
-root.minsize(800, 520)
+#root.minsize(800, 520)
 
 
 #================#
@@ -1459,8 +1459,6 @@ extratcc = GUI.label_frame_create(extrat, 'Assault',  0, 1)
 primopcc = GUI.label_frame_create(primop, 'Assault',  0, 0)
 extropcc = GUI.label_frame_create(extrop, 'Assault',  0, 0)
 
-barframe = GUI.frame_create(mainframe, 1, 0)
-
 graphframe = GUI.canvas_create(graphpage, 0, 0, [500, 350], 'gray94')
 graphframe.bind('<1>', popup_prob)
 
@@ -1474,6 +1472,11 @@ enemyex_one.grid(column=0, row=2, sticky=(N, E, W, S))
 enemyex_one.columnconfigure(0, weight=1)
 enemyex_one.rowconfigure(2, weight=1)
 
+#barframe = GUI.frame_create(mainframe, 1, 0)
+#calcframe = ttk.Frame(root)
+#calcframe.pack()
+barframe = ttk.Frame(root)
+barframe.pack(side=RIGHT)
 
 #=============#
 #     Menu    #  
@@ -1661,9 +1664,9 @@ eOpCC2Box = GUI.input_create(extropcc, 'entry', extrOpCC2, 3, [2, 0, ()], [0])
 #=============#
 #   Buttons   #  
 #=============#
-calc = ttk.Button(barframe, text='Calculate', command=calculate, width=20)
-calc.grid(column=0, row=0, ipady=5, pady=10)
-
+calc = ttk.Button(root, text='Calculate', command=calculate, width=20)
+#calc.grid(column=0, row=0, ipady=5, pady=10)
+calc.pack(ipady=5)
 saveAttack = ttk.Button(atsvldframe, text = 'Save', command=save_attacker, width=10)
 saveAttack.grid(column=1, row=0, sticky=(W))
 
