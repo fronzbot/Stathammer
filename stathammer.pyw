@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-version = '0.015'
+version = '0.1.1'
 
 from tkinter import *
 from tkinter import ttk
@@ -40,6 +40,11 @@ except IOError:
     f = open('ccl.wf', 'w')
     f.write('Default 1 None \n')
     f.close() 
+
+
+def bug(*args):
+    webbrowser.open('http://github.com/fronzbot/Stathammer/issues')
+
 
 # Class for units.  Allows for creation of multiple
 # attackers and enemies with a minimal increase in code
@@ -1502,7 +1507,8 @@ IterVar.set("2500")
 
 # Help ->
 helpmenu.add_command(label="About", command=get_about)
-
+helpmenu.add_separator()
+helpmenu.add_command(label="Submit Bug", command=bug)
 
 root.config(menu=menubar)
 
@@ -1532,7 +1538,7 @@ A_box       = GUI.input_create(attackstat, 'spinbox', attacker_1.A,     2,  [3, 
 SVA_box     = GUI.input_create(attackstat, 'spinbox', attacker_1.SV,    2,  [3, 9, (W)], [2,  6])
 INV_box     = GUI.input_create(attackstat, 'spinbox', attacker_1.INV,   2,  [3, 10,(W)], [0,  6])
 attacker_1.name.set('UNIT NAME')
-attacker_1.attacks.set(1)
+attacker_1.attacks.set('1')
 
 attacker_2 = Unit()
 nameA1_box = GUI.input_create(attackex_one, 'entry', attacker_2.name,   15, [0, 0, (W,E)], [0])
@@ -1547,7 +1553,7 @@ aa1_box    = GUI.input_create(attackex_one, 'spinbox', attacker_2.A,     2, [0, 
 sva1_box   = GUI.input_create(attackex_one, 'spinbox', attacker_2.SV,    2, [0, 9, (W)], [2,  6])
 inv1_box   = GUI.input_create(attackex_one, 'spinbox', attacker_2.INV,   2, [0, 10,(W)], [0,  6])
 attacker_2.name.set('UNIT NAME')
-attacker_2.attacks.set(1)
+attacker_2.attacks.set('1')
       
 # Enemies
 UnitvarO = StringVar()
@@ -1567,7 +1573,7 @@ AO_box      = GUI.input_create(enemystat, 'spinbox', enemy_1.A,     2, [3, 8, (W
 SV_box      = GUI.input_create(enemystat, 'spinbox', enemy_1.SV,    2, [3, 9, (W)], [2,  6])
 INVO_box    = GUI.input_create(enemystat, 'spinbox', enemy_1.INV,   2, [3, 10,(W)], [0,  6])
 enemy_1.name.set('UNIT NAME')
-enemy_1.attacks.set(1)
+enemy_1.attacks.set('1')
 
 enemy_2     = Unit()
 nameO1_box  = GUI.input_create(enemyex_one, 'entry', enemy_2.name,   15, [0, 0, (W,E)], [0])
@@ -1582,7 +1588,7 @@ ao1_box     = GUI.input_create(enemyex_one, 'spinbox', enemy_2.A,     2, [0, 8, 
 svo1_box    = GUI.input_create(enemyex_one, 'spinbox', enemy_2.SV,    2, [0, 9, (W)], [2,  6])
 invo1_box    = GUI.input_create(enemyex_one, 'spinbox', enemy_2.INV,   2, [0, 10,(W)], [0,  6])
 enemy_2.name.set('UNIT NAME')
-enemy_2.attacks.set(1)
+enemy_2.attacks.set('1')
 
 # Extra unit check buttons
 ExAtVal = StringVar()

@@ -1,3 +1,18 @@
+v0.1.1b
+* Fixed bug when no .init file found
+* Added bug reporting link in Help menu
+
+v0.1.0b
+* Beta release
+
+v0.015a
+* Updated README. 
+* Added LICENSE. 
+* Added context menu on graph. 
+* Added About Menu. 
+* Fixed issue with BS > 5
+ 
+
 v0.014a
 * Feature freeze. 
 * Changed graph layout/colors. 
