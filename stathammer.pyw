@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-version = '0.1.3'
+version = '0.1.4.2'
 
 from tkinter import *
 from tkinter import ttk
@@ -34,10 +34,10 @@ import WCreate
 
 # Check for <ccl.wf> ands create if it does not exist
 try:
-    f = open('ccl.wf', 'r')
+    f = open('profiles/ccl.wf', 'r+')
     f.close()
 except IOError:
-    f = open('ccl.wf', 'w')
+    f = open('profiles/ccl.wf', 'w+')
     f.write('Default 1 None \n')
     f.close() 
 
@@ -98,7 +98,7 @@ def open_source(*args):
     
 # Method used to return window to previous state (on last close)
 def load_init():
-    f = open('.init', 'r')
+    f = open('profiles/.init', 'r+')
     data = f.readlines()
     f.close()
 
@@ -243,7 +243,7 @@ def save_init():
         attackWeapons += " \n"
         i += 2
              
-    f = open('.init', 'w')
+    f = open('profiles/.init', 'w+')
     f.write(attacker+" \n"+enemy+" \n"+attackWeapons)
     f.close
     root.destroy()
@@ -283,7 +283,7 @@ def save_attacker():
             attackWeapons += "\n"
             i += 2
             
-        save = open(saveFile, 'w')
+        save = open(saveFile, 'w+')
         save.write(attacker+" \n"+attackWeapons)
         save.close()
 
@@ -317,7 +317,7 @@ def save_enemy():
             attackWeapons += "\n"
             i += 2
             
-        save = open(saveFile, 'w')
+        save = open(saveFile, 'w+')
         save.write(enemy+" \n"+attackWeapons)
         save.close()
 
@@ -329,7 +329,7 @@ def load_attacker():
     if loadFile[-3:] != '.at' and loadFile:
         messagebox.showerror(message='ERROR', detail='Invalid File Type!', icon='error', default='ok',parent=root)
     else:
-        load = open(loadFile, 'r')
+        load = open(loadFile, 'r+')
         data = load.readlines()
         load.close()
         data[0] = data[0].split()
@@ -401,7 +401,7 @@ def load_enemy():
     if loadFile[-3:] != '.op':
         messagebox.showerror(message='ERROR', detail='Invalid File Type!', icon='error', default='ok',parent=root)
     else:
-        load = open(loadFile, 'r')
+        load = open(loadFile, 'r+')
         data = load.readlines()
         load.close()
         data[0] = data[0].split()
@@ -472,7 +472,7 @@ def export_csv(*args):
         try:
             if os.path.exists(saveFile):
                 os.remove(saveFile)
-            save = open(saveFile, 'w')
+            save = open(saveFile, 'w+')
             for line in data:
                 save.write(line+",\n")
             save.close()
@@ -1880,7 +1880,7 @@ t.grid(column=0, row=0, sticky=(N,W,E,S))
 s = ttk.Scrollbar(readme, orient=VERTICAL, command=t.yview)
 s.grid(column=1, row=0, sticky=(N,S))
 t['yscrollcommand']=s.set
-f = open('README.txt', 'r')
+f = open('about/README.txt', 'r+')
 readme.grid_columnconfigure(0, weight=1)
 readme.grid_rowconfigure(0, weight=1)
 lines = f.readlines()   
@@ -1905,7 +1905,7 @@ t.grid(column=0, row=0, sticky=(N,W,E,S))
 s = ttk.Scrollbar(change, orient=VERTICAL, command=t.yview)
 s.grid(column=1, row=0, sticky=(N,S))
 t['yscrollcommand']=s.set
-f = open('CHANGELOG.txt', 'r')
+f = open('about/CHANGELOG.txt', 'r+')
 change.grid_columnconfigure(0, weight=1)
 change.grid_rowconfigure(0, weight=1)
 lines = f.readlines()   
@@ -1931,7 +1931,7 @@ t.grid(column=0, row=0, sticky=(N,W,E,S))
 s = ttk.Scrollbar(licen, orient=VERTICAL, command=t.yview)
 s.grid(column=1, row=0, sticky=(N,S))
 t['yscrollcommand']=s.set
-f = open('LICENSE.txt', 'r')
+f = open('about/LICENSE.txt', 'r+')
 licen.grid_columnconfigure(0, weight=1)
 licen.grid_rowconfigure(0, weight=1)
 lines = f.readlines()   

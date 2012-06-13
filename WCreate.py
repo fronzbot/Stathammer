@@ -45,8 +45,8 @@ class WWindow(object):
         self.app.lift(top_level)
         
         # Get current weapon lists
-        self.guns = self.update_dicts('gnl.wf')
-        self.cc   = self.update_dicts('ccl.wf')
+        self.guns = self.update_dicts('profiles/gnl.wf')
+        self.cc   = self.update_dicts('profiles/ccl.wf')
         
         if os.name == "posix":
             self.app.wm_iconbitmap('@staticon.xbm') # For non-windows systems (works on linux, not sure about OSX)
@@ -184,7 +184,7 @@ class WWindow(object):
         # Add to gun dictionary
         self.guns[name] = data
 
-        f = open('gnl.wf', 'w')
+        f = open('profiles/gnl.wf', 'w')
 
         # A catch for any unforseen errors.  Throws error window to screen
         # to give user more error information to make bug tracking simpler
@@ -228,7 +228,7 @@ class WWindow(object):
         # Add to cc dictionary
         self.cc[name] = data
         
-        f = open('ccl.wf', 'w')
+        f = open('profiles/ccl.wf', 'w')
 
         # A catch for any unforseen errors.  Throws error window to screen
         # to give user more error information to make bug tracking simpler

@@ -7,15 +7,13 @@ from cx_Freeze import setup, Executable
 # GUI applications require a different base on Windows (the default is for a
 # console application).
 
-ver = "0.1.2"
+ver = "0.1.4"
 
 base = None
 if sys.platform == "win32":
     base = "Win32GUI"
 
-includefiles = ['README.txt', 'CHANGELOG.txt', 'LICENSE.txt',
-                'staticon.ico', 'msvcm90.dll', 'msvcp90.dll',
-                'msvcr90.dll']
+includefiles = ['about']
 
 
 GUI2Exe_Target_1 = Executable(
@@ -23,7 +21,6 @@ GUI2Exe_Target_1 = Executable(
 	script = "stathammer.pyw",
 	initScript = None,
 	base = 'Win32GUI',
-        targetDir = r"build/exe.win-amd64-3.2/",
 	targetName = "Stathammer.exe",
 	compress = True,
 	copyDependentFiles = True,
@@ -40,6 +37,7 @@ setup(
         version = ver,
         description = "Statistics Simulator for Warhammer 40k",
         author = 'Kevin Fronczak',
+        url = "http://github.com/fronzbot/Stathammer",
         author_email = 'kfronczak@gmail.com',
         options = {'build_exe':{'include_files':includefiles}},
         executables = [GUI2Exe_Target_1])
